@@ -1,0 +1,218 @@
+@use './variables.scss' as vars;
+
+:root {
+	--slide-aspect-ratio: 1.777777;
+	--sliding-duration: calc(500ms);
+	--fragment-duration: calc(300ms);
+	--slide-font-size: 4;
+	--slide-print-width: 297mm;
+
+	--progress-color: var(--brand-color, currentColor);
+	--controls-color: gray;
+	--tooltip-bg: #ddd;
+
+	--ng-bg: linear-gradient(131.24deg, #ff31d9, #ff5be100), linear-gradient(25.4deg, #e40035, #f60a48 24%, #f20755 35.2%, #dc087d 49.4%, #9717e7 74.5%, #6c00f5);
+	--brand-color: #822a7c;
+	--brand-color-ant: #f60;
+	font-family: system-ui, sans-serif;
+}
+
+body {
+	> nav {
+		position: fixed;
+		bottom: 0.5rem;
+		right: 0;
+		display: flex;
+
+		button {
+			position: relative;
+
+			&:disabled {
+				cursor: default;
+				opacity: 0.5;
+			}
+			&::before,
+			&::after {
+				content: '';
+				position: absolute;
+				top: 0.45em;
+				left: 0.45em;
+				width: 0.707em;
+				height: 0.1em;
+				background: currentColor;
+				transform-origin: 0.05em 0.05em;
+			}
+		}
+
+		.previous::before {
+			transform: rotate(45deg);
+		}
+		.previous::after {
+			transform: rotate(-45deg);
+		}
+		.next::before {
+			transform: rotate(135deg);
+		}
+		.next::after {
+			transform: rotate(-135deg);
+		}
+
+		[popover] {
+			inset: auto anchor(end) anchor(start) auto;
+
+			&::before {
+				inset: 100% 1rem auto auto;
+			}
+		}
+	}
+
+	> progress {
+		position: fixed;
+		inset: auto 0 0;
+		width: auto;
+		height: 0.5rem;
+		border: 0;
+		z-index: 150;
+		background: transparent;
+		color: var(--progress-color);
+
+		&::-webkit-progress-value {
+			background: currentColor;
+			transition: width var(--fragment-duration);
+		}
+		&::-webkit-progress-bar {
+			background: none;
+		}
+		&::-moz-progress-bar {
+			background: currentColor;
+		}
+	}
+
+	[role='toolbar'] {
+		position: fixed;
+		inset: auto auto 0.5rem 0;
+		display: flex;
+		flex-direction: column;
+
+		button {
+			background-repeat: no-repeat;
+			background-size: 100%;
+			opacity: 0.5;
+			transition: opacity 300ms;
+
+			&:hover {
+				opacity: 1;
+			}
+			> svg {
+				width: 100%;
+				height: 100%;
+				display: block;
+			}
+		}
+
+		.fullscreen path {
+			&:first-child {
+				display: inline;
+			}
+			&:last-child {
+				display: none;
+			}
+
+			:fullscreen & {
+				&:first-child {
+					display: none;
+				}
+				&:last-child {
+					display: inline;
+				}
+			}
+		}
+	}
+
+	> :where(nav, [role='toolbar']) {
+		button {
+			border: none;
+			border-radius: 0;
+			background: none;
+			padding: 0;
+			margin: 0.25em;
+			cursor: pointer;
+			width: 1em;
+			height: 1em;
+			font-size: 3rem;
+			color: var(--controls-color);
+		}
+		[popover] {
+			margin: 0 0 0.75rem;
+			inset: auto auto anchor(start) anchor(start);
+			padding: 0.25em 0.5em;
+			color: inherit;
+			background: var(--tooltip-bg);
+			border: none;
+			border-radius: 0.5rem;
+			overflow: visible;
+
+			&::before {
+				content: '';
+				position: absolute;
+				inset: 100% auto auto 1rem;
+				border-color: var(--tooltip-bg) transparent;
+				border-style: solid;
+				border-width: 0.5rem 0.5rem 0;
+			}
+		}
+	}
+}
+
+[popover] {
+	margin: 0 0 0.75rem;
+	inset: auto auto anchor(start) anchor(start);
+	padding: 0.25em 0.5em;
+	color: inherit;
+	background: var(--tooltip-bg);
+	border: none;
+	border-radius: 0.5rem;
+	overflow: visible;
+
+	&::before {
+		content: '';
+		position: absolute;
+		inset: 100% auto auto 1rem;
+		border-color: var(--tooltip-bg) transparent;
+		border-style: solid;
+		border-width: 0.5rem 0.5rem 0;
+	}
+
+	body > nav & {
+		inset: auto anchor(end) anchor(start) auto;
+
+		&::before {
+			inset: 100% 1rem auto auto;
+		}
+	}
+}
+
+@each $name in gridMode speakerMode presentationMode fullscreenMode goBackward goForward {
+	[aria-labelledby='#{$name}Tooltip'] {
+		anchor-name: --#{$name};
+	}
+	[id='#{$name}Tooltip'] {
+		position-anchor: --#{$name};
+	}
+}
+
+p-deck:not([mode]) ~ [role='toolbar'] [aria-labelledby='presentationModeTooltip'] {
+	display: none;
+}
+@each $mode in grid speaker presentation {
+	[mode='#{$mode}'] ~ [role='toolbar'] [aria-labelledby='#{$mode}ModeTooltip'] {
+		display: none;
+	}
+}
+
+.astro-code {
+	padding: 0.5em;
+	border-radius: 0.25em;
+	scrollbar-width: none;
+	tab-size: 2;
+}

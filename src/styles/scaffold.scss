@@ -1,0 +1,39 @@
+@use './variables.scss' as vars;
+
+*,
+::before,
+::after {
+	box-sizing: border-box;
+}
+
+html,
+body {
+	margin: 0;
+	width: 100%;
+	height: 100%;
+}
+
+#{vars.$headings},
+p,
+pre,
+figure {
+	margin: 0;
+}
+
+@for $level from 1 through 6 {
+	h#{$level} {
+		font-size: 0.75em + (7 - $level) * 0.25em;
+	}
+}
+
+hgroup {
+	> :is(#{vars.$headings}) {
+		line-height: 1;
+		&:not(:first-child) {
+			margin-top: 0.125em;
+		}
+		&:not(:last-child) {
+			margin-bottom: 0.125em;
+		}
+	}
+}

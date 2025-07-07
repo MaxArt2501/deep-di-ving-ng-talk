@@ -1,0 +1,11 @@
+---
+import Presentation from '../../layouts/Presentation.astro';
+import Cover from '../../slides/cover.astro';
+
+// const slides = await Astro.glob('../../slides/*.md')
+---
+
+<Presentation>
+	<Cover/>
+  <!-- {slides.map(({ Content }) => <Content/>)} -->
+</Presentation>

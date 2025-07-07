@@ -1,0 +1,80 @@
+<p-slide class="cover justify-around">
+  <hgroup>
+    <h1>Deep DI-ving</h1>
+    <p>How Angular's DI system defeated a monolith</p>
+  </hgroup>
+  <div flex class="justify-between align-center">
+    <img src="/img/angular-day.svg" h="2" alt="Angular Day logo">
+    <p>
+      Verona, <time datetime="2025-11-21">2025-11-21</time>
+    </p>
+  </div>
+</p-slide>
+<p-slide grid="2" class="about-me">
+  <gfy-blob
+    clearcoatroughness="0.4"
+    clearcoat="0.23"
+    clearcolor="#ffffff"
+    color="#2a0b29"
+    envmap="../img/envmap.jpg"
+    envmapintensity="0.95"
+    fixnormals=""
+    frequency="0.01"
+    metalness="0.64"
+    numberofwaves="1.47"
+    reflectivity="1"
+    roughness="0"
+    surfacepoleamount="1"
+    surfacedistort="3.2"
+    surfacefrequency="0.97"
+    surfacespeed="0.5"
+  >
+    <gfy-spotlight color="#c556c6" intensity="2.68" distance="14.47" angle="0.85" penumbra="0.45" decay="0.24" x="-4.47" y="2.4" z="0.53"></gfy-spotlight>
+    <gfy-spotlight color="#30ffe2" intensity="2.08" distance="8.73" angle="0.63" penumbra="1" decay="0" x="-1.6" y="-5.33" z="3.67"></gfy-spotlight>
+    <gfy-spotlight color="#ffffff" intensity="2.03" distance="0" angle="0.35" penumbra="1" decay="1" x="6.13" y="2.67" z="2.13"></gfy-spotlight>
+    <gfy-spotlight color="#ff4cfa" intensity="1.25" distance="7" angle="0.82" penumbra="1" decay="0.5" x="0.53" y="2.4" z="3.4"></gfy-spotlight>
+    <gfy-spotlight color="#ffffff" intensity="0.63" distance="7" angle="0.79" penumbra="1" decay="0.5" x="-3" y="-3" z="6.2"></gfy-spotlight>
+  </gfy-blob>
+  <img src="../img/maxart.jpg" alt="Face of Massimo Artizzu" class="my-face" />
+  <div flex="column">
+    <hgroup>
+      <h2>Massimo Artizzu</h2>
+      <p>Web Architect @<strong style="color: var(--brand-color)">GELLIFY</strong></p>
+    </hgroup>
+    <div class="social-links">
+      <a href="https://github.com/MaxArt2501"><img src="../img/github.svg" alt="GitHub logo" /></a> /
+      <a href="https://mastodon.social/MaxArt2501"><img src="../img/mastodon.svg" alt="Mastodon logo" /></a> /
+      <a href="https://bsky.app/profile/MaxArt2501.bsky.social"><img src="../img/bluesky.svg" alt="BlueSky logo" /></a> /
+      <a href="https://dev.to/MaxArt2501"><img src="../img/dev-to.svg" alt="dev.to logo" /></a>
+      @MaxArt2501
+    </div>
+  </div>
+</p-slide>
+<style lang="scss">
+  .cover {
+    color: white;
+    --slide-bg: var(--ng-bg);
+  }
+  gfy-blob {
+    height: 12em;
+    width: 12em;
+    grid-area: 1 / 1;
+  }
+  .my-face {
+    border-radius: 100vmax;
+    grid-area: 1 / 1;
+    place-self: center;
+    border: .25em solid color-mix(in oklab, var(--brand-color), black 40%);
+    width: 8em;
+  }
+  .about-me {
+    h2 {
+      color: var(--brand-color);
+    }
+  }
+  .social-links {
+    img {
+      height: 1.1em;
+    }
+  }
+</style>

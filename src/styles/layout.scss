@@ -1,0 +1,53 @@
+@use './variables.scss' as vars;
+
+p-slide {
+	&[layout='center'] {
+		text-align: center;
+		align-items: center;
+	}
+
+	&[layout='classic'] {
+		display: grid;
+		gap: 1em;
+		grid-template-areas: 'header header' 'start end';
+		grid-template-columns: repeat(2, minmax(0, 1fr));
+		grid-template-rows: auto 1fr;
+
+		&:has(> footer) {
+			grid-template-areas: 'header header' 'start end' 'footer footer';
+			grid-template-rows: auto 1fr auto;
+		}
+
+		> :nth-child(1 of :is(header, #{vars.$headings})) {
+			grid-area: header;
+		}
+		> footer {
+			grid-area: footer;
+		}
+	}
+
+	&[layout='split'] {
+		display: grid;
+		grid-template-columns: repeat(2, minmax(0, 1fr));
+		padding: 0;
+
+		&,
+		> :is(p:has(:is(img, video):only-child), picture:first-child) {
+			> :is(img, video):first-child {
+				align-self: center;
+				object-fit: cover;
+				width: 100%;
+				height: 100%;
+			}
+		}
+
+		> :is(p:has(:is(img, video):only-child), picture:first-child) {
+			display: contents;
+		}
+
+		> :nth-child(2) {
+			padding: 1em;
+			margin: 0;
+		}
+	}
+}
