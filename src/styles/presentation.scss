@@ -2,7 +2,7 @@
 
 :root {
 	--slide-aspect-ratio: 1.777777;
-	--sliding-duration: calc(500ms);
+	--sliding-duration: 0s;
 	--fragment-duration: calc(300ms);
 	--slide-font-size: 4;
 	--slide-print-width: 297mm;
@@ -208,6 +208,10 @@ p-deck:not([mode]) ~ [role='toolbar'] [aria-labelledby='presentationModeTooltip'
 	[mode='#{$mode}'] ~ [role='toolbar'] [aria-labelledby='#{$mode}ModeTooltip'] {
 		display: none;
 	}
+}
+
+p-fragment, [p-fragment] {
+	transition-duration: var(--fragment-duration);
 }
 
 .astro-code {

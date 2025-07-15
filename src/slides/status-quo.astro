@@ -1,0 +1,221 @@
+<p-slide class="no-padding align-center">
+	<!--- It starts with a tiny, simple application. It's lean, it's highly maintainable, it serves a specific purpose and it does it good -->
+	<div class="monolith">
+		<svg p-fragment viewBox="0 0 100 100">
+			<!--- But then the application grows. It's still manageable, has little tech debt, but not it does more, a lot more.
+        And it doesn't stop growing, to the point it becomes what we call... -->
+			<path d="M50 11.05 20.9 76.3h10.85l5.85-14.6h24.7l5.85 14.6H79L50 11.05zm8.5 41.65h-17L50 32.25l8.5 20.45z"></path>
+		</svg>
+	</div>
+	<span class="flare" p-fragment
+		><!--- ... a monolith. Monoliths aren't necessarily wrong, but they bring some risks - especially when
+      you're dealing with clients. Because when clients aren't satisfied anymore with the standard application... --></span
+	>
+	<p-fragment class="appendage"><!--- ... they might ask for a change. That applies to them only, of course... --></p-fragment>
+	<p-fragment class="second appendage"><!--- ... and then a second... --></p-fragment>
+</p-slide>
+<p-slide class="no-padding align-center justify-end" effect="fade">
+	<!--- And now it's become something like this: a prickly, unmanageable giant. Hard to trim down without pain and suffering. -->
+	<!--- But it's just a visual metaphor. What did *actually* happen, technically speaking? -->
+  <img src="../img/saguaro-red.webp" alt="An Angular-red saguaro" class="saguaro">
+</p-slide>
+<p-slide effect="fade" class="no-padding justify-end">
+	<svg viewBox="0 0 100 100" class="git-tree">
+		<defs>
+			<marker viewBox="0 0 6 6" refX="3" refY="3" markerWidth="1" markerHeight="1" id="commit">
+				<circle cx="3" cy="3" r="2" fill="#fff8" stroke="#fff"></circle>
+			</marker>
+			<marker viewBox="0 0 6 6" refX="4" refY="3" markerWidth="3" markerHeight="3" orient="auto-start-reverse" id="arrow" fill="#8E0022">
+				<path d="M0,0v6L6,3z"></path>
+			</marker>
+		</defs>
+		<line x1="50" x2="50" y1="100" y2="18"></line>
+		<text x="50" y="10" p-fragment>develop<!--- In short, they had their main development branch --></text>
+		<path d="M50,50a15,15 0 0 0 15,-15v-18" class="branch" p-fragment="1"><!---
+			Then, for each client that was asking for customizations, they thought it was a good idea to create a new branch
+			specific for the client and its own customization, so to keep the development branch clean.
+		--></path>
+		<path d="M50,70a30,30 0 0 0 30,-30v-23" class="branch" p-fragment="1"></path>
+		<path d="M50,80a30,30 0 0 1-30,-30v-16-17" class="branch" p-fragment="1"></path>
+		<path d="M50,40a15,15 0 0 1-15,-15v-8" class="branch" p-fragment="1"></path>
+		<path d="M50,100v-5-20-20-20-16"></path>
+		<text x="-15" y="15" p-fragment="2">client/wasser-gmbh<!--- one for each client with their own customizations --></text>
+		<text x="-15" y="30" p-fragment="2">client/rossi_srl</text>
+		<text x="-15" y="60" p-fragment="2">client/acme</text>
+		<text x="-15" y="75" p-fragment="2">client/smith_co</text>
+		<path d="M50,70c0,-10 -20,-5 -30,-15" class="merge" p-fragment="3"></path>
+		<path d="M50,50c0,-10 -20,0 -30,-10" class="merge" p-fragment="4"></path>
+		<path d="M50,50c0,-10 20,-5 30,-15" class="merge" p-fragment="4"></path>
+		<path d="M50,30c0,-10 -20,0 -30,-10" class="merge" p-fragment="5"></path>
+		<path d="M50,30c0,-7 -12,-5 -15,-10" class="merge" p-fragment="5"></path>
+		<path d="M50,30c0,-7 12,-5 15,-10" class="merge" p-fragment="5"></path>
+		<path d="M50,30c0,-10 20,0 30,-10" class="merge" p-fragment="5"></path>
+	</svg>
+</p-slide>
+<style lang="scss">
+	@property --bg-position {
+		syntax: '<percentage>';
+		initial-value: 0%;
+		inherits: true;
+	}
+	.monolith {
+		--bg-position: 50%;
+		height: 4em;
+		width: 4em;
+		background: linear-gradient(to right, #dd0031 var(--bg-position), #c3002f 0);
+		clip-path: polygon(50% 0%, 3.45% 16.6%, 10.55% 78.15%, 50% 100%, 89.45% 78.15%, 96.55% 16.6%);
+		transition:
+			scale calc(var(--fragment-duration) * 2),
+			width calc(var(--fragment-duration) * 4),
+			height calc(var(--fragment-duration) * 4),
+			--bg-position calc(var(--fragment-duration) * 4),
+			clip-path calc(var(--fragment-duration) * 4);
+		transition-timing-function: var(--bounce);
+		scale: 0.25;
+		position: relative;
+
+		:is([aria-hidden='false'], [previous]) & {
+			scale: 0.5;
+			// animation: from-below var(--fragment-duration) 1 forwards;
+			&:has(> [aria-hidden='false']) {
+				scale: 1;
+			}
+			&:has(+ [aria-hidden='false']) {
+				width: calc(100em / var(--slide-font-size) / var(--slide-aspect-ratio) / 3);
+				height: calc(100em / var(--slide-font-size) / var(--slide-aspect-ratio));
+				clip-path: polygon(66.67% 10%, 10% 20%, 0% 100%, 66.67% 100%, 100% 100%, 95% 20%);
+				--bg-position: 66.67%;
+
+				> svg {
+					transform: scale(0.8) translate(-0.8em, 2.5em) skewY(-19deg);
+				}
+			}
+		}
+
+		> svg {
+			fill: white;
+			position: absolute;
+			inset: 0;
+			transition: transform calc(var(--fragment-duration) * 4) var(--bounce);
+		}
+
+		:has(> &) {
+			background-position: 0 120%;
+			color: hsl(100deg 100% 32%);
+
+			&[aria-hidden='false'] {
+				--slide-animation: 0.5s;
+			}
+		}
+	}
+	.flare {
+		position: absolute;
+		inset: 0 0 50% 0;
+		background: radial-gradient(1.5em circle at 73% 36%, hsl(54 100% 95% / 20%) 50%,transparent 55%),
+			radial-gradient(1.414em circle at 77% 41%,transparent 50%, hsl(54 100% 90% / 40%) 90%,transparent 100%),
+			radial-gradient(0.25em circle at 57% 16%, hsl(54 100% 90% / 50%) 0%,transparent 75%),
+			radial-gradient(2em circle at 53% 11%, hsl(4 100% 90% / 15%) 0% 0%,transparent 100%),
+			radial-gradient(2em circle at 53% 11%, hsl(54 100% 90% / 90%) 5%, hsl(54 100% 90% / 35%) 30%, hsl(54 100% 90% / 10%) 55%, hsl(54 100% 90% / 5%) 75%,transparent);
+		transition-property: opacity, inset;
+		transition-duration: calc(var(--fragment-duration) * 2);
+
+		&[aria-hidden='false'] {
+			inset: 0;
+
+			:has(> &) {
+				background-position: 0 100%;
+			}
+		}
+	}
+	.appendage {
+		position: absolute;
+		inset: 30% 35% auto auto;
+		width: 2.5em;
+		height: 4em;
+		border-width: 0 0 2em 2em;
+		border-style: solid;
+		border-color: color-mix(in srgb, #c3002f, black 20%) #dd0031;
+		background: #c3002f;
+		--skew: 30deg;
+		transform: skewY(var(--skew)) scaleX(0);
+		clip-path: polygon(80% 0, 100% 4%, 100% 50%, 24% 96%, 0% 100%, 0 80%, 50% 48%, 50% 21%);
+		transition: transform calc(var(--fragment-duration) * 2) var(--bounce);
+		transform-origin: 0 50%;
+		rotate: -1deg;
+
+		&[aria-hidden='false'] {
+			transform: skewY(var(--skew)) scaleX(1);
+
+			:has(> &) {
+				color: hsl(70deg 100% 32%);
+			}
+			:has(> &.second) {
+				color: hsl(50deg 100% 42%);
+			}
+		}
+
+		&.second {
+			inset: 60% 54% auto auto;
+			clip-path: polygon(33% 0, 50% 0, 50% 60%, 100% 60%, 100% 80.2%, 62% 100%, 0 100%, 0 21%);
+			clip-path: polygon(33% 0, 50% 0, 50% 75%, 100% 75%, 100% 91.5%, 57.3% 100%, 0 100%, 0 13%);
+			border-width: 0 0 0.35em 0.8em;
+			rotate:  2deg;
+      transform-origin: right;
+			--skew: 10deg;
+		}
+	}
+
+  .saguaro {
+    height: 13em;
+		:has( > &) {
+			color: hsl(45deg 80% 50%);
+		}
+  }
+  :where(.saguaro, .monolith) {
+		:has(> &) {
+			--slide-bg: linear-gradient(to bottom, #94c5f8, #a6e6ff 70%, #b1b5ea);
+			background: radial-gradient(100% 50% at 50% 100%, currentColor 100%, transparent 110%) 0 100%/100% 20% no-repeat, var(--slide-bg);
+			transition-property: background-position, color;
+			transition-duration: calc(var(--fragment-duration) * 2);
+		}
+  }
+
+	.git-tree { 
+		> line, > path {
+			stroke: #dd0031;
+			stroke-width: 10px;
+			stroke-linecap: round;
+		}
+		> path {
+			stroke-width: 6px;
+			fill: none;
+			marker-end: url(#commit);
+			marker-mid: url(#commit);
+
+			&.branch {
+				stroke-dasharray: 0px 80.2px;
+				transition-property: stroke-dasharray;
+				&[aria-hidden='false'] {
+					stroke-dasharray: 80.2px 80.2px;
+				}
+			}
+			&.merge {
+				stroke-width: 1px;
+				marker-end: url(#arrow);
+				marker-mid: none;
+				stroke: #8E0022;
+			}
+		}
+		text {
+			font-family: 'Courier New', Courier, monospace;
+			font-size: 5%;
+			font-weight: bold;
+			text-anchor: middle;
+		}
+		text:not(:first-of-type) {
+			transform: rotate(-90deg);
+			text-anchor: end;
+
+		}
+	}
+</style>

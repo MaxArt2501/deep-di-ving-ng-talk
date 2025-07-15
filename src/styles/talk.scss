@@ -1,0 +1,12 @@
+:root {
+  --bounce: linear(0, 1.32 16%, 0.87 28%, 1.05 44%, 0.98 59%, 1.01 73%, 1 88%, 1);
+}
+
+@keyframes from-below {
+  from {
+    translate: 0 100%;
+  }
+  to {
+    translate: 0 0;
+  }
+}
