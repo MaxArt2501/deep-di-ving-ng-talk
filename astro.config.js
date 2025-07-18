@@ -1,6 +1,8 @@
 // @ts-check
 import { defineConfig } from 'astro/config';
 import { viteStaticCopy } from 'vite-plugin-static-copy';
+import classPlugin from './class-plugin.js';
+import slidesPlugin from './slides-plugin.js';
 import transformerFragments from './transformer-fragments.js';
 
 // https://astro.build/config
@@ -19,6 +21,12 @@ export default defineConfig({
 		]
 	},
 	markdown: {
+		remarkPlugins: [
+			slidesPlugin
+		],
+		rehypePlugins: [
+			classPlugin
+		],
 		shikiConfig: {
 			transformers: [transformerFragments]
 		}
