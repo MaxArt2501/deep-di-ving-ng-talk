@@ -32,7 +32,7 @@ export default function slidesPlugin() {
 				}
 				tree.children.splice(index, 1, {
 					type: 'html',
-					value: (slideStart >= 0 ? '</p-slide>\n' : '')
+					value: (index > 0 ? '</p-slide>\n' : '')
 						+ `<p-slide${serializeProperties(getProperties(element.children[0].value.slice(3).trim()))}>`,
 					position: element.position
 				});

@@ -2,8 +2,9 @@
 import { defineConfig } from 'astro/config';
 import { viteStaticCopy } from 'vite-plugin-static-copy';
 import classPlugin from './class-plugin.js';
+import fragmentPlugin from './fragment-plugin.js';
+import fragmentTransformer from './fragment-transformer.js';
 import slidesPlugin from './slides-plugin.js';
-import transformerFragments from './transformer-fragments.js';
 
 // https://astro.build/config
 export default defineConfig({
@@ -25,10 +26,10 @@ export default defineConfig({
 			slidesPlugin
 		],
 		rehypePlugins: [
-			classPlugin
+			classPlugin, fragmentPlugin
 		],
 		shikiConfig: {
-			transformers: [transformerFragments]
+			transformers: [fragmentTransformer]
 		}
 	}
 });

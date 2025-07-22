@@ -14,6 +14,13 @@
  * @property {TreeNode[]} [children] - The children of the tree node.
  */
 
+/** @typedef {TreeNode & { type: 'text' }} TextNode */
+/**
+ * @typedef {Object} TextNodePointer
+ * @property {TextNode} node
+ * @property {number} index
+ */
+
 // Parsing currently doesn't support nested fragments
 export const FRAGMENT_RE = /\{#(\d*(?:\.\d+)?)\{([\s\S]*?)(?<!\\)\}#\}/g;
 
@@ -83,8 +90,9 @@ export const setDescendancy = (node, parent) => {
 
 /**
  * @param {TreeNode} root
- * @param {(node: TreeNode) => boolean} matcher
- * @returns {Generator<TreeNode>}
+ * @param {(node: TreeNode) => node is T} matcher
+ * @returns {Generator<T>}
+ * @template {TreeNode} T
  */
 export function* getAllNodes(matcher, root) {
 	let node = root;
@@ -99,13 +107,14 @@ export function* getAllNodes(matcher, root) {
 			}
 			if (node === root) break;
 		}
-    node = nextNode;
+		node = nextNode;
 	}
 }
 
-/** @param {TreeNode} node */
+/** @type {(node: TreeNode) => node is TextNode} */
 const textNodeMatcher = node => node.type === 'text';
 
+/** @type {(root: TreeNode) => Generator<TextNode>} */
 export const getTextNodes = getAllNodes.bind(null, textNodeMatcher);
 
 /**
@@ -115,20 +124,29 @@ export const getTextNodes = getAllNodes.bind(null, textNodeMatcher);
  * @returns {TreeNode[]}
  */
 export const splitProperty = (node, property, index) => {
+	if (index === 0 || node[property].length === index) return [node];
 	const { [property]: value, ...rest } = node;
 	const parent = getParent(node);
-	const valueParts = [value.slice(0, index), value.slice(index)].filter(valuePart => valuePart.length > 0);
-	const nodes = valueParts.map(valuePart => ({
+	const otherNode = {
 		...rest,
-		[property]: valuePart
-	}));
-	if (parent) {
-		const idx = parent.children.indexOf(node);
-		parent.children.splice(idx, 1, ...nodes);
-	}
-	nodes.forEach(newNode => setDescendancy(newNode, parent));
-	return nodes;
+		[property]: value.slice(index)
+	};
+	node[property] = value.slice(0, index);
+	insertBefore(parent, otherNode, getNextSibling(node));
+	return [node, otherNode];
 };
+
+/**
+ * @param {TextNode} node
+ * @param {number} index
+ */
+export const splitText = (node, index) => splitProperty(node, 'value', index);
+
+/**
+ * @param {TreeNode} node
+ * @param {number} index
+ */
+export const splitElement = (node, index) => splitProperty(node, 'children', index);
 
 /**
  * @param {TreeNode} ancestor
@@ -170,39 +188,86 @@ export const wrapNodes = (wrapper, ...children) => {
 		parent.children.splice(index, children.length, wrapper);
 	}
 	setDescendancy(wrapper, parent);
-
-	children.forEach((child, index) => {
-		child.parent = wrapper;
-		if (index === children.length - 1) child.nextSibling = null;
-	});
 	return wrapper;
 };
 
 /**
- * @param {number} index
- * @param {Iterable<TreeNode>} textNodes
- * @returns {{text: TreeNode, index: number} | undefined}
+ * @param {TreeNode} parent
+ * @param {TreeNode} node
+ * @param {TreeNode} [beforeNode]
  */
-export const getTextNodeAtIndex = (index, textNodes) => {
+export const insertBefore = (parent, node, beforeNode) => {
+	if (beforeNode) {
+		const index = parent.children.indexOf(beforeNode);
+		parent.children.splice(index, 0, node);
+	} else {
+		parent.children.push(node);
+	}
+	setDescendancy(node, parent);
+};
+
+/**
+ * @param {number} index
+ * @param {Iterable<TextNode>} textNodes
+ * @param {boolean} [before]
+ * @returns {TextNodePointer | undefined}
+ */
+export const getTextNodeAtIndex = (index, textNodes, before) => {
 	let prevLength = 0;
-	for (const text of textNodes) {
-		if (prevLength + text.value.length > index) {
-			return { text, index: index - prevLength };
+	for (const node of textNodes) {
+		if (prevLength + node.value.length > index - (before ? 1 : 0)) {
+			return { node, index: index - prevLength };
 		}
-		prevLength += text.value.length;
+		prevLength += node.value.length;
 	}
 };
 
-/** @param {string} text */
-export const getFragments = text => {
-  const fragments = Array.from(text.matchAll(FRAGMENT_RE));
-  let cleanedText = text;
-  let indexShift = 0;
-  for (const fragment of fragments) {
-    fragment.index -= indexShift;
-    const { 0: string, 2: content, index } = fragment;
-    cleanedText = cleanedText.slice(0, index) + content + cleanedText.slice(index + string.length);
-    indexShift += string.length - content.length;
-  }
-  return { cleanedText, fragments };
+/**
+ * @param {TreeNode} descendant
+ * @param {TreeNode} ancestor
+ * @param {boolean} [before]
+ */
+export const getAncestorChild = (descendant, ancestor, before) => {
+	let child = descendant;
+	while (getParent(child) !== ancestor) {
+		const newAncestor = getParent(child);
+		const splitIndex = newAncestor.children.indexOf(child) + (before ? 1 : 0);
+		child = splitElement(newAncestor, splitIndex).at(before ? 0 : -1);
+	}
+	return child;
 };
+
+/**
+ * @typedef {Object} FragmentBlock
+ * @property {TextNodePointer} start
+ * @property {TextNodePointer} end
+ * @property {{ index?: string }} properties
+ */
+const FRAGMENT_BOUNDARY_RE = /(\{#(\d*(?:\.\d+)?)\{)|((?<!\\)\}#\})/g;
+/**
+ * @param {TreeNode} root
+ * @returns {Generator<FragmentBlock>}
+ */
+export function* generateFragments(root) {
+	FRAGMENT_BOUNDARY_RE.lastIndex = 0;
+	/** @type {RegExpExecArray[]} */
+	const startStack = [];
+	/** @type {RegExpExecArray} */
+	let match;
+	let textNodes = Array.from(getTextNodes(root));
+	while ((match = FRAGMENT_BOUNDARY_RE.exec(textNodes.map(node => node.value).join('')))) {
+		if (match?.[1]) {
+			startStack.push(match);
+		} else if (match?.[3] && startStack.length) {
+			/** @type {RegExpExecArray} */
+			const startMatch = startStack.pop();
+			/** @type {TextNodePointer} */
+			const start = getTextNodeAtIndex(startMatch.index, textNodes);
+			/** @type {TextNodePointer} */
+			const end = getTextNodeAtIndex(match.index + 3, textNodes, true);
+			yield { start, end, properties: startMatch[2] ? { index: startMatch[2] } : {} };
+			textNodes = Array.from(getTextNodes(root));
+			if (startStack.length) FRAGMENT_BOUNDARY_RE.lastIndex = startStack.at(-1).index;
+		}
+	}
+}
