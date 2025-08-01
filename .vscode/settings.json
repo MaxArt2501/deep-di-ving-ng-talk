@@ -1,0 +1,9 @@
+{
+  "svg.preview.background": "dark-transparent",
+  "html.customData": [
+    "./node_modules/p-slides/p-slides.vscode.html-custom-data.json"
+  ],
+  "css.customData": [
+    "./node_modules/p-slides/p-slides.vscode.css-custom-data.json"
+  ]
+}
