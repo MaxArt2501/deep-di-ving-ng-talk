@@ -10,18 +10,16 @@ function handleHash() {
 
 	const slide = getSlide(slideRef);
 	const current = document.querySelector('p-slide[aria-current="page"]');
+	if (slide && slide !== current) {
+		slide.setAttribute('aria-current', 'page');
+		current?.setAttribute('aria-current', 'false');
+	}
 
 	const mode = params.get('mode');
 	if (mode) {
 		deck.setAttribute('mode', mode);
 	} else {
 		deck.removeAttribute('mode');
-	}
-	if (slide && slide !== current) {
-		if (current) {
-			current.removeAttribute('active');
-		}
-		slide.setAttribute('active', '');
 	}
 }
 addEventListener('hashchange', handleHash);
@@ -91,7 +89,7 @@ function loadLazyMedia(root) {
 let stepsToSlide, stepTotalCount;
 
 function updateProgressBar() {
-	if (typeof stepsToSlide !== 'number') {
+	if (typeof stepTotalCount !== 'number') {
 		stepsToSlide = Array.from(deck.slides, slide => slide.fragmentSequence.length + 1).reduce(
 			(list, count) => [...list, (list.at(-1) ?? 0) + count],
 			[]
@@ -110,7 +108,7 @@ function updateProgressBar() {
 		nextSequenceIndex >= 0
 			? (stepsToSlide[currentIndex - 1] ?? 0) + (nextSequenceIndex >= 0 ? nextSequenceIndex : 0) + 1
 			: stepsToSlide[currentIndex];
-	const progress = +((currentStep * 100) / (stepTotalCount - 1)).toFixed(2);
+	const progress = ((currentStep - 1) * 100) / (stepTotalCount - 1);
 	progressBar.value = isFinite(progress) ? progress : 100;
 }
 

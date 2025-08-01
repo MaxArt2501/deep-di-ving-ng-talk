@@ -14,7 +14,7 @@ export default function slidesPlugin() {
 	 * @param {TreeNode} tree
 	 * @param {VFile} file
 	 */
-	return function (tree, file) {
+	return (tree, file) => {
 		let slideStart = -1;
 		for (let index = 0; index < tree.children.length; index++) {
 			const element = tree.children[index];
@@ -22,7 +22,7 @@ export default function slidesPlugin() {
 				if (slideStart < 0 && index > 0) {
 					tree.children.splice(0, 0, {
 						type: 'html',
-						value: '<p-slide>',
+						value: '<p-slide class="md">',
 						position: {
 							start: { line: 1, column: 1, offset: 0 },
 							end: { line: 1, column: 1, offset: 0 }
@@ -30,10 +30,12 @@ export default function slidesPlugin() {
 					});
 					index++;
 				}
+				const properties = getProperties(element.children[0].value.slice(3).trim());
+				properties.class = properties.class ? `md ${properties.class}` : 'md';
 				tree.children.splice(index, 1, {
 					type: 'html',
 					value: (index > 0 ? '</p-slide>\n' : '')
-						+ `<p-slide${serializeProperties(getProperties(element.children[0].value.slice(3).trim()))}>`,
+						+ `<p-slide${serializeProperties(properties)}>`,
 					position: element.position
 				});
 
