@@ -1,0 +1,271 @@
+<p-slide>
+	<div class="h4 center">
+		<em>What</em>
+		<br /> customizations?
+	</div>
+</p-slide>
+<p-slide>
+	<div class="redacted-layout">
+		<div class="sidebar" p-fragment="6">
+			<div class="logo">Lorem</div>
+			<ul>
+				<li>
+					<b>Section</b>
+					<ul>
+						<li>First</li>
+						<li>Second</li>
+						<li>Third</li>
+						<li>And more</li>
+					</ul>
+				</li>
+				<li>
+					<b>Other</b>
+					<ul>
+						<li>Second to last</li>
+						<li>Last</li>
+					</ul>
+				</li>
+				<li p-fragment="7">
+					<b>Addition</b>
+					<ul>
+						<li>Plus one</li>
+						<li>And two</li>
+					</ul>
+				</li>
+			</ul>
+		</div>
+		<div class="header" p-fragment="4">
+			<p>Articles</p>
+			<div class="toolbar">
+				<kbd>🔍</kbd><kbd>➕</kbd><kbd p-fragment="5">⚡</kbd>
+			</div>
+		</div>
+		<table>
+			<colgroup>
+				<col></col>
+				<col></col>
+				<col p-fragment="2" effect="column-remove"></col>
+				<col p-fragment effect="column-add"></col>
+				<col></col>
+				<col></col>
+			</colgroup>
+			<thead>
+				<tr>
+					<th><span>Id</span></th>
+					<th><span>Name</span></th>
+					<th><span>Nickname</span></th>
+					<th><span>email</span></th>
+					<th><span>Orders</span></th>
+					<th><span>Actions</span></th>
+				</tr>
+			</thead>
+			<tbody>
+				<tr>
+					<td><span>1</span></td>
+					<td><span>Leanne Graham</span></td>
+					<td><span>Bret</span></td>
+					<td><a href="mailto:Sincere@april.biz">Sincere@april.biz</a></td>
+					<td><span>92998</span></td>
+					<td><span><kbd>✏️</kbd><kbd p-fragment="3">❌</kbd></span></td>
+				</tr>
+				<tr>
+					<td><span>2</span></td>
+					<td><span>Ervin Howell</span></td>
+					<td><span>Antonette</span></td>
+					<td><a href="mailto:Shanna@melissa.tv">Shanna@melissa.tv</a></td>
+					<td><span>90566</span></td>
+					<td><span><kbd>✏️</kbd><kbd p-fragment="3">❌</kbd></span></td>
+				</tr>
+				<tr>
+					<td><span>3</span></td>
+					<td><span>Clementine Bauch</span></td>
+					<td><span>Samantha</span></td>
+					<td><a href="mailto:Nathan@yesenia.net">Nathan@yesenia.net</a></td>
+					<td><span>59590</span></td>
+					<td><span><kbd>✏️</kbd></span></td>
+				</tr>
+				<tr>
+					<td><span>4</span></td>
+					<td><span>Patricia Lebsack</span></td>
+					<td><span>Karianne</span></td>
+					<td><a href="mailto:Julianne.OConner@kory.org">Julianne.OConner@kory.org</a></td>
+					<td><span>53919</span></td>
+					<td><span><kbd p-fragment="3">❌</kbd></span></td>
+				</tr>
+				<tr>
+					<td><span>5</span></td>
+					<td><span>Chelsey Dietrich</span></td>
+					<td><span>Kamren</span></td>
+					<td><a href="mailto:Lucio_Hettinger@annie.ca">Lucio_Hettinger@annie.ca</a></td>
+					<td><span>33263</span></td>
+					<td><span><kbd style="visibility: hidden">✏️</kbd></span></td>
+				</tr>
+				<tr>
+					<td><span>6</span></td>
+					<td><span>Mrs. Dennis Schulist</span></td>
+					<td><span>Leopoldo_Corkery</span></td>
+					<td><a href="mailto:Karley_Dach@jasper.info">Karley_Dach@jasper.info</a></td>
+					<td><span>23505</span></td>
+					<td><span><kbd>✏️</kbd><kbd p-fragment="3">❌</kbd></span></td>
+				</tr>
+				<tr>
+					<td><span>7</span></td>
+					<td><span>Kurtis Weissnat</span></td>
+					<td><span>Elwyn.Skiles</span></td>
+					<td><a href="mailto:Telly.Hoeger@billy.biz">Telly.Hoeger@billy.biz</a></td>
+					<td><span>58804</span></td>
+					<td><span><kbd>✏️</kbd></span></td>
+				</tr>
+				<tr>
+					<td><span>8</span></td>
+					<td><span>Nicholas Runolfsdottir V</span></td>
+					<td><span>Maxime_Nienow</span></td>
+					<td><a href="mailto:Sherwood@rosamond.me">Sherwood@rosamond.me</a></td>
+					<td><span>45169</span></td>
+					<td><span><kbd>✏️</kbd><kbd p-fragment="3">❌</kbd></span></td>
+				</tr>
+			</tbody>
+		</table>
+	</div>
+</p-slide>
+<style lang="scss">
+	@use 'sass:list';
+  .redacted-layout {
+		font-family: 'Redacted Script';
+		margin: auto;
+		display: grid;
+		grid-template: auto auto / auto auto;
+		--border-color: color-mix(in srgb, currentColor, white);
+
+		table {
+			table-layout: fixed;
+			width: min-content;
+			align-self: center;
+			border-collapse: collapse;
+			font-size: 50%;
+			white-space: nowrap;
+			margin: .5em;
+		}
+		th, td {
+			text-align: start;
+			padding: 0;
+			overflow: hidden;
+			border: 0px solid var(--border-color);
+			
+			&:not(:first-child) {
+				border-inline-start-width: .125em;
+			}
+			
+			> * {
+				display: block;
+				padding: .25em .5em;
+				overflow: hidden;
+				width: 100%;
+			}
+		}
+		th {
+			border-bottom-width: .25em;
+		}
+		:not(:last-child) > td {
+			border-bottom-width: .125em;    
+		}
+
+		[effect='column-add'] {
+			width: 0;
+		}
+
+		$col-widths: (2.38, 12.57, 9.2, 12.62, 4.61, 4.63);
+		@for $index from 1 through list.length($col-widths) {
+			$width: list.nth($col-widths, $index);
+			col:nth-child(#{$index}) {
+				width: $width * 1em;
+			}
+		}
+		[effect^="column"] {
+			transition: width calc(var(--fragment-duration) * 4) var(--bounce),
+				background-color calc(var(--fragment-duration) * 2) linear(0, 1 5%, 0);
+		}
+		[effect='column-add'] {
+			transition-timing-function: var(--bounce), linear(0, 1 95%, 0);
+			&[aria-hidden='true'] {
+				width: 0;
+				background-color: green;
+			}
+		}
+		[effect='column-remove'][aria-hidden='false'] {
+			width: 0;
+			background-color: red;
+		}
+		.header {
+			transition: height var(--fragment-duration);
+			height: 0;
+			overflow: hidden;
+			background: #dc087d30;
+			box-shadow: inset 0 -.05em 0 var(--border-color);
+			padding: 0 .25em;
+	
+			&[aria-hidden='false'] {
+				height: 2lh;
+			}
+	
+			.toolbar {
+				text-align: end;
+			}
+
+			kbd {
+				font-size: 60%;
+			}
+		}
+		kbd {
+			overflow: hidden;
+			transition: var(--fragment-duration) var(--bounce);
+			transition-property: width, margin;
+			display: inline-block;
+			text-align: center;
+			width: 1.5em;
+			background: white;
+			border-radius: .25em;
+			margin-inline: .1em;
+			&[aria-hidden='true'] {
+				width: 0;
+				margin: 0;
+			}
+		}
+		.sidebar {
+			overflow: hidden;
+			transition: width var(--fragment-duration) var(--bounce);
+			width: 0;
+			font-size: 50%;
+			grid-area: 1 / 1 / 3 / 2;
+			background-color: #6c00f530;
+			box-shadow: inset -.05em 0 0 var(--border-color);
+			display: grid;
+    	grid-template-rows: subgrid;
+
+			&[aria-hidden='false'] {
+				width: 7em;
+			}
+
+		}
+		ul {
+			list-style-type: none;
+			padding-inline-start: .5em;
+			margin: .25em 0;
+		}
+		li[p-fragment] {
+			transition: transform var(--fragment-duration) var(--bounce);
+			transform: translateX(-100%);
+			&[aria-hidden='false'] {
+				transform: translateX(0);
+			}
+		}
+		.logo {
+			display: flex;
+			align-items: center;
+			padding-inline-start: 2em;
+			font-size: 1.5em;
+			font-weight: bold;
+			background: radial-gradient(circle at 1em 50%, #e40035 0.75em, transparent 0);
+		}
+  }
+</style>

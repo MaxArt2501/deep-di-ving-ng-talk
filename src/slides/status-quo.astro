@@ -15,7 +15,8 @@
 	<p-fragment class="second appendage"><!--- ... and then a second... --></p-fragment>
 </p-slide>
 <p-slide class="no-padding align-center justify-end" effect="fade">
-	<!--- And now it's become something like this: a prickly, unmanageable giant. Hard to trim down without pain and suffering. -->
+	<!--- And now it's become something like this: a big, unmanageable log, with thorns, and branches... with more thorns.
+		Hard to trim down without pain and suffering. -->
 	<!--- But it's just a visual metaphor. What did *actually* happen, technically speaking? -->
   <img src="../img/saguaro-red.webp" alt="An Angular-red saguaro" class="saguaro">
 </p-slide>
@@ -38,15 +39,15 @@
 		<path d="M50,70a30,30 0 0 0 30,-30v-23" class="branch" p-fragment="1"></path>
 		<path d="M50,80a30,30 0 0 1-30,-30v-16-17" class="branch" p-fragment="1"></path>
 		<path d="M50,40a15,15 0 0 1-15,-15v-8" class="branch" p-fragment="1"></path>
-		<path d="M50,100v-5-20-20-20-16"></path>
+		<path d="M50,100v-5-20-20-20-16" class="commits" p-fragment="2.5"></path>
 		<text x="-15" y="15" p-fragment="2">client/wasser-gmbh<!--- one for each client with their own customizations --></text>
 		<text x="-15" y="30" p-fragment="2">client/rossi_srl</text>
 		<text x="-15" y="60" p-fragment="2">client/acme</text>
 		<text x="-15" y="75" p-fragment="2">client/smith_co</text>
-		<path d="M50,70c0,-10 -20,-5 -30,-15" class="merge" p-fragment="3"></path>
-		<path d="M50,50c0,-10 -20,0 -30,-10" class="merge" p-fragment="4"></path>
+		<path d="M50,70c0,-10 -20,-5 -30,-15" class="merge" p-fragment="3"><!--- ... and they had to merge new features, bugfixes --></path>
+		<path d="M50,50c0,-10 -20,0 -30,-10" class="merge" p-fragment="4"><!--- ... synchronize dependency versions --></path>
 		<path d="M50,50c0,-10 20,-5 30,-15" class="merge" p-fragment="4"></path>
-		<path d="M50,30c0,-10 -20,0 -30,-10" class="merge" p-fragment="5"></path>
+		<path d="M50,30c0,-10 -20,0 -30,-10" class="merge" p-fragment="5"><!--- ... and it all became harder and harder --></path>
 		<path d="M50,30c0,-7 -12,-5 -15,-10" class="merge" p-fragment="5"></path>
 		<path d="M50,30c0,-7 12,-5 15,-10" class="merge" p-fragment="5"></path>
 		<path d="M50,30c0,-10 20,0 30,-10" class="merge" p-fragment="5"></path>
@@ -189,8 +190,6 @@
 		> path {
 			stroke-width: 6px;
 			fill: none;
-			marker-end: url(#commit);
-			marker-mid: url(#commit);
 
 			&.branch {
 				stroke-dasharray: 0px 80.2px;
@@ -205,6 +204,11 @@
 				marker-mid: none;
 				stroke: #8E0022;
 			}
+			&.commits,
+			&:not(.merge):has(~ .commits[aria-hidden='false']) {
+				marker-end: url(#commit);
+				marker-mid: url(#commit);
+			}
 		}
 		text {
 			font-family: 'Courier New', Courier, monospace;
@@ -215,7 +219,6 @@
 		text:not(:first-of-type) {
 			transform: rotate(-90deg);
 			text-anchor: end;
-
 		}
 	}
 </style>

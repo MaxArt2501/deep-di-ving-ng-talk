@@ -10,7 +10,7 @@
 	.s#{$level}\.5 {
 		font-size: $level * 1em + 0.5em;
 	}
-	.s\.#{$level} {
+	.s0#{$level} {
 		font-size: $level * 0.1em;
 	}
 }
@@ -44,6 +44,9 @@
 
 .bold {
 	font-weight: bold;
+}
+.italic {
+	font-style: italic;
 }
 
 .no-margins {
