@@ -182,11 +182,11 @@
 			}
 		}
 		[effect^="column"] {
-			transition: width calc(var(--fragment-duration) * 4) var(--bounce),
+			transition: width calc(var(--fragment-duration) * 4) var(--overshoot),
 				background-color calc(var(--fragment-duration) * 2) linear(0, 1 5%, 0);
 		}
 		[effect='column-add'] {
-			transition-timing-function: var(--bounce), linear(0, 1 95%, 0);
+			transition-timing-function: var(--overshoot), linear(0, 1 95%, 0);
 			&[aria-hidden='true'] {
 				width: 0;
 				background-color: green;
@@ -218,7 +218,7 @@
 		}
 		kbd {
 			overflow: hidden;
-			transition: var(--fragment-duration) var(--bounce);
+			transition: var(--fragment-duration) var(--overshoot);
 			transition-property: width, margin;
 			display: inline-block;
 			text-align: center;
@@ -233,7 +233,7 @@
 		}
 		.sidebar {
 			overflow: hidden;
-			transition: width var(--fragment-duration) var(--bounce);
+			transition: width var(--fragment-duration) var(--overshoot);
 			width: 0;
 			font-size: 50%;
 			grid-area: 1 / 1 / 3 / 2;
@@ -253,7 +253,7 @@
 			margin: .25em 0;
 		}
 		li[p-fragment] {
-			transition: transform var(--fragment-duration) var(--bounce);
+			transition: transform var(--fragment-duration) var(--overshoot);
 			transform: translateX(-100%);
 			&[aria-hidden='false'] {
 				transform: translateX(0);

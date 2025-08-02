@@ -1,0 +1,254 @@
+<p-slide>
+	<svg viewBox="0 0 100 100" class="git-tree">
+		<line x1="50" x2="50" y1="100" y2="18"></line>
+		<text x="50" y="10">develop</text>
+		<g class="to-left" p-fragment="0">
+			<path transform="translate(20,17)" d="M0,0v33a30,30 0 0 0 30,30" class="branch"></path>
+			<text x="-15" y="15">client/wasser-gmbh</text>
+			<path transform="translate(35,17)" d="M0,0v8a15,15 0 0 0 15,15" class="branch"></path>
+			<text x="-15" y="30">client/rossi_srl</text>
+		</g>
+		<g class="to-right" p-fragment="0">
+			<path transform="translate(65,17)" d="M0,0v18a15,15 0 0 1-15,15" class="branch"></path>
+			<text x="-15" y="60">client/acme</text>
+			<path transform="translate(80,17)" d="M0,0v23a30,30 0 0 1-30,30" class="branch"></path>
+			<text x="-15" y="75">client/smith_co</text>
+		</g>
+		<path d="M50,100v-5-20-20-20-16" class="commits"></path>
+	</svg>
+</p-slide>
+<p-slide>
+	<svg viewBox="0 0 100 100">
+		<symbol id="package" viewBox="0 0 8 8">
+			<path d="M4,4l4-2 0,4-4,2" fill="color-mix(in srgb, currentColor, black 30%)"/>
+			<path d="M0,2l4,2 0,4-4-2M5.5,3.25v4l1-.5v-4" fill="color-mix(in srgb, currentColor, black 20%)"/>
+			<path d="M4,0l4,2-4,2-1.5-.75 0,4-1-.5 0-4-1.5-.75" fill="currentColor"/>
+			<path d="M2.5,.75l1.5,.75 1.5-.75 1,.5-1.5.75 1.5.75-1,.5-1.5-.75-1.5.75-1-.5 1.5-.75-1.5-.75" fill="color-mix(in srgb, currentColor, white 50%)"/>
+		</symbol>
+		<g class="package core" p-fragment>
+			<use href="#package" width="40" height="40" style="color: rgb(207, 144, 238)" />
+			<g transform="translate(2.5 16.25) scale(.75 1) skewY(21)">
+				<rect width="20" height="10" rx="1" fill="white"/>
+				<text x="10" y="5">core</text>
+			</g>
+		</g>
+		<g class="package client" p-fragment>
+			<use href="#package" width="24" height="24" style="color: tan" />
+			<g transform="translate(1.5 9.75) scale(.75 1) skewY(21)">
+				<rect width="12" height="6" rx=".5" fill="white"/>
+				<text x="6" y="3" style="font-size: 3px">client</text>
+			</g>
+		</g>
+		<path d="M44,50l8-4v3h20v2h-20v3" p-fragment><!---
+			In order to be a customization package, it should bring something custom to the core app. What are those things?
+		--></path>
+		<text x="58" y="75" p-fragment>Components</text>
+		<text x="58" y="83" p-fragment>Services</text>
+		<path d="M48,69l20,20m0-20l-20,20" fill="none" stroke="red" stroke-width="5" p-fragment><!---
+			The core app doesn't "know" how to use those components and services, because
+		--></path>
+	</svg>
+	<p-fragment id="focus"><!--- the core app is meant to be *agnostic* --></p-fragment>
+</p-slide>
+<p-slide>
+	<svg viewBox="0 0 100 100">
+		<g class="package core" transform="translate(0, 30)">
+			<use href="#package" width="40" height="40" style="color: rgb(207, 144, 238)" />
+			<g transform="translate(2.5 16.25) scale(.75 1) skewY(21)">
+				<rect width="20" height="10" rx="1" fill="white"/>
+				<text x="10" y="5">core</text>
+			</g>
+		</g>
+		<g class="package client" transform="translate(76, 38)">
+			<use href="#package" width="24" height="24" style="color: tan" />
+			<g transform="translate(1.5 9.75) scale(.75 1) skewY(21)">
+				<rect width="12" height="6" rx=".5" fill="white"/>
+				<text x="6" y="3" style="font-size: 3px">client</text>
+			</g>
+		</g>
+		<path d="M72,45l-8-4v3h-20v2h20v3" p-fragment><!---
+			So, normally, it should be the app to expose something first... to bring something *in*
+		--></path>
+		<text x="58" y="37" p-fragment>Services</text>
+		<path d="M44,55l8-4v3h20v2h-20v3" p-fragment><!--- ... and only then the customization package can signal the changes it wants --></path>
+		<text x="58" y="63" p-fragment>changes</text>
+	</svg>
+</p-slide>
+<p-slide>
+	<!--- So, what should we do? The core app shouldn't behave like a closed box... -->
+	<p-fragment id="notes">
+		<!--- ... but like a *juke* box. Meaning that it can work on its own, but its behavior can be changed from outside if we give them... -->
+		<span>🎵</span>
+		<span>🎶</span>
+		<span>🎵</span>
+	</p-fragment>
+	<svg viewBox="0 0 100 100">
+		<defs>
+			<linearGradient id="a" x2="100%" y2="50%" gradientUnits="userSpaceOnUse" spreadMethod="repeat">
+				<stop offset="0%" stop-color="#f36281"/>
+				<stop offset="20%" stop-color="#f36281"/>
+				<stop offset="20%" stop-color="#fd98ae"/>
+				<stop offset="30%" stop-color="#fd98ae"/>
+				<stop offset="30%" stop-color="#f36281"/>
+				<stop offset="55%" stop-color="#f36281"/>
+				<stop offset="55%" stop-color="#fd98ae"/>
+				<stop offset="70%" stop-color="#fd98ae"/>
+				<stop offset="70%" stop-color="#f36281"/>
+				<stop offset="80%" stop-color="#f36281"/>
+				<stop offset="80%" stop-color="#fd98ae"/>
+				<stop offset="85%" stop-color="#fd98ae"/>
+				<stop offset="85%" stop-color="#f36281"/>
+				<stop offset="95%" stop-color="#f36281"/>
+				<stop offset="95%" stop-color="#fd98ae"/>
+				<stop offset="98%" stop-color="#fd98ae"/>
+				<stop offset="98%" stop-color="#f36281"/>
+				<stop offset="100%" stop-color="#f36281"/>
+			</linearGradient>
+		</defs>
+		<g class="package core" transform="translate(0, 30)">
+			<use href="#package" width="40" height="40" style="color: rgb(207, 144, 238)" />
+			<g transform="translate(2.5 16.25) scale(.75 1) skewY(21)">
+				<rect width="20" height="10" rx="1" fill="white"/>
+				<text x="10" y="5">core</text>
+			</g>
+		</g>
+		<g class="package client" transform="translate(76, 38)">
+			<use href="#package" width="24" height="24" style="color: tan" />
+			<g transform="translate(1.5 9.75) scale(.75 1) skewY(21)">
+				<rect width="12" height="6" rx=".5" fill="white"/>
+				<text x="6" y="3" style="font-size: 3px">client</text>
+			</g>
+		</g>
+		<g id="token" transform="scale(.2) translate(290 250)" p-fragment>
+			<!--- ... tokens! Of course, not *any* token, but the token that the app expects -->
+			<!--- Now, "token" is something you've heard around when using Angular -->
+			<path fill="#DD0031" d="M-50 0v8A50 30 0 0 0 50 8V0"/>
+			<ellipse fill="#DD0031" rx="40" ry="24"/>
+			<ellipse cy="2" fill="#e61d48" rx="40" ry="24"/>
+			<path fill="#DD0031" d="M-20.016-.61v2l9.296 7.73 18.036.16 14.77-9.95v-2z"/>
+			<g fill="url(#a)">
+				<path d="m9.28-10.201-19.446-1.78-9.85 11.371 9.296 7.73 18.036.16 14.77-9.95z"/>
+				<path d="M0-30a50 30 0 0 0 0 60 50 30 0 0 0 0-60v6a40 24 0 0 1 0 48 40 24 0 0 1 0-48"/>
+			</g>
+		</g>
+		<use href="#token" style="--diff: -2px"/>
+		<use href="#token" style="--diff: -4px"/>
+		<use href="#token" style="--diff: -6px"/>
+		<use href="#token" style="--diff: -8px"/>
+		<use href="#token" style="--diff: -10px"/>
+	</svg>
+</p-slide>
+<p-slide class="align-center justify-around">
+	<div class="h3 bold">What's in a <em>token</em>?</div>
+	<div class="token-face"><span>?</span></div>
+</p-slide>
+<style lang="scss">
+	.to-left, .to-right {
+		transition: transform var(--fragment-duration);
+		opacity: 1 !important;
+
+		path {
+			transition-duration: calc(var(--fragment-duration) * 2);
+			transition-timing-function: var(--overshoot);
+			transition-property: d;
+		}
+		&[aria-hidden='false'] path {
+			d: path('M0,0v80a0,0 0 0 0 0,0');
+		}
+	}
+	.to-left[aria-hidden='false'] {
+		transform: translate(-2px, 0);
+	}
+	.to-right[aria-hidden='false'] {
+		transform: translate(2px, 0);
+	}
+	text {
+		font-family: 'Courier New', Courier, monospace;
+		font-size: 5px;
+		font-weight: bold;
+		text-anchor: middle;
+		alignment-baseline: middle;
+	}
+	.package[p-fragment] {
+		transition: transform calc(var(--fragment-duration) * 2) var(--bounce);
+		&.core {
+			transform: translate(0px, -40px);
+			&[aria-hidden='false'] {
+				transform: translate(0px, 30px);
+			}
+		}
+		&.client {
+			transform: translate(76px, -32px);
+			&[aria-hidden='false'] {
+				transform: translate(76px, 38px);
+			}
+		}
+	}
+	#focus {
+		position: absolute;
+		top: 50%;
+    left: 35.5%;
+    width: 6em;
+    height: 6em;
+    translate: -50% -50%;
+		box-shadow: 0 0 0 100vmax #0008;
+		border-radius: 100vmax;
+	}
+	#token {
+		opacity: 1;
+		transition: transform calc(var(--fragment-duration) * 2) var(--bounce);
+		transform: scale(.2) translate(290px, -40px);
+		
+		~ use {
+			transition: y calc(var(--fragment-duration) * 2) var(--bounce);
+			y: calc(var(--diff) * 10);
+		}
+		&[aria-hidden='false'] {
+			transform: scale(.2) translate(290px, 270px);
+
+			~ use {
+				y: var(--diff);
+			}
+		}
+	}
+	#notes {
+		position: absolute;
+		display: grid;
+		left: 32.5%;
+		top: 40%;
+
+		span {
+			transition: transform var(--fragment-duration);
+			grid-area: 1 / 1;
+		}
+		:nth-child(1) { transform: rotate(30deg) translateY(0em) scale(0); }
+		:nth-child(2) { transform: rotate(0deg) translate(0em, 0em) scale(0); }
+		:nth-child(3) { transform: rotate(-30deg) translateY(0em) scale(0); }
+		&[aria-hidden='false'] {
+			:nth-child(1) { transform: rotate(30deg) translateY(-3em) scale(1); }
+			:nth-child(2) { transform: rotate(0deg) translate(.2em, -3.5em) scale(1.5); }
+			:nth-child(3) { transform: rotate(-30deg) translateY(-3em) scale(1); }
+		}
+	}
+	.token-face {
+		width: 8em;
+		height: 8em;
+		border: 1em solid #DD0031;
+		border-radius: 100vmax;
+		display: grid;
+		place-items: center;
+		background-color: #dd003140;
+
+		span {
+			background: linear-gradient(to right, #dd0031 50%, #c3002f 0);
+			color: white;
+			font-size: 250%;
+			width: 1.5em;
+			height: 1.5em;
+			line-height: 1.5;
+			font-weight: bold;
+			text-align: center;
+			clip-path: polygon(50% 0, 3.45% 16.6%, 10.55% 78.15%, 50% 100%, 89.45% 78.15%, 96.55% 16.6%);
+		}
+	}
+</style>
