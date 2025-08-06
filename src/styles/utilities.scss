@@ -13,6 +13,18 @@
 	.s0#{$level} {
 		font-size: $level * 0.1em;
 	}
+	.gap-#{$level} {
+		gap: $level * 1em;
+	}
+	.gap-#{$level}\.5 {
+		gap: $level * 1em + 0.5em;
+	}
+	.gap-0#{$level} {
+		gap: $level * 0.1em;
+	}
+	[grid="#{$level}"] {
+		grid-template-columns: repeat(#{$level}, minmax(0, 1fr));
+	}
 }
 
 .center {
@@ -62,6 +74,25 @@
 	overflow: visible;
 }
 
+[flex] {
+	display: flex;
+}
+[grid] {
+	display: grid;
+	gap: 1em;
+}
+
+@each $wrap in wrap wrap-reverse {
+	[flex~="#{$wrap}"] {
+		flex-wrap: #{$wrap};
+	}
+}
+@each $direction in row column row-reverse column-reverse {
+	[flex~="#{$direction}"] {
+		flex-direction: #{$direction};
+	}
+}
+
 @supports (height: attr(h em)) {
 	[h] {
 		height: attr(h em);
@@ -76,13 +107,10 @@
 		width: attr(w type(#{'<length-percentage>'}));
 	}
 	[flex] {
-		display: flex;
 		flex-flow: attr(flex type(#{'*'}));
 	}
 	[grid] {
-		display: grid;
 		grid-template-columns: repeat(attr(grid type(#{'<integer>'})), minmax(0, 1fr));
-		gap: 1em;
 	}
 	@each $prop in top right bottom left gap {
 		[#{$prop}] {

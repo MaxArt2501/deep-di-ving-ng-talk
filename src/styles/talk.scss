@@ -16,6 +16,13 @@
   }
 }
 
+text {
+  font-family: 'Courier New', Courier, monospace;
+  font-size: 5px;
+  font-weight: bold;
+  text-anchor: middle;
+  alignment-baseline: middle;
+}
 .git-tree { 
   line, path:not(marker > path) {
     stroke: #dd0031;
@@ -37,14 +44,20 @@
       marker-mid: url(#commit);
     }
   }
-  text {
-    font-family: 'Courier New', Courier, monospace;
-    font-size: 5%;
-    font-weight: bold;
-    text-anchor: middle;
-  }
   :not(line) + text {
     transform: rotate(-90deg);
     text-anchor: end;
+    font-size: 3px;
+  }
+}
+
+:is(line, path, polyline, polygon).arrow {
+  fill: none;
+  marker-end: url('#arrow-head');
+  &.double {
+    marker-start: url('#arrow-head');
+  }
+  &:not([stroke]) {
+    stroke: #000;
   }
 }

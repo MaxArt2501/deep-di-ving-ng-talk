@@ -1,3 +1,8 @@
+---
+import { Code } from "astro/components";
+import fragmentTransformer from '../../fragment-transformer.js';
+---
+
 <p-slide>
 	<svg viewBox="0 0 100 100" class="git-tree">
 		<line x1="50" x2="50" y1="100" y2="18"></line>
@@ -19,12 +24,17 @@
 </p-slide>
 <p-slide>
 	<svg viewBox="0 0 100 100">
-		<symbol id="package" viewBox="0 0 8 8">
-			<path d="M4,4l4-2 0,4-4,2" fill="color-mix(in srgb, currentColor, black 30%)"/>
-			<path d="M0,2l4,2 0,4-4-2M5.5,3.25v4l1-.5v-4" fill="color-mix(in srgb, currentColor, black 20%)"/>
-			<path d="M4,0l4,2-4,2-1.5-.75 0,4-1-.5 0-4-1.5-.75" fill="currentColor"/>
-			<path d="M2.5,.75l1.5,.75 1.5-.75 1,.5-1.5.75 1.5.75-1,.5-1.5-.75-1.5.75-1-.5 1.5-.75-1.5-.75" fill="color-mix(in srgb, currentColor, white 50%)"/>
-		</symbol>
+		<defs>
+			<symbol id="package" viewBox="0 0 8 8">
+				<path d="M4,4l4-2 0,4-4,2" fill="color-mix(in srgb, currentColor, black 30%)"/>
+				<path d="M0,2l4,2 0,4-4-2M5.5,3.25v4l1-.5v-4" fill="color-mix(in srgb, currentColor, black 20%)"/>
+				<path d="M4,0l4,2-4,2-1.5-.75 0,4-1-.5 0-4-1.5-.75" fill="currentColor"/>
+				<path d="M2.5,.75l1.5,.75 1.5-.75 1,.5-1.5.75 1.5.75-1,.5-1.5-.75-1.5.75-1-.5 1.5-.75-1.5-.75" fill="color-mix(in srgb, currentColor, white 50%)"/>
+			</symbol>
+			<marker viewBox="0 0 6 6" refX="3" refY="3" markerWidth="3" markerHeight="3" orient="auto-start-reverse" id="arrow-head">
+				<path d="M0,0v6l6-3"></path>
+			</marker>
+		</defs>
 		<g class="package core" p-fragment>
 			<use href="#package" width="40" height="40" style="color: rgb(207, 144, 238)" />
 			<g transform="translate(2.5 16.25) scale(.75 1) skewY(21)">
@@ -39,9 +49,9 @@
 				<text x="6" y="3" style="font-size: 3px">client</text>
 			</g>
 		</g>
-		<path d="M44,50l8-4v3h20v2h-20v3" p-fragment><!---
+		<line x1="72" y1="50" x2="47" y2="50" class="arrow" stroke-width="2" p-fragment><!---
 			In order to be a customization package, it should bring something custom to the core app. What are those things?
-		--></path>
+		--></line>
 		<text x="58" y="75" p-fragment>Components</text>
 		<text x="58" y="83" p-fragment>Services</text>
 		<path d="M48,69l20,20m0-20l-20,20" fill="none" stroke="red" stroke-width="5" p-fragment><!---
@@ -52,27 +62,118 @@
 </p-slide>
 <p-slide>
 	<svg viewBox="0 0 100 100">
-		<g class="package core" transform="translate(0, 30)">
+		<g class="package core" transform="translate(0, 30)" id="core-package">
 			<use href="#package" width="40" height="40" style="color: rgb(207, 144, 238)" />
 			<g transform="translate(2.5 16.25) scale(.75 1) skewY(21)">
 				<rect width="20" height="10" rx="1" fill="white"/>
 				<text x="10" y="5">core</text>
 			</g>
 		</g>
-		<g class="package client" transform="translate(76, 38)">
+		<g class="package client" transform="translate(76, 38)" id="client-package">
 			<use href="#package" width="24" height="24" style="color: tan" />
 			<g transform="translate(1.5 9.75) scale(.75 1) skewY(21)">
 				<rect width="12" height="6" rx=".5" fill="white"/>
 				<text x="6" y="3" style="font-size: 3px">client</text>
 			</g>
 		</g>
-		<path d="M72,45l-8-4v3h-20v2h20v3" p-fragment><!---
+		<line x1="44" y1="45" x2="69" y2="45" class="arrow" stroke-width="2" p-fragment><!---
 			So, normally, it should be the app to expose something first... to bring something *in*
-		--></path>
+		--></line>
 		<text x="58" y="37" p-fragment>Services</text>
-		<path d="M44,55l8-4v3h20v2h-20v3" p-fragment><!--- ... and only then the customization package can signal the changes it wants --></path>
+		<line x1="72" y1="55" x2="47" y2="55" class="arrow" stroke-width="2" p-fragment><!--- ... and only then the customization package can signal the changes it wants --></line>
 		<text x="58" y="63" p-fragment>changes</text>
 	</svg>
+</p-slide>
+<p-slide flex="row" class="align-center gap-1">
+	<Code class="s05" lang="ts" code={`@Injectable({ providedIn: 'root' })
+class TableService {
+	current = signal<string>();
+	columns = signal<TableColumn[]>();
+	...
+}`} transformers={[fragmentTransformer]}/>
+	<Code p-fragment class="s05" lang="ts" code={`@Injectable({ providedIn: 'root' })
+class CustomTableService {
+	tables = inject(TableService);
+
+	constructor() {
+		{#1{effect(() => {
+			if (this.tables.current()
+					=== 'articles') {}#}
+				{#2{this.tables.columns.update(
+					cols => {
+						// Column update logic
+					}
+				);}#}
+			{#1{}
+		});}#}
+	}
+}`} transformers={[fragmentTransformer]}>Hello</Code>
+</p-slide>
+<p-slide flex="row" class="align-center gap-1">
+	<Code class="s05" lang="ts" code={`@Injectable({ providedIn: 'root' })
+class TableService {
+	current = signal<string>();
+	#columns = signal<TableColumn[]>();
+
+	{#{updateColumns(cols: TableColumn[]) {
+		// Column update logic
+	}}#}
+}`} transformers={[fragmentTransformer]}/>
+	<Code p-fragment class="s05" lang="ts" code={`@Injectable({ providedIn: 'root' })
+class CustomTableService {
+	tables = inject(TableService);
+
+	constructor() {
+		{#{effect(() => {
+			if (this.tables.current()
+					=== 'articles') {
+				this.tables.updateColumns([
+					...
+				]);
+			}
+		});}#}
+	}
+}`} transformers={[fragmentTransformer]}>Hello</Code>
+</p-slide>
+<p-slide>
+	<svg viewBox="0 15 140 40">
+		<use href="#core-package" transform="scale(.25) translate(160 30)" />
+		<text x="70" y="20">TableService</text>
+		<line x1="70" y1="24" x2="90" y2="40" class="arrow" stroke-width="1.5" p-fragment="0"></line>
+		<use href="#client-package" transform="scale(.416667) translate(95 58)" p-fragment="0"/>
+		<text x="110" y="45" p-fragment="0">CustomTableService</text>
+		<line x2="80" y2="24" x1="100" y1="40" class="arrow" stroke-width="1.5" p-fragment></line>
+		<line x1="60" y1="24" x2="40" y2="40" class="arrow" stroke-width="1.5" p-fragment="2"></line>
+		<use href="#core-package" transform="scale(.25) translate(30 130)" p-fragment="2" />
+		<text x="40" y="45" p-fragment="2">TableComponent<!---
+			Finally we report the update to the table component. It's quite some back-and-forth for a task behind a relatively simple concept
+		--></text>
+	</svg>
+	<div flex class="self-center align-center gap-1 s08" p-fragment>
+		Repeat for:
+		<ul class="no-margins">
+			<li>actions</li>
+			<li>toolbar</li>
+			<li>sidenav</li>
+			<li>widgets</li>
+			<li>&hellip;</li>
+		</ul>
+		<!--- All in all, it's a little too verbose. Remember we're aiming for DX -->
+	</div>
+</p-slide>
+<p-slide>
+	<div class="h3 center bold">What we need</div>
+	<ul class="self-center">
+		<li p-fragment>One-shot definition of <b>changes</b>&hellip;</li>
+		<li p-fragment>&hellip; possibily <b>dependent on services</b>&hellip;</li>
+		<li p-fragment>&hellip; collected and <b>applied by the core</b> app&hellip;</li>
+		<li p-fragment>&hellip; in <b>its own life cycle</b>&hellip;</li>
+		<li p-fragment>&hellip; and more.</li>
+	</ul>
+</p-slide>
+<p-slide class="align-center justify-around">
+	<div class="h3 bold center">Make a <em>token</em> out of them</div>
+	<div class="token-face" p-fragment><span>?</span></div>
 </p-slide>
 <p-slide>
 	<!--- So, what should we do? The core app shouldn't behave like a closed box... -->
@@ -84,24 +185,10 @@
 	</p-fragment>
 	<svg viewBox="0 0 100 100">
 		<defs>
-			<linearGradient id="a" x2="100%" y2="50%" gradientUnits="userSpaceOnUse" spreadMethod="repeat">
-				<stop offset="0%" stop-color="#f36281"/>
-				<stop offset="20%" stop-color="#f36281"/>
-				<stop offset="20%" stop-color="#fd98ae"/>
-				<stop offset="30%" stop-color="#fd98ae"/>
-				<stop offset="30%" stop-color="#f36281"/>
-				<stop offset="55%" stop-color="#f36281"/>
-				<stop offset="55%" stop-color="#fd98ae"/>
-				<stop offset="70%" stop-color="#fd98ae"/>
-				<stop offset="70%" stop-color="#f36281"/>
-				<stop offset="80%" stop-color="#f36281"/>
-				<stop offset="80%" stop-color="#fd98ae"/>
-				<stop offset="85%" stop-color="#fd98ae"/>
-				<stop offset="85%" stop-color="#f36281"/>
-				<stop offset="95%" stop-color="#f36281"/>
-				<stop offset="95%" stop-color="#fd98ae"/>
-				<stop offset="98%" stop-color="#fd98ae"/>
-				<stop offset="98%" stop-color="#f36281"/>
+			<linearGradient id="a" x2="120%" y2="60%">
+				<stop offset="0%" stop-color="#fd98ae"/>
+				<stop offset="50%" stop-color="#fd98ae"/>
+				<stop offset="50%" stop-color="#f36281"/>
 				<stop offset="100%" stop-color="#f36281"/>
 			</linearGradient>
 		</defs>
@@ -119,28 +206,48 @@
 				<text x="6" y="3" style="font-size: 3px">client</text>
 			</g>
 		</g>
-		<g id="token" transform="scale(.2) translate(290 250)" p-fragment>
+		<g id="token" p-fragment="1">
 			<!--- ... tokens! Of course, not *any* token, but the token that the app expects -->
 			<!--- Now, "token" is something you've heard around when using Angular -->
-			<path fill="#DD0031" d="M-50 0v8A50 30 0 0 0 50 8V0"/>
-			<ellipse fill="#DD0031" rx="40" ry="24"/>
-			<ellipse cy="2" fill="#e61d48" rx="40" ry="24"/>
-			<path fill="#DD0031" d="M-20.016-.61v2l9.296 7.73 18.036.16 14.77-9.95v-2z"/>
+			<path fill="#e5c100" d="M-50 0v8A50 30 0 0 0 50 8V0A50 30 0 0 0-50 0"/>
+			<ellipse fill="#b69900" rx="40" ry="24"/>
+			<ellipse cy="2" fill="#e5c100" rx="40" ry="24"/>
+			<path fill="#b69900" d="M-20.016-.61v2l9.296 7.73 18.036.16 14.77-9.95v-2z"/>
+			<path fill="gold" d="M0-30a50 30 0 0 0 0 60 50 30 0 0 0 0-60v6a40 24 0 0 1 0 48 40 24 0 0 1 0-48"/>
 			<g fill="url(#a)">
 				<path d="m9.28-10.201-19.446-1.78-9.85 11.371 9.296 7.73 18.036.16 14.77-9.95z"/>
-				<path d="M0-30a50 30 0 0 0 0 60 50 30 0 0 0 0-60v6a40 24 0 0 1 0 48 40 24 0 0 1 0-48"/>
 			</g>
 		</g>
-		<use href="#token" style="--diff: -2px"/>
-		<use href="#token" style="--diff: -4px"/>
-		<use href="#token" style="--diff: -6px"/>
-		<use href="#token" style="--diff: -8px"/>
-		<use href="#token" style="--diff: -10px"/>
+		<use href="#token" style="--diff: -2"/>
+		<use href="#token" style="--diff: -4"/>
+		<use href="#token" style="--diff: -6"/>
+		<use href="#token" style="--diff: -8"/>
+		<use href="#token" style="--diff: -10"/>
+		<line x1="72" y1="50" x2="47" y2="50" class="arrow" stroke-width="2" p-fragment="1"/>
 	</svg>
 </p-slide>
-<p-slide class="align-center justify-around">
-	<div class="h3 bold">What's in a <em>token</em>?</div>
-	<div class="token-face"><span>?</span></div>
+<p-slide>
+	<!--- So, what's going to be the piggy bank for our tokens? -->
+	<svg viewBox="0 -800 2987 3352" id="piggy-bank">
+		<path fill="#fd98ae" d="M1882.8 409.82c-4.3.04-8-3.2-12-4.67-261.2-119.77-567.7-131.42-839.6-41.11L890.64 132.591c323.52-113.624 685.2-115.391 1009.439-3.696Z"/>
+		<path fill="#c3002f" d="M1376.5 209.46c172.1-3.51 345.5 26.87 505.1 92.01 3.7 35.39.3 72.56 1.2 108.35-4.3.04-8-3.2-12-4.67-261.2-119.77-567.7-131.42-839.6-41.11-2.8-30.68-.4-62.04-1.2-92.97 1.3-3.68-1.4-10.3 5.1-10.02 110.7-32.85 226.1-49.3 341.4-51.59z"/>
+		<g id="token-front" p-fragment>
+			<!--- At first, we thought of building one. But then we thought, that actually we already had one! -->
+			<circle cx="1450" cy="0" r="300" fill="gold"/>
+			<circle cx="1450" cy="0" r="250" fill="#e5c100"/>
+			<path fill="#DD0031" d="M1450,-100l-93.1,33.2l14.2,123.1l78.9,43.7l78.9,-43.7l14.2,-123.1z"/>
+		</g>
+		<use href="#token-front" style="--diff: 1"/>
+		<use href="#token-front" style="--diff: 2"/>
+		<use href="#token-front" style="--diff: 3"/>
+		<use href="#token-front" style="--diff: 4"/>
+		<use href="#token-front" style="--diff: 5"/>
+		<path fill="#fd98ae" d="M586.456 11.462c-39.032-.136-78.072 5.544-115.488 17.497 57.744 83.872 83.752 190.128 66.792 290.736-125.88 94.912-233.952 215.096-307.088 355.328-40.905-4.512-85.072-5.304-122.705 13.952-51.077 23.832-86.799 76.16-91.934 132.144-.085 168.24.037 336.56-.073 504.8 1.29 85.2 79.91 159.52 164.999 156.08 20.76 2.08 41.96-2.4 62.08-3.36 36.688 64.24 79.256 125.68 129.072 180.32 130.04 146.48 299.568 254.72 481.248 325.76-4.56 51.52-2.32 105.84-1.36 158.32 8.24 99.28 92.8 185.04 191.84 195.04 106 13.84 212.64-63.2 235.12-167.12 7.76-29.36 5.76-59.92 6.16-89.92 98.56 7.04 197.52 3.6 295.84-6 .8 27.44-1.92 55.12 2.64 82.32 14.32 92 93.44 168.72 185.84 180.16 81.6 11.52 166.64-29.12 210.48-98.56 23.92-36.56 35.52-80.48 35.12-123.92-.72-51.52 3.28-103.92-7.84-154.56 196.96-87.6 377.28-221.92 500.64-400.64 121.28-172.24 180.32-388.96 153.12-598.72 64 4.4 131.28-6.16 186-41.12 42.96-26.56 75.44-67.84 95.12-113.92 22.48-54.744 34.8-115.392 25.12-174.328-6.96-44.328-28.4-86.912-62.24-116.704-58.56-52.92-151.04-70.888-222.16-33.216-47.52 24.304-71.36 83.24-57.84 134.128 5.84 7.056 12.4 16.68 20.64 19.864 13.2-19.864 22.72-43.16 42.16-58.08 19.76-16.816 45.92-31.552 72.8-25.512 21.12 5.64 35.92 23.928 43.6 43.568 16.32 43.064 13.6 94.76-11.2 134.152-18.72 31.504-57.52 47.456-93.2 42.28-36.56-3.416-70.48-19.68-101.28-38.704-47.28-108.488-115.84-210.168-198.56-293.096-137.2-142.912-313.04-246.632-499.84-311.536L1882.8 409.82c-4.3.04-8-3.2-12-4.67-261.2-119.77-567.7-131.42-839.6-41.11L890.64 132.591c-4.8.608-9.84 5.704-14.8 3.784-73.6-79.69-181.472-124.536-289.384-124.912Z"/>
+		<path fill="#f36281" d="M2399.9 440.43c82.7 82.93 151.3 184.61 198.6 293.1 30.8 19.02 64.7 35.29 101.3 38.7 35.7 5.18 74.5-10.77 93.2-42.28 24.7-39.39 27.5-91.09 11.2-134.15-7.7-19.64-22.5-37.93-43.6-43.57-26.9-6.04-53.1 8.7-72.8 25.51-19.4 14.92-29 38.22-42.2 58.08-8.3-3.18-14.8-12.8-20.6-19.86-13.6-50.89 10.3-109.82 57.8-134.13 71.1-37.67 163.6-19.7 222.2 33.22 33.8 29.79 55.2 72.37 62.2 116.7 9.7 58.94-2.6 119.59-25.2 174.31-19.6 46.12-52.1 87.4-95 113.91-54.8 34.99-122 45.53-186 41.19 27.1 209.74-31.9 426.44-153.2 598.64-123.3 178.8-303.6 313.1-500.6 400.7 11.2 50.6 7.2 103 7.8 154.5.5 43.5-11.2 87.4-35.1 123.9-43.8 69.5-128.9 110.1-210.5 98.7-92.3-11.5-171.5-88.3-185.8-180.3-4.5-27.2-1.8-54.8-2.7-82.3-98.3 9.6-197.3 13.1-295.8 6-.3 30 1.6 60.6-6.1 90-22.5 103.8-129.2 180.9-235.1 167.1-99.12-10.1-183.65-95.8-191.9-195.1-.96-52.4-3.24-106.8 1.37-158.3-181.69-71-351.22-179.3-481.26-325.8 214.8 96.7 455.79 128.6 689.29 104.5 227.6-22.6 449.7-93.8 649.6-204.4 127.6-71.2 247-158.2 350-262 115.2-115.2 211.5-251.2 272-403.02 57.9-143.03 81.8-299.83 66.9-453.55z"/>
+		<path fill="#dd0031" d="M534.64 608.38c18.29-2.93 28.77 17.11 34.81 31.17 18.88 50.82 20.07 107.07 11.19 160.09-5.38 24.11-11.4 51.11-31.68 67.36-13.74 8.96-29.13-3.47-35.25-15.71-19.67-34.55-21.64-75.59-23.81-114.31 1.43-34.28 4.59-69.52 18.91-101.18 5.63-11.16 12.7-24.17 25.83-27.42z"/>
+		<path fill="#DD0031" d="M1500,400l-698.25,249l106.5,923.25l591.75,327.75l591.75,-327.75l106.5,-923.25z" p-fragment="1"/>
+		<text x="1500" y="1200" p-fragment="1"><!--- ... and it was Angular's Dependency Injection system! -->DI</text>
+	</svg>
 </p-slide>
 <style lang="scss">
 	.to-left, .to-right {
@@ -161,13 +268,6 @@
 	}
 	.to-right[aria-hidden='false'] {
 		transform: translate(2px, 0);
-	}
-	text {
-		font-family: 'Courier New', Courier, monospace;
-		font-size: 5px;
-		font-weight: bold;
-		text-anchor: middle;
-		alignment-baseline: middle;
 	}
 	.package[p-fragment] {
 		transition: transform calc(var(--fragment-duration) * 2) var(--bounce);
@@ -201,14 +301,43 @@
 		
 		~ use {
 			transition: y calc(var(--fragment-duration) * 2) var(--bounce);
-			y: calc(var(--diff) * 10);
+			y: calc(var(--diff) * 10px);
 		}
 		&[aria-hidden='false'] {
-			transform: scale(.2) translate(290px, 270px);
+			transform: scale(.2) translate(290px, 200px);
 
 			~ use {
 				y: var(--diff);
 			}
+		}
+	}
+	#token-front { 
+		opacity: 1;
+		transition-property: transform;
+		transform: translate(0, -1100px);
+		
+		&, ~ use {
+			transition-timing-function: ease-in;
+			transition-duration: calc(var(--fragment-duration) * 1.5);
+		}
+		~ use {
+			y: -1720px;
+			transition-property: y;
+			transition-delay: calc(var(--fragment-duration) * var(--diff) * 1);
+		}
+
+		&[aria-hidden='false'] {
+			transform: translate(0, 620px);
+			~ use {
+				y: 0px;
+			}
+		}
+	}
+	#piggy-bank {
+		text {
+			fill: white;
+			font-family: revert;
+			font-size: 1000px;
 		}
 	}
 	#notes {
