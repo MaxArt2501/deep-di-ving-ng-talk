@@ -131,7 +131,10 @@ deck.addEventListener('p-slides.fragmenttoggle', () => {
 uiButtons.goBackward[0].addEventListener('click', () => deck.previous());
 uiButtons.goForward[0].addEventListener('click', () => deck.next());
 
-['presentation', 'speaker', 'grid'].forEach(mode => uiButtons[`${mode}Mode`][0].addEventListener('click', () => (deck.mode = mode)));
+['presentation', 'speaker', 'grid'].forEach(mode => uiButtons[`${mode}Mode`][0].addEventListener('click', () => {
+	deck.mode = mode;
+	changeHash(deck.currentSlide);
+}));
 
 uiButtons.fullscreenMode[0].addEventListener('click', () => {
 	if (document.fullscreenElement) {
