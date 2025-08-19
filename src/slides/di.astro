@@ -1,0 +1,330 @@
+---
+import Code from '../components/Code.astro';
+import SvgCode from '../components/SvgCode.astro';
+---
+
+<p-slide>
+	<div class="h3 center bold">Dependency Injection</div>
+	<div class="h5 center">in short</div>
+</p-slide>
+<p-slide>
+	<Code code={`class MyComponent {
+	{#reveal{router = inject(Router);}#}
+	{#reveal{host = inject(ElementRef);}#}
+	{#reveal{locale = inject(LOCALE_ID);}#}
+}`}/>
+	<!--- Many Angular developers have used the DI system like this: with the inject function that provides a service -->
+	<!--- Legacy injection used the constructor parameters, but I'm glad that now we have something that resembles dark magic a little less and JavaScript a little more -->
+	<!--- Since we're talking about a fairly recent app, and because it's 2025, we're going to use just use inject -->
+	<!--- But injection can work not just for services, but also specific values that can change from component to component -->
+	<!--- And even some weird all-caps constant out of nowhere? How does it work? -->
+</p-slide>
+<p-slide>
+	<div class="h2 bold center">Provide <em>where</em>?</div>
+	<div class="self-center s05" grid="2">
+		<Code lang="ts" code={`bootstrapApplication(App, {
+	providers: [...]
+})`} p-fragment />
+		<Code lang="ts" code={`@NgModule({
+	providers: [...]
+})
+class FruitModule {}`} p-fragment />
+		<Code lang="ts" code={`@Component({
+	providers: [...]
+})
+class FruitList {}`} p-fragment />
+		<Code lang="ts" code={`const routes: Routes = [
+	{
+		path: 'fruits',
+		loadComponent: () => import(...),
+		providers: [...]
+	},
+	...
+];`} p-fragment />
+	</div>
+</p-slide>
+<p-slide>
+	<div class="h2 bold center">Provide <em>how</em>?</div>
+	<!--- But how are those tokens actually "provided" in this system? -->
+	<div class="self-center s05" grid="2">
+		<Code p-fragment lang="ts" code={`provideRouter(routes),
+provideHttpClient(),
+provideMyNonnaInACart()`}/>
+		<Code p-fragment lang="ts" code={`HopefullyLocalService,
+ShouldUseProvidedInService`}/>
+		<Code p-fragment lang="ts" code={`{
+	provide: SugarService,
+	useClass: SugarService
+}`}/>
+		<Code p-fragment lang="ts" code={`{
+	provide: LOCALE_ID,
+	useValue: 'it-IT'
+}`}/>
+		<Code p-fragment lang="ts" code={`{
+	provide: GRANDMA_TITLE,
+	useFactory: l => l?.startsWith('it')
+		? 'nonna' : 'granma',
+	deps: [[new Optional(), LOCALE_ID]]
+}`}/>
+		<Code p-fragment lang="ts" code={`{
+	provide: NG_VALUE_ACCESSOR,
+	useExisting: InputComponent,
+	multi: true
+}`}/>
+	</div>
+</p-slide>
+<p-slide>
+	<!--- Let's start with the source of all those values, which is the Injector. But it's not the usual singleton service -->
+	<svg viewBox="-20 0 120 100" id="injectors">
+		<defs>
+			<marker viewBox="-4 -4 8 8" refX="0" refY="0" markerWidth="1.5" markerHeight="1.5" id="skull">
+				<circle r="4" fill="#444"/>
+				<text y="0.8">💀</text>
+			</marker>
+		</defs>
+		<text y="50"><tspan x="28" dy="-.4em" p-fragment="2"><!---
+			And things are even more complex since we have a distinction between Element injectors and Environment injectors, although functionally they're quite similar
+		-->Element</tspan><tspan x="28" dy=".8em">Injector</tspan></text>
+		<text y="50" p-fragment="0" style="--diff: -2"><tspan x="28" dy="-.4em" p-fragment="2">Element</tspan><tspan x="28" dy=".8em">Injector</tspan></text>
+		<text y="50" p-fragment="0" style="--diff: -1"><tspan x="28" dy="-.4em" p-fragment="2">Element</tspan><tspan x="28" dy=".8em">Injector</tspan></text>
+		<text y="50" p-fragment="0" style="--diff: 1"><tspan x="28" dy="-.4em" p-fragment="2">Environment</tspan><tspan x="28" dy=".8em">Injector</tspan></text>
+		<text y="50" p-fragment="0" style="--diff: 2"><tspan x="28" dy="-.4em" p-fragment="2">Environment</tspan><tspan x="28" dy=".8em">Injector</tspan></text>
+		<path p-fragment="1" d="M20,30s0-10 0-20"><!--- And even more than that, it's not a linear hierarchy, but rather a hierarchical *tree* --></path>
+		<path p-fragment="1" d="M20,30s0-10 0-20"/>
+		<path p-fragment="1" d="M20,30s0-10 0-20"/>
+		<path p-fragment="1" d="M20,30s0-10 0-20"/>
+		<path p-fragment="1" d="M20,30s0-10 0-20"/>
+		<path p-fragment="1" d="M20,50s0-10 0-20"/>
+		<path p-fragment="1" d="M20,50s0-10 0-20"/>
+		<path p-fragment="0" d="M20,50v0v0v0v0"><!---
+			It's actually a hierarchical set of services that provide their values at various levels of the application
+		--></path>
+		<path p-fragment d="M35,10v0" class="fallback"><!--- So, when we try to inject a token in a node, it starts searching in the node's injector --></path>
+		<path p-fragment d="M35,10s0,20 15,20" class="fallback"><!--- And if it's not found there, it climbs to the parent node's injector --></path>
+		<path p-fragment d="M50,30s0,20-30,20" class="fallback"><!--- Then the parent... --></path>
+		<path p-fragment d="M20,50v20" class="fallback"><!--- And so on... --></path>
+		<path p-fragment d="M20,70v20" class="fallback"><!--- And on... --></path>
+		<path p-fragment="8" d="M20,90a20,20 0 0 1-20-20" class="fallback"><!--- Until we eventually reach the Null Injector, and at that point we know we messed up --></path>
+		<text y="60" p-fragment="8"><tspan x="0" dy="-.4em">Null</tspan><tspan x="0" dy=".8em">Injector</tspan></text>
+	</svg>
+</p-slide>
+<p-slide effect="fade">
+	<!--- Let's simplify all this and get the hierarchy from our node to the root. In a typical Angular application... -->
+	<svg viewBox="-20 0 120 100" id="injector-line">
+		<path d="M35,10s0,20 15,20" class="fallback"/>
+		<path d="M50,30s0,20-30,20v20v20" class="fallback"/>
+		<SvgCode lang="html" code=" platform()" x="-15" y="87.75" p-fragment="0" theme="github-light" style="font-size: 4px"><g p-notes>
+			... we start with two environment injectors, one from the platform, one from the bootstrap, typically placed in app.config.ts
+		</g></SvgCode>
+		<SvgCode lang="html" code=" app.config" x="-15" y="67.75" p-fragment="0" theme="github-light" style="font-size: 4px"/>
+		<SvgCode lang="html" code="  <my-root>" x="-15" y="47.75" p-fragment="1" theme="github-light" style="font-size: 4px"><g p-notes>
+			Then we get the element injectors. So if we inject a token at that level, for example the name of a fruit
+		</g></SvgCode>
+		<SvgCode code={`{
+	provide: FRUIT,
+	useValue: 'apples'
+}`} x="40" y="41" style="font-size: 4px" p-fragment="1">
+			<line class="arrow" x1="38" y1="50" x2="28" y2="50" stroke="#24292e"/>
+		</SvgCode>
+		<SvgCode lang="html" code="<my-fruits>" x="-15" y="27.75" p-fragment="2" theme="github-light" style="font-size: 4px"/>
+		<circle p-fragment="2" effect="drawing" cx="20" cy="30" r="5"><!---
+			... and we inject in a node whose injector does *not* contain that token
+		--></circle>
+		<path class="arrow" p-fragment effect="drawing" d="M26,30s15,0 19,9" stroke="#dd0031"><!---
+			... we retrieve that value from the parent element's injector.
+		--></path>
+		<SvgCode lang="html" code=" <my-table>" x="-15" y="7.75" p-fragment="4" theme="github-light" style="font-size: 4px"><g p-notes>
+			But if we try the same from a node that *has* that token&hellip;
+		</g></SvgCode>
+		<SvgCode code={`{
+	provide: FRUIT,
+	useValue: 'oranges'
+}`} x="40" y="2.25" style="font-size: 4px" p-fragment="4">
+			<line class="arrow" x1="38" y1="10" x2="28" y2="10" stroke="#24292e"/>
+		</SvgCode>
+		<path class="arrow" p-fragment effect="drawing" d="M24,14s15,20 25,6.5" stroke="#dd0031"><!---
+			... then it will get that value from *that* injector instead. What about the previous value?
+		--></path>
+	</svg>
+	<p-fragment class="big-x" style="width: 5em; inset: 36% auto auto 50%"><!---
+		Well, it is lost. Inaccessible. But that's good, because it's how DI is supposed to work: a system that allows us to
+		*replace* token values when needed. But what if we wanted to retrieve *both* those fruit names?
+	--></p-fragment>
+</p-slide>
+<p-slide>
+	<!--- Maybe you'd say: "I know! I'll just use multi: true!" That would prevent token values to be overridden and inject
+		would return an array of values instead, right? -->
+	<Code lang="js" code="{ multi: true }❓" theme="github-light" class="h2 self-center"/>
+	<p-fragment class="big-x" style="width: 10em; inset: auto calc(50% - 5em)"><!---
+		But you'd be wrong, because that just works when applied *on the same* injector. So values in ancestor injectors are
+		lost anyway. But why is that important to us?
+	--></p-fragment>
+</p-slide>
+<style lang="scss">
+	#injectors {
+		> text {
+			font-size: 10px;
+			text-anchor: start;
+			transition-duration: calc(var(--fragment-duration) * 4);
+			transition-property: transform, opacity, font-size;
+
+			&:nth-of-type(n + 2) {
+				transform: translate(0, 0);
+				&[aria-hidden='false'] {
+					transform: translate(0, calc(var(--diff) * 20px));
+				}
+			}
+			&:has(~ path:first-of-type[aria-hidden='false']) {
+				font-size: 5px;
+				&:nth-of-type(1) { transform: translate(20px, 0); }
+				&:nth-of-type(2) { transform: translate(42px, calc(var(--diff) * 20px)); }
+				&:nth-of-type(3) { transform: translate(38px, calc(var(--diff) * 20px)); }
+				&:nth-of-type(n + 4) { transform: translate(-2px, calc(var(--diff) * 20px)); }
+			}
+
+			&:last-of-type {
+				text-anchor: middle;
+				font-size: 5px;
+				transition-duration: var(--fragment-duration);
+				transition-delay: calc(var(--fragment-duration) * 2);
+			}
+		}
+		> path {
+			stroke: #dd0031;
+			stroke-width: 6px;
+			transition-duration: calc(var(--fragment-duration) * 4), var(--fragment-duration);
+			transition-property: d, opacity;
+			
+			&:nth-of-type(8) {
+				marker-start: url(#commit);
+				opacity: 1;
+				
+				&[aria-hidden='false'] {
+					marker-mid: url(#commit);
+					d: path('M20,10v20v20v20v20');
+				}
+			}
+			&[aria-hidden='false'] {
+				&:nth-of-type(1) { d: path('M50,30s-15,0-15-20'); }
+				&:nth-of-type(2) { d: path('M50,30s0,-10 0-20'); }
+				&:nth-of-type(3) { d: path('M50,30s15,0 15-20'); }
+				&:nth-of-type(4) { d: path('M-2.5,30s-7.5,0-7.5-20'); }
+				&:nth-of-type(5) { d: path('M-2.5,30s7.5,0 7.5-20'); }
+				&:nth-of-type(6) { d: path('M20,50s30,0 30-20'); }
+				&:nth-of-type(7) { d: path('M20,50s-22.5,0-22.5-20'); }
+			}
+		}
+		.fallback {
+			transition-property: marker-end, stroke-dasharray;
+			transition-duration: calc(var(--fragment-duration) * 2);
+			transition-behavior: allow-discrete;
+			stroke-dasharray: 0px 40px; // 40px should be enough for all segments
+		}
+		:nth-child(1 of .fallback) {
+			transition-property: stroke-width;
+			transition-timing-function: var(--overshoot);
+			
+			&[aria-hidden='true'] {
+				stroke-width: 6px;
+			}
+		}
+		:nth-child(n + 2 of .fallback) {
+			marker-end: none;
+		}
+		:nth-last-child(1 of .fallback) {
+			stroke: #000;
+		}
+		[aria-hidden='false'] {
+			&:nth-child(n + 2 of .fallback) {
+				marker-end: url(#commit);
+			}
+			&:nth-child(2 of .fallback) {
+				stroke-dasharray: 28px 28px; // Given by .getTotalLength()
+			}
+			&:nth-child(3 of .fallback) {
+				stroke-dasharray: 40px 40px; // Given by .getTotalLength()
+			}
+			&:nth-child(n + 4 of .fallback) {
+				stroke-dasharray: 20px 20px;
+			}
+			&:nth-last-child(1 of .fallback) {
+				stroke-dasharray: 31.42px 31.42px; // Given by .getTotalLength()
+				marker-end: url(#skull);
+			}
+		}
+	}
+	:is(#injectors, #injector-line) {
+		path:not(.arrow) {
+			fill: none;
+			stroke-linecap: round;
+			marker-end: url(#commit);
+		}
+		.fallback {
+			stroke: #002fc3;
+			stroke-width: 8px;
+		}
+	}
+	#injector-line {
+		.fallback {
+			stroke-linejoin: round;
+			marker-mid: url(#commit);
+			marker-start: url(#commit);
+			transition: d calc(var(--fragment-duration) * 2) var(--sliding-duration);
+
+			[aria-hidden='false'] & {
+				&:nth-of-type(1) {
+					d: path('M20,10s0,10 0,20');
+				}
+				&:nth-of-type(2) {
+					d: path('M20,30s0,10 0,20v20v20');
+				}
+			}
+		}
+		text {
+			font-size: 4px;
+			text-anchor: start;
+		}
+	}
+	[effect="drawing"] {
+		opacity: 1;
+		transition-duration: calc(var(--fragment-duration) * 2);
+		stroke: #dd0031;
+		stroke-linecap: round;
+		fill: none;
+		
+		&:is(circle) {
+			transition-property: stroke-dasharray, transform;
+			stroke-dasharray: 0 (10px * 3.14159265); // Given by .getTotalLength()
+			stroke-width: 2px;
+			
+			&[aria-hidden='false'] {
+				stroke-dasharray: (10px * 3.14159265) (10px * 3.14159265);
+			}
+
+			&:has(~ g[aria-hidden='false']) {
+				transform: translateY(-20px);
+			}
+		}
+		
+		&.arrow {
+			transition-property: stroke-dasharray, marker-end;
+			transition-behavior: allow-discrete;
+			stroke-dasharray: 0 22.1px;
+			marker-end: none;
+			
+			&[aria-hidden='false'] {
+				stroke-dasharray: 22.1px 22.1px;
+				marker-end: url(#arrow-head);
+			}
+			&:has(~ g[aria-hidden='false']) {
+				display: none;
+			}
+		}
+		&:nth-last-child(1 of .arrow) {
+			stroke-dasharray: 0 30.6px; // Given by .getTotalLength()
+			&[aria-hidden='false'] {
+				stroke-dasharray: 30.6px 30.6px;
+			}
+		}
+	}
+</style>

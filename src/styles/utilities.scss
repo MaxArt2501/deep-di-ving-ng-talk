@@ -22,9 +22,21 @@
 	.gap-0#{$level} {
 		gap: $level * 0.1em;
 	}
+	.lh-1#{$level} {
+		line-height: $level * 0.1 + 1;
+	}
+	.lh-0#{$level} {
+		line-height: $level * 0.1;
+	}
+	.span-#{$level} {
+		grid-column-end: span $level;
+	}
 	[grid="#{$level}"] {
 		grid-template-columns: repeat(#{$level}, minmax(0, 1fr));
 	}
+}
+.lh-10 {
+	line-height: 1;
 }
 
 .center {

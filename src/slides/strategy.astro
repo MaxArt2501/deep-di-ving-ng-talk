@@ -1,6 +1,5 @@
 ---
-import { Code } from "astro/components";
-import fragmentTransformer from '../../fragment-transformer.js';
+import Code from '../components/Code.astro';
 ---
 
 <p-slide>
@@ -32,7 +31,7 @@ import fragmentTransformer from '../../fragment-transformer.js';
 				<path d="M2.5,.75l1.5,.75 1.5-.75 1,.5-1.5.75 1.5.75-1,.5-1.5-.75-1.5.75-1-.5 1.5-.75-1.5-.75" fill="color-mix(in srgb, currentColor, white 50%)"/>
 			</symbol>
 			<marker viewBox="0 0 6 6" refX="3" refY="3" markerWidth="3" markerHeight="3" orient="auto-start-reverse" id="arrow-head">
-				<path d="M0,0v6l6-3"></path>
+				<path d="M0,0v6l6-3" fill="context-stroke"></path>
 			</marker>
 		</defs>
 		<g class="package core" p-fragment>
@@ -85,13 +84,13 @@ import fragmentTransformer from '../../fragment-transformer.js';
 	</svg>
 </p-slide>
 <p-slide flex="row" class="align-center gap-1">
-	<Code class="s05" lang="ts" code={`@Injectable({ providedIn: 'root' })
+	<Code class="s05" code={`@Injectable({ providedIn: 'root' })
 class TableService {
 	current = signal<string>();
 	columns = signal<TableColumn[]>();
 	...
-}`} transformers={[fragmentTransformer]}/>
-	<Code p-fragment class="s05" lang="ts" code={`@Injectable({ providedIn: 'root' })
+}`}/>
+	<Code p-fragment class="s05" code={`@Injectable({ providedIn: 'root' })
 class CustomTableService {
 	tables = inject(TableService);
 
@@ -107,10 +106,10 @@ class CustomTableService {
 			{#1{}
 		});}#}
 	}
-}`} transformers={[fragmentTransformer]}>Hello</Code>
+}`}/>
 </p-slide>
 <p-slide flex="row" class="align-center gap-1">
-	<Code class="s05" lang="ts" code={`@Injectable({ providedIn: 'root' })
+	<Code class="s05" code={`@Injectable({ providedIn: 'root' })
 class TableService {
 	current = signal<string>();
 	#columns = signal<TableColumn[]>();
@@ -118,8 +117,8 @@ class TableService {
 	{#{updateColumns(cols: TableColumn[]) {
 		// Column update logic
 	}}#}
-}`} transformers={[fragmentTransformer]}/>
-	<Code p-fragment class="s05" lang="ts" code={`@Injectable({ providedIn: 'root' })
+}`}/>
+	<Code p-fragment class="s05" code={`@Injectable({ providedIn: 'root' })
 class CustomTableService {
 	tables = inject(TableService);
 
@@ -133,7 +132,7 @@ class CustomTableService {
 			}
 		});}#}
 	}
-}`} transformers={[fragmentTransformer]}>Hello</Code>
+}`}/>
 </p-slide>
 <p-slide>
 	<svg viewBox="0 15 140 40">
@@ -164,15 +163,15 @@ class CustomTableService {
 <p-slide>
 	<div class="h3 center bold">What we need</div>
 	<ul class="self-center">
-		<li p-fragment>One-shot definition of <b>changes</b>&hellip;</li>
+		<li p-fragment>One-time definition of <b>changes</b>&hellip;</li>
 		<li p-fragment>&hellip; possibily <b>dependent on services</b>&hellip;</li>
-		<li p-fragment>&hellip; collected and <b>applied by the core</b> app&hellip;</li>
-		<li p-fragment>&hellip; in <b>its own life cycle</b>&hellip;</li>
-		<li p-fragment>&hellip; and more.</li>
+		<li p-fragment>&hellip; <b>retrieved</b> by simple means&hellip;</li>
+		<li p-fragment>&hellip; and <b>applied by the core</b> app&hellip;</li>
+		<li p-fragment>&hellip; and <b>more</b>.</li>
 	</ul>
 </p-slide>
 <p-slide class="align-center justify-around">
-	<div class="h3 bold center">Make a <em>token</em> out of them</div>
+	<div class="h3 bold center">Make changes a <em>token</em></div>
 	<div class="token-face" p-fragment><span>?</span></div>
 </p-slide>
 <p-slide>
@@ -227,12 +226,13 @@ class CustomTableService {
 	</svg>
 </p-slide>
 <p-slide>
-	<!--- So, what's going to be the piggy bank for our tokens? -->
+	<!--- At this point, we needed something that collected all the tokens, and provide them to services and components
+		as requested. So, what was going to be the piggy bank?  -->
 	<svg viewBox="0 -800 2987 3352" id="piggy-bank">
 		<path fill="#fd98ae" d="M1882.8 409.82c-4.3.04-8-3.2-12-4.67-261.2-119.77-567.7-131.42-839.6-41.11L890.64 132.591c323.52-113.624 685.2-115.391 1009.439-3.696Z"/>
 		<path fill="#c3002f" d="M1376.5 209.46c172.1-3.51 345.5 26.87 505.1 92.01 3.7 35.39.3 72.56 1.2 108.35-4.3.04-8-3.2-12-4.67-261.2-119.77-567.7-131.42-839.6-41.11-2.8-30.68-.4-62.04-1.2-92.97 1.3-3.68-1.4-10.3 5.1-10.02 110.7-32.85 226.1-49.3 341.4-51.59z"/>
 		<g id="token-front" p-fragment>
-			<!--- At first, we thought of building one. But then we thought, that actually we already had one! -->
+			<!--- At first, we thought of building it. But then we thought, that actually we already had one! -->
 			<circle cx="1450" cy="0" r="300" fill="gold"/>
 			<circle cx="1450" cy="0" r="250" fill="#e5c100"/>
 			<path fill="#DD0031" d="M1450,-100l-93.1,33.2l14.2,123.1l78.9,43.7l78.9,-43.7l14.2,-123.1z"/>
@@ -362,11 +362,11 @@ class CustomTableService {
 	.token-face {
 		width: 8em;
 		height: 8em;
-		border: 1em solid #DD0031;
+		border: 1em solid gold;
 		border-radius: 100vmax;
 		display: grid;
 		place-items: center;
-		background-color: #dd003140;
+		background-color: #ffd70040;
 
 		span {
 			background: linear-gradient(to right, #dd0031 50%, #c3002f 0);

@@ -1,63 +1,196 @@
 :root {
-  --overshoot: linear(0, 1.32 16%, 0.87 28%, 1.05 44%, 0.98 59%, 1.01 73%, 1 88%, 1);
-  --bounce: linear(0, 0.004, 0.016, 0.035, 0.063, 0.098, 0.141 13.6%, 0.25, 0.391, 0.563, 0.765, 1, 0.891 40.9%, 0.848, 0.813, 0.785, 0.766, 0.754, 0.75, 0.754, 0.766, 0.785, 0.813, 0.848, 0.891 68.2%, 1 72.7%, 0.973, 0.953, 0.941, 0.938, 0.941, 0.953, 0.973, 1, 0.988, 0.984, 0.988, 1);
+	--overshoot: linear(0, 1.32 16%, 0.87 28%, 1.05 44%, 0.98 59%, 1.01 73%, 1 88%, 1);
+	--bounce: linear(
+		0,
+		0.004,
+		0.016,
+		0.035,
+		0.063,
+		0.098,
+		0.141 13.6%,
+		0.25,
+		0.391,
+		0.563,
+		0.765,
+		1,
+		0.891 40.9%,
+		0.848,
+		0.813,
+		0.785,
+		0.766,
+		0.754,
+		0.75,
+		0.754,
+		0.766,
+		0.785,
+		0.813,
+		0.848,
+		0.891 68.2%,
+		1 72.7%,
+		0.973,
+		0.953,
+		0.941,
+		0.938,
+		0.941,
+		0.953,
+		0.973,
+		1,
+		0.988,
+		0.984,
+		0.988,
+		1
+	);
 }
 
 .redacted {
-  font-family: 'Redacted Script';
+	font-family: 'Redacted Script';
+}
+
+.big-x {
+  position: absolute;
+  aspect-ratio: 4 / 3;
+  display: grid;
+  opacity: 1;
+
+  &::before,
+  &::after {
+    content: '';
+    background-size: 100% 20%;
+    background-position: center;
+    background-repeat: no-repeat;
+    background-clip: content-box;
+    filter: saturate(0.8);
+    box-sizing: border-box;
+    grid-area: 1 / 1;
+    padding-inline-end: 100%;
+    transition: padding-inline-end calc(var(--fragment-duration) / 2);
+  }
+  &::before {
+    background-image: url(../img/brush-stroke-1.png);
+    transform: rotate(-30deg);
+  }
+  &::after {
+    background-image: url(../img/brush-stroke-2.png);
+    transform: rotate(30deg);
+  }
+
+  &[aria-hidden='false'] {
+    &::before,
+    &::after {
+      padding-inline-end: 0%;
+    }
+    &::after {
+      transition-delay: calc(var(--fragment-duration) / 2);
+    }
+  }
 }
 
 @keyframes from-below {
-  from {
-    translate: 0 100%;
-  }
-  to {
-    translate: 0 0;
-  }
+	from {
+		translate: 0 100%;
+	}
+	to {
+		translate: 0 0;
+	}
 }
 
 text {
-  font-family: 'Courier New', Courier, monospace;
-  font-size: 5px;
-  font-weight: bold;
-  text-anchor: middle;
-  alignment-baseline: middle;
+	font-family: 'Courier New', Courier, monospace;
+	font-size: 5px;
+	font-weight: bold;
+	text-anchor: middle;
+	alignment-baseline: middle;
 }
-.git-tree { 
-  line, path:not(marker > path) {
-    stroke: #dd0031;
-    stroke-width: 10px;
-    stroke-linecap: round;
-  }
-  path:not(marker > path) {
-    stroke-width: 6px;
-    fill: none;
+.git-tree {
+	line,
+	path:not(marker > path) {
+		stroke: #dd0031;
+		stroke-width: 10px;
+		stroke-linecap: round;
+	}
+	path:not(marker > path) {
+		stroke-width: 6px;
+		fill: none;
 
-    &.merge {
-      stroke-width: 1px;
-      marker-end: url(#arrow);
-      marker-mid: none;
-      stroke: #8E0022;
-    }
-    &.commits {
-      marker-end: url(#commit);
-      marker-mid: url(#commit);
-    }
-  }
-  :not(line) + text {
-    transform: rotate(-90deg);
-    text-anchor: end;
-    font-size: 3px;
-  }
+		&.merge {
+			stroke-width: 1px;
+			marker-end: url(#arrow);
+			marker-mid: none;
+			stroke: #8e0022;
+		}
+		&.commits {
+			marker-end: url(#commit);
+			marker-mid: url(#commit);
+		}
+	}
+	:not(line) + text {
+		transform: rotate(-90deg);
+		text-anchor: end;
+		font-size: 3px;
+	}
 }
 
 :is(line, path, polyline, polygon).arrow {
-  fill: none;
-  marker-end: url('#arrow-head');
-  &.double {
-    marker-start: url('#arrow-head');
+	fill: none;
+	marker-end: url('#arrow-head');
+	&.double {
+		marker-start: url('#arrow-head');
+	}
+	&:not([stroke]) {
+		stroke: #000;
+	}
+}
+
+:is(p-fragment, [p-fragment]) {
+	&[effect='reveal'] {
+		opacity: 1;
+		display: inline-block;
+		overflow: clip;
+		max-width: 0;
+		transition: max-width var(--fragment-duration);
+		&[aria-hidden='false'] {
+			max-width: 100vw;
+		}
+
+		@supports (width: calc-size(auto, size)) {
+			max-width: none;
+			width: 0;
+			transition: width var(--fragment-duration);
+			&[aria-hidden='false'] {
+				width: calc-size(auto, size);
+			}
+		}
+	}
+  &[effect='insert'] {
+    display: block;
+    opacity: 1;
+    overflow: clip;
+    max-height: 0;
+    transition: max-height var(--fragment-duration);
+    &[aria-hidden='false'] {
+      max-height: 100vh;
+    }
+  
+    @supports (height: calc-size(auto, size)) {
+      max-height: none;
+      height: 0;
+      transition: height var(--fragment-duration);
+      &[aria-hidden='false'] {
+        height: calc-size(auto, size);
+      }
+    }
   }
-  &:not([stroke]) {
-    stroke: #000;
-  }
+}
+
+g.shiki {
+	font-size: 5px;
+  line-height: 1.125;
+  font-family: "Courier New", Courier, monospace;
+
+  text {
+		text-anchor: start;
+		dominant-baseline: text-before-edge;
+    font-size: inherit;
+    font-family: inherit;
+	}
 }
