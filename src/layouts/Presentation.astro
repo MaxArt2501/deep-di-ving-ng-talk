@@ -3,58 +3,58 @@ import 'p-slides/css/p-slides.css';
 ---
 <!doctype html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width" />
-    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-    <meta name="generator" content={Astro.generator} />
-    <title>Astro Basics</title>
-  </head>
-  <body>
-    <p-deck role="main">
-      <slot />
-    </p-deck>
-    <progress max="100" aria-label="Presentation progress"></progress>
-    <div role="toolbar">
-      <button type="button" aria-labelledby="gridModeTooltip">
-        <svg viewBox="0 0 10 10">
-          <path stroke="currentColor" fill="none" d="M0 .5h4v3.5h-3.5v-3.5M5.5 .5h4v3.5h-3.5v-3.5M0 6h4v3.5h-3.5v-3.5M5.5 6h4v3.5h-3.5v-3.5" />
-        </svg>
-      </button>
-      <div popover id="gridModeTooltip">Grid mode</div>
-      <button type="button" aria-labelledby="speakerModeTooltip">
-        <svg viewBox="0 0 10 10">
-          <path stroke="currentColor" fill="none" d="M.5 5h6v-4.5h-6v9h6v-4.5M7.5 .5h2.5M7.5 2h2.5M7.5 3.5h2.5" />
-        </svg>
-      </button>
-      <div popover id="speakerModeTooltip">Speaker mode</div>
-      <button type="button" aria-labelledby="presentationModeTooltip">
-        <svg viewBox="0 0 10 10">
-          <path stroke="currentColor" fill="none" d="M0 1.5h9.5v7h-9v-7m1.5 2h3m-2 1.5h4v1.5h-3.5v-1.5" />
-        </svg>
-      </button>
-      <div popover id="presentationModeTooltip">Presentation mode</div>
-      <button type="button" class="fullscreen" aria-label="Toggle fullscreen mode" aria-labelledby="fullscreenModeTooltip">
-        <svg viewBox="0 0 1 1">
-          <g stroke="currentColor" fill="none" stroke-width="0.1">
-            <path d="M.05 .3v-.25h.25M.7 .05h.25v.25M.95 .7v.25h-.25M.3 .95h-.25v-.25" />
-            <path d="M.05 .3h.25v-.25M.7 .05v.25h.25M.95 .7h-.25v.25M.3 .95v-.25h-.25" />
-          </g>
-        </svg>
-      </button>
-      <div popover id="fullscreenModeTooltip">Toggle fullscreen mode</div>
-    </div>
-    <nav>
-      <button type="button" class="previous" aria-labelledby="goBackwardTooltip"></button>
-      <div popover id="goBackwardTooltip">Go backward</div>
-      <button type="button" class="next" aria-labelledby="goForwardTooltip"></button>
-      <div popover id="goForwardTooltip">Go forward</div>
-    </nav>
-  </body>
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width" />
+		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+		<meta name="generator" content={Astro.generator} />
+		<title>Astro Basics</title>
+	</head>
+	<body>
+		<p-deck role="main">
+			<slot />
+		</p-deck>
+		<progress max="100" aria-label="Presentation progress"></progress>
+		<div role="toolbar">
+			<button type="button" aria-labelledby="gridModeTooltip">
+				<svg viewBox="0 0 10 10">
+					<path stroke="currentColor" fill="none" d="M0 .5h4v3.5h-3.5v-3.5M5.5 .5h4v3.5h-3.5v-3.5M0 6h4v3.5h-3.5v-3.5M5.5 6h4v3.5h-3.5v-3.5" />
+				</svg>
+			</button>
+			<div popover id="gridModeTooltip">Grid mode</div>
+			<button type="button" aria-labelledby="speakerModeTooltip">
+				<svg viewBox="0 0 10 10">
+					<path stroke="currentColor" fill="none" d="M.5 5h6v-4.5h-6v9h6v-4.5M7.5 .5h2.5M7.5 2h2.5M7.5 3.5h2.5" />
+				</svg>
+			</button>
+			<div popover id="speakerModeTooltip">Speaker mode</div>
+			<button type="button" aria-labelledby="presentationModeTooltip">
+				<svg viewBox="0 0 10 10">
+					<path stroke="currentColor" fill="none" d="M0 1.5h9.5v7h-9v-7m1.5 2h3m-2 1.5h4v1.5h-3.5v-1.5" />
+				</svg>
+			</button>
+			<div popover id="presentationModeTooltip">Presentation mode</div>
+			<button type="button" class="fullscreen" aria-label="Toggle fullscreen mode" aria-labelledby="fullscreenModeTooltip">
+				<svg viewBox="0 0 1 1">
+					<g stroke="currentColor" fill="none" stroke-width="0.1">
+						<path d="M.05 .3v-.25h.25M.7 .05h.25v.25M.95 .7v.25h-.25M.3 .95h-.25v-.25" />
+						<path d="M.05 .3h.25v-.25M.7 .05v.25h.25M.95 .7h-.25v.25M.3 .95v-.25h-.25" />
+					</g>
+				</svg>
+			</button>
+			<div popover id="fullscreenModeTooltip">Toggle fullscreen mode</div>
+		</div>
+		<nav>
+			<button type="button" class="previous" aria-labelledby="goBackwardTooltip"></button>
+			<div popover id="goBackwardTooltip">Go backward</div>
+			<button type="button" class="next" aria-labelledby="goForwardTooltip"></button>
+			<div popover id="goForwardTooltip">Go forward</div>
+		</nav>
+	</body>
 </html>
 
 <style lang="scss" is:global>
-  @use '../styles/index.scss';
+	@use '../styles/index.scss';
 </style>
 <script src="../scripts/main.js"></script>
 <script src="../scripts/blob.js"></script>

@@ -243,7 +243,7 @@ export const getAncestorChild = (descendant, ancestor, before) => {
  * @property {TextNodePointer} end
  * @property {{ index?: string }} properties
  */
-const FRAGMENT_BOUNDARY_RE = /(\{#(\d*(?:\.\d+)?)\{)|((?<!\\)\}#\})/g;
+const FRAGMENT_BOUNDARY_RE = /(\{#(\d*(?:\.\d+)?(?:;[a-zA-Z-]+)?|[a-zA-Z-]*)\{)|((?<!\\)\}#\})/g;
 /**
  * @param {TreeNode} root
  * @returns {Generator<FragmentBlock>}
@@ -255,6 +255,7 @@ export function* generateFragments(root) {
 	/** @type {RegExpExecArray} */
 	let match;
 	let textNodes = Array.from(getTextNodes(root));
+	// biome-ignore lint/suspicious/noAssignInExpressions: avoid verbosity
 	while ((match = FRAGMENT_BOUNDARY_RE.exec(textNodes.map(node => node.value).join('')))) {
 		if (match?.[1]) {
 			startStack.push(match);
@@ -265,7 +266,17 @@ export function* generateFragments(root) {
 			const start = getTextNodeAtIndex(startMatch.index, textNodes);
 			/** @type {TextNodePointer} */
 			const end = getTextNodeAtIndex(match.index + 3, textNodes, true);
-			yield { start, end, properties: startMatch[2] ? { index: startMatch[2] } : {} };
+			const properties = {};
+			if (startMatch[2]) {
+				const [index, effect] = startMatch[2].split(/\s*;\s*/);
+				if (!effect) {
+					properties[isNaN(index) ? 'effect' : 'index'] = index;
+				} else {
+					properties.index = index || undefined;
+					properties.effect = effect || undefined;
+				}
+			}
+			yield { start, end, properties };
 			textNodes = Array.from(getTextNodes(root));
 			if (startStack.length) FRAGMENT_BOUNDARY_RE.lastIndex = startStack.at(-1).index;
 		}

@@ -1,0 +1,34 @@
+---
+import type { ThemePresets } from '@astrojs/markdown-remark';
+import type { BundledLanguage, ShikiTransformer, ThemeRegistration, ThemeRegistrationRaw } from 'shiki';
+import { codeToHtml } from 'shiki';
+import fragmentTransformer from '../../fragment-transformer';
+import svgTextTransformer from '../../svg-text-transformer';
+
+interface Props {
+	code: string;
+	lang?: BundledLanguage;
+	theme?: ThemePresets | ThemeRegistration | ThemeRegistrationRaw;
+	transformers?: ShikiTransformer[];
+	x?: string | number;
+	y?: string | number;
+	dy?: string | number;
+	[rootProperty: string]: unknown;
+}
+
+const { code, lang = 'ts' as BundledLanguage, theme = 'github-dark', transformers = [], x, y, dy, ...rootProps } = Astro.props;
+
+const html = (await codeToHtml(code, {
+	lang,
+	theme,
+	transformers: [
+		fragmentTransformer({ tagName: 'g', properties: { 'p-fragment': '' } }),
+		svgTextTransformer({ x, y, dy, ...rootProps }),
+		...transformers
+	]
+})).replace(/<\/g>$/, '');
+---
+
+<Fragment set:html={html} />
+<slot></slot>
+<Fragment set:html={'</g>'} />

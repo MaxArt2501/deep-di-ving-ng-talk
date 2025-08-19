@@ -13,18 +13,24 @@ import {
 /** @type {FragmentBlock[]} */
 let fragmentBlocks;
 
-/** @type {import('shiki').ShikiTransformer} */
-export default {
+/**
+ * @param {Partial<TreeNode>} treeNodeBase 
+ * @returns {import('shiki').ShikiTransformer}
+ */
+const transformerFactory = ({ tagName = 'p-fragment', properties: baseProperties = {}}) => ({
 	preprocess(code) {
 		let cleanedCode = code;
 		fragmentBlocks = Array.from(generateFragments({ type: 'text', value: code }));
-		const boundaries = fragmentBlocks.flatMap(({ start, end }) => [start, end]).sort((a, b) => a.index - b.index);
+		const startBoundaries = fragmentBlocks.map(({ start }) => start);
+		const endBoundaries = fragmentBlocks.map(({ end }) => end);
+		const isStart = boundary => startBoundaries.includes(boundary);
+		const boundaries = [...startBoundaries, ...endBoundaries].sort((a, b) => a.index - b.index || isStart(a) - isStart(b));
 		for (let idx = boundaries.length - 1; idx >= 0; idx--) {
 			const { index } = boundaries[idx];
-			const isStart = code[index] === '{';
-			const length = isStart ? code.indexOf('{', index + 1) + 1 - index : 3;
-			cleanedCode = cleanedCode.slice(0, index - (isStart ? 0 : length)) + cleanedCode.slice(index + (isStart ? length : 0));
-			for (let jdx = idx + (isStart ? 1 : 0); jdx < boundaries.length; jdx++) {
+			const start = isStart(boundaries[idx]);
+			const length = start ? code.indexOf('{', index + 1) + 1 - index : 3;
+			cleanedCode = cleanedCode.slice(0, index - (start ? 0 : length)) + cleanedCode.slice(index + (start ? length : 0));
+			for (let jdx = idx + (start ? 1 : 0); jdx < boundaries.length; jdx++) {
 				boundaries[jdx].index -= length;
 			}
 		}
@@ -55,10 +61,12 @@ export default {
 			}
 			wrapNodes({
 				type: 'element',
-				tagName: 'p-fragment',
-				properties
+				tagName,
+				properties: { ...baseProperties, ...properties }
 			}, ...toBeWrapped);
 		}
 		return root;
 	}
-};
+});
+
+export default Object.assign(transformerFactory, transformerFactory({}));

@@ -1,0 +1,22 @@
+---
+import AstroCode from 'astro/components/Code.astro';
+import type { BundledLanguage } from 'shiki';
+import fragmentTransformer from '../../fragment-transformer';
+
+type AstroCodeProps = Parameters<typeof AstroCode>[0];
+
+interface Props extends AstroCodeProps {}
+
+const { lang = 'ts' as BundledLanguage, theme = 'github-dark', transformers = [], ...otherProps } = Astro.props;
+
+const props: Props = {
+	lang,
+	theme,
+	transformers: [
+		fragmentTransformer,
+		...transformers
+	],
+	...otherProps
+};
+---
+<AstroCode {...props}/>
