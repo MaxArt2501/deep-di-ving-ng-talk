@@ -16,8 +16,8 @@
 		"astro": "astro"
 	},
 	"dependencies": {
-		"astro": "^5.12.5",
-		"p-slides": "^1.4.1"
+		"astro": "^5.12.9",
+		"p-slides": "^1.4.2"
 	},
 	"devDependencies": {
 		"sass": "^1.89.2",
