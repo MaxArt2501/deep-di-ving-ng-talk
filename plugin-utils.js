@@ -243,7 +243,7 @@ export const getAncestorChild = (descendant, ancestor, before) => {
  * @property {TextNodePointer} end
  * @property {{ index?: string }} properties
  */
-const FRAGMENT_BOUNDARY_RE = /(\{#(\d*(?:\.\d+)?(?:;[a-zA-Z-]+)?|[a-zA-Z-]*)\{)|((?<!\\)\}#\})/g;
+const FRAGMENT_BOUNDARY_RE = /(\{#(\d*(?:\.\d+)?(?:;[a-z][a-z-]*(?: +[a-z][a-z-]*)*)?|[a-zA-Z-]*)\{)|((?<!\\)\}#\})/gi;
 /**
  * @param {TreeNode} root
  * @returns {Generator<FragmentBlock>}
@@ -255,8 +255,9 @@ export function* generateFragments(root) {
 	/** @type {RegExpExecArray} */
 	let match;
 	let textNodes = Array.from(getTextNodes(root));
+	let fullText = textNodes.map(node => node.value).join('');
 	// biome-ignore lint/suspicious/noAssignInExpressions: avoid verbosity
-	while ((match = FRAGMENT_BOUNDARY_RE.exec(textNodes.map(node => node.value).join('')))) {
+	while ((match = FRAGMENT_BOUNDARY_RE.exec(fullText))) {
 		if (match?.[1]) {
 			startStack.push(match);
 		} else if (match?.[3] && startStack.length) {
@@ -278,7 +279,11 @@ export function* generateFragments(root) {
 			}
 			yield { start, end, properties };
 			textNodes = Array.from(getTextNodes(root));
-			if (startStack.length) FRAGMENT_BOUNDARY_RE.lastIndex = startStack.at(-1).index;
+			const newFullText = textNodes.map(node => node.value).join('');
+			if (startStack.length && newFullText !== fullText) {
+				FRAGMENT_BOUNDARY_RE.lastIndex = startStack.at(-1).index + 1;
+				fullText = newFullText;
+			}
 		}
 	}
 }

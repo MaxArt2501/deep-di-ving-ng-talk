@@ -28,13 +28,15 @@ const whitespaceMap = {
  * @property {number | string} [dy]
  * @property {number | string} [paddingBlock]
  * @property {number | string} [paddingInline]
+ * @property {string} [stroke]
+ * @property {string} [strokeWidth]
  */
 
 /**
  * @param {SvgTextTransformerOptions} options
  * @returns {import('shiki').ShikiTransformer}
  */
-const transformerFactory = ({ x = 0, y = 0, dy = '1lh', paddingBlock = '0.5lh', paddingInline = '1ch', ...rootProps }) => ({
+const transformerFactory = ({ x = 0, y = 0, dy = '1lh', paddingBlock = '0.5lh', paddingInline = '1ch', stroke = '#fff', strokeWidth = '0.2em', ...rootProps }) => ({
 	preprocess(code) {
 		const lines = code.split(/\r?\n/);
 		lineCount = lines.length;
@@ -47,6 +49,14 @@ const transformerFactory = ({ x = 0, y = 0, dy = '1lh', paddingBlock = '0.5lh', 
 		const [codeNode] = node.children;
 		const style = parseStyle(node.properties?.style ?? '');
 		if (style['background-color']) {
+			Object.assign(
+				node.properties,
+				{
+					fill: style['background-color'],
+					stroke,
+					'stroke-width': strokeWidth,
+				}
+			);
 			node.children.unshift({
 				type: 'element',
 				tagName: 'rect',
@@ -55,7 +65,6 @@ const transformerFactory = ({ x = 0, y = 0, dy = '1lh', paddingBlock = '0.5lh', 
 					height: `calc(${lineCount} * ${withUnit(dy)} + ${withUnit(paddingBlock)} * 2)`,
 					x: `calc(${withUnit(x)} - ${withUnit(paddingInline)})`,
 					y: `calc(${withUnit(y)} - ${withUnit(paddingBlock)})`,
-					fill: style['background-color'],
 					rx: '1ch'
 				}
 			});
@@ -63,6 +72,7 @@ const transformerFactory = ({ x = 0, y = 0, dy = '1lh', paddingBlock = '0.5lh', 
 		if (style.color) {
 			codeNode.properties.fill = style.color;
 		}
+		codeNode.properties.stroke = 'none';
 		delete node.properties?.style;
 		delete node.properties?.tabindex;
 		node.properties = {
