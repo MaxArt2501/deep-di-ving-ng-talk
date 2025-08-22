@@ -64,7 +64,7 @@ ShouldUseProvidedInService`}/>
 	provide: GRANDMA_TITLE,
 	useFactory: l => l?.startsWith('it')
 		? 'nonna' : 'granma',
-	deps: [[new Optional(), LOCALE_ID]]
+	{#6;strike{deps: [[new Optional(), LOCALE_ID]]}#}
 }`}/>
 		<Code p-fragment lang="ts" code={`{
 	provide: NG_VALUE_ACCESSOR,

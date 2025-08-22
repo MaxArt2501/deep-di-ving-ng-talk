@@ -1,0 +1,344 @@
+---
+import Code from '../components/Code.astro';
+import SvgCode from '../components/SvgCode.astro';
+---
+
+<p-slide class="align-center gap-1" flex="row">
+	<!--- Let's suppose we have a TABLE_CONFIG token that allows us to define the configuration of a table. -->
+	<!--- Its columns, its actions on rows, etc. -->
+	<!--- Let's not forget multi: true because we can have more than one table config, right? -->
+	<!--- This token value might as well be defined in the root injector, right in the app.config file -->
+	<!--- In the same file, we can import the tokens from a client customization package, like this -->
+	<!--- And we'd be good, right? All we need to do is to define every token here.
+		But doing so, we're actually losing something. The first thing would be... -->
+	<Code code={`{#2;insert{// app.config.ts
+}#}{#3;insert{import { tokens as acmeTokens } from '@client/acme';
+
+}#}{#2;insert{export const appConfig: ApplicationConfig = {
+  providers: [
+}#}		{
+			provide: TABLE_CONFIG,
+{#insert{			useValue: {
+				name: 'fruits',
+				columns: [...],
+				actions: [...],
+				...
+			},
+}#}{#insert{			multi: true
+}#}		},
+{#3;insert{		...acmeTokens
+}#}{#2;insert{	]
+};}#}`} class="s05 self-start"/>
+	<Code p-fragment="4" effect="reveal" code={`// @client/acme
+export const tokens = [{
+	provide: TABLE_CONFIG,
+	useValue: {
+		name: 'fruits',
+		columns: [{...}]
+	},
+	multi: true
+}];`} class="s05"/>
+	<p-fragment class="overlay-banner h1">
+		Colocation
+		<!--- Meaning that the basic table definition is *not* in the same component of table's page.
+			Everything is in the root, possibly overcrowding the app.config file -->
+	</p-fragment>
+</p-slide>
+<p-slide effect="fade" flex="row" class="gap-1">
+	<!--- In order to have the configuration colocated inside the feature, we can extract the token
+		value in a separate file and import it in the root config -->
+	<!--- But then we'd have to repeat that for every configuration, for tables, toolbars, navigation, actions, etc.
+		and the root config is still cluttered and unstructured -->
+	<div flex="column" class="gap-1">
+		<Code id="appConfig" code={`// app.config.ts
+import { tokens as acmeTokens } from '@client/acme';
+{#0;insert{{#1;strike{import fruitTableConfig from './fruits/fruit-table';}#}
+}#}{#2;insert{import tables from './tables';
+}#}
+export const appConfig: ApplicationConfig = {
+  providers: [
+{#0;collapse{
+
+
+
+
+
+
+
+
+}#}		{#1;strike{{#0;reveal{fruitTableConfig}#} ,}#}
+{#2;insert{		...tables,
+}#}		...acmeTokens
+	]
+};`} class="s05"/>
+		<Code p-fragment="2" effect="insert" code={`// tables.ts
+import fruitTableConfig from 'fruits/fruit-table';
+import shopTableConfig from 'shops/shop-table';
+...
+export default [fruitTableConfig, ...];`} class="s05"/>
+	</div>
+	<div flex="column" class="gap-1">
+		<Code p-fragment="0" id="fruitTableConfig" code={`{#0;insert{// fruit-table.ts
+}#}{#0;reveal{export default }#}{
+	provide: TABLE_CONFIG,
+	useValue: {
+		name: 'fruits',
+		columns: [...],
+		actions: [...],
+		...
+	},
+	multi: true
+}{#0;reveal{;}#}`} class="s05"/>
+		<p-fragment class="s06">Repeat for:
+			<ul class="no-margins">
+				<li>toolbars</li>
+				<li>navigation</li>
+				<li>actions</li>
+				<li>&hellip;</li>
+			</ul>
+			<!--- So we want to reduce those imports, and create intermediate files that collect those configurations
+				either by feature, or token type, or whatever, and import them once in app.config -->
+			<!--- And... it's still not pretty. Now we have to maintain a bunch of intermediate files to mimic a fraction of
+				what true colocation is -->
+			<!--- In short, it's not the maintainability we were aiming for -->
+		</p-fragment>
+	</div>
+</p-slide>
+<p-slide>
+	<!--- Maybe you'd say: "Wait a second! Isn't there a `providedIn` option when creating a token?" -->
+	<!--- Problem is, even if we use it, it has effect only when providing the `factory` method too, which
+		generates a *default* value, meaning that it's executed only if there aren't other provided values. -->
+	<!--- This also means it doesn't work with multi: true -->
+	<Code code="{ providedIn: 'root' }❓" theme="github-light" class="h4 self-center"/>
+	<Code code={`export const MY_FRUIT = new InjectionToken('fruit'{#1;reveal{, {}#}{#1;insert{	providedIn: 'root'{#2;reveal{,}#}}#}{#2;insert{	factory: () => 'bananas'}#}{#1;reveal{}}#});`} p-fragment class="s05 self-center" />
+	<p-fragment class="big-x" style="width: 12em; inset: auto calc(50% - 6em)"><!--- In short, this cannot be used either --></p-fragment>
+</p-slide>
+<p-slide>
+	<Code code={`{#0;insert{import fruitTableConfig from './fruit-table';
+{#1;insert{import { mergeConfigs } from '../utils/table';
+}#}
+}#}@Component({
+	selector: 'my-fruits',
+{#insert{	template: '<my-table [config]="config"/>'
+}#}{#0;insert{	providers: [fruitTableConfig],
+}#}	standalone: true
+})
+export class FruitList {
+{#1;insert{	configs: TableConfig[] = inject(TABLE_CONFIG);
+
+	config = mergeConfigs(this.configs);
+}#}}`} class="s05 self-center"/>
+	<p-fragment class="big-x" style="width: 3em; inset: 57.5% auto auto 51%">
+		<!--- But, as we've seen, it doesn't work like that. So, what are we going to do? -->
+	</p-fragment>
+</p-slide>
+<p-slide>
+	<!--- I guess it's time to welcome you into the magical world of... -->
+	<div class="h1 center bold">
+		<span effect="falling"><em>C</em>ustom</span>
+		<p-fragment effect="falling"><em>I</em>nject</p-fragment>
+		<p-fragment effect="falling" style="--from: 50vh;"><em>F</em>unctions
+			<!--- Similar to what's happened for React with hooks, the introduction of the `inject` function
+				in Angular has paved the road for new ways to provide data in injection contexts. So not just the
+				usual DI way, but we can tweak it a little... -->
+		</p-fragment>
+	</div>
+</p-slide>
+<p-slide>
+	<!--- CIFs are used to inject a value retrieved with additional logic. They're convenience helpers that
+		saves us the hassle of doing certain things again and again. -->
+	<div flex="column" class="gap-1 s05 self-center">
+		<Code code={`export const injectIdParam = () => toSignal(
+	inject(ActivatedRoute).params.pipe(
+		map(params => params.id || null)
+	),
+	{ initialValue: null }
+);`} p-fragment/>
+		<Code code={`@Component({ ... })
+export class Viewer {
+	private id = injectIdParam();
+
+	constructor() {
+		effect(() => {
+			const id = this.id();
+			if (id) navigator.sendBeacon(\`/check/\${id}\`);
+		});
+	}
+}`} p-fragment effect="insert"/>
+	</div>
+</p-slide>
+<p-slide>
+	<div class="h3 bold center">What we need</div>
+	<ul class="self-center">
+		<li p-fragment>get the whole injector chain;</li>
+		<li p-fragment>get the tokens from a single injector.</li>
+	</ul>
+</p-slide>
+<p-slide>
+	<!--- Let's see how we can build this CIF. Of course it should take a token... And nothing else, actually.
+		No options, as its job is well defined as it is -->
+	<!--- Then we can add some type safety, so we have a generic type T to deal with -->
+	<!--- So that we'll have to return an array of T's, eventually -->
+	<!--- Let's try to climb the chain of injectors. First, we get the current injector, using the Injector class as token -->
+	<!--- Then we iterate until we have an injector. From one injector, we get the parent injector by requesting the
+		Injector class, but skipping the current injector - otherwise it'd return the injector itself - thus effectively
+		climbing the injector chain. -->
+	<!--- From the injector, we get the token value (or values, if multi) -->
+	<!--- but telling them to stay in the injector and not climbing to the parent injector if nothing has been found.
+		That's why we're also saying that's optional - we can deal with missing values. Also, that would seamlessly deal with
+		the null injector -->
+	<!--- Almost done! The last thing is to assert that we're in an injection context. That would be technically not necessary
+		as the first call to `inject` would do that for use, but for debugging purposes we're using aIIC correctly -->
+	<Code code={`{#2;insert{import { {#7;reveal{assertInInjectionContext, }#}inject, Injector } from '@angular/core';
+}#}{#0;insert{import type { ProviderToken } from '@angular/core';
+
+}#}export function chainInject{#0;reveal{<T>}#}(token{#0;reveal{: ProviderToken<T | T[]>}#}){#0;reveal{: T[]}#} {
+{#7;insert{	{#7;highlight{assertInInjectionContext(chainInject)}#};
+
+}#}{#1;insert{	const values: T[] = [];
+}#}{#2;insert{	let injector: Injector | null = inject(Injector);
+
+}#}{#insert{	while (injector) {
+{#insert{		const value = injector.get(token, null, {#6;highlight{{ self: true, optional: true }}#});
+		if (value) values.push(...(Array.isArray(value) ? value : [value]));
+
+}#}		injector = injector.get(Injector, null, {#4;highlight{{ skipSelf: true }}#});
+	}
+
+}#}{#1;insert{	return values;
+}#}};`} class="s05 self-center"/>
+</p-slide>
+<p-slide>
+	<!--- That's it! Instead of `inject`, we're using `chainInject` and we're set! All the token values
+		ever defined in whichever injector of the injector hierarchy -->
+	<Code code={`import fruitTableConfig from './fruit-table';
+import { mergeConfigs } from '../utils/table';
+{#1;insert{import { {#1;highlight{chainInject}#} } from '../chain-inject';
+}#}
+@Component({
+	selector: 'my-fruits',
+	template: '<my-table [config]="config"/>'
+	providers: [fruitTableConfig],
+	standalone: true
+})
+export class FruitList {
+	configs: TableConfig[] = {#1;reveal{{#1;highlight{chainInject}#}}#}{#1;shrink{{#strike{inject}#}}#}(TABLE_CONFIG);
+
+	config = mergeConfigs(this.configs);
+}`} class="s05 self-center"/>
+</p-slide>
+<p-slide>
+	<!--- We can actually take advantage of this hierarchical structure -->
+	<svg viewBox="-40 0 160 100">
+		<path d="M 50 30 S 35 30 35 10"/>
+		<path d="M 50 30 S 50 20 50 10"/>
+		<path d="M 50 30 S 65 30 65 10"/>
+		<path d="M -2.5 30 S -10 30 -10 10"/>
+		<path d="M -2.5 30 S 5 30 5 10"/>
+		<path d="M 20 50 S 50 50 50 30"/>
+		<path d="M 20 50 S -2.5 50 -2.5 30"/>
+		<path d="M 20 10 V 30 V 50 V 70 V 90"/>
+		<g p-fragment>
+			<!--- Suppose we have a table that's being used by two distinct components in the same feature -->
+			<path d="M 35 10 S 35 30 50 30" effect="drawing" p-fragment="1"><!---
+				Instead of providing the table configuration twice, we can climb the injector chain
+			--></path>
+			<path d="M 65 10 S 65 30 50 30" effect="drawing" p-fragment="1"/>
+			<path d="M 50 30 v 0" p-fragment="2"><!---
+				And define the table config there. But suppose that one of the components needs to show a slightly
+				altered version of the table, one that could be obtained by a simple change... a "customization"
+				of sort
+			--></path>
+		</g>
+		<SvgCode code={`{
+	provide: TABLE_CONFIG,
+	useValue: {
+		name: 'fruit',
+		columns: [...],
+		actions: [...]
+	},
+	multi: true
+}`} x="47" y="40" p-fragment="2">
+			<path d="M47,40l3-3 3,3" style="translate: 0 -0.5lh"/>
+		</SvgCode>
+		<SvgCode code={`👍`} x="32" y="20" p-fragment style="font-size: 5px; stroke-width: 0.14em;">
+			<path d="M32,20l3-3 3,3" style="translate: 0 -0.5lh"/>
+			<g p-notes>And while one component is fine with the default configuration&hellip;</g>
+		</SvgCode>
+		<SvgCode code={`{
+	provide: TABLE_CONFIG,
+	useValue: { ... }
+}`} x="62" y="20" p-fragment>
+			<path d="M62,20l3-3 3,3" style="translate: 0 -0.5lh"/>
+			<g p-notes>&hellip; the other alone can provide the changes it needs. This is the kind of
+				flexibility we were looking for.</g>
+		</SvgCode>
+	</svg>
+</p-slide>
+<style lang="scss">
+	#appConfig {
+		width: max-content;
+		height: fit-content;
+	}
+	#fruitTableConfig {
+		opacity: 1;
+		position: relative;
+		height: fit-content;
+		transform: translate(0, 0);
+		transition: transform var(--fragment-duration);
+		
+		&[aria-hidden='true'] {
+			transform: translate(calc(-2.5em - 49ch), 5lh);
+			background: none !important;
+		}
+	}
+	path {
+		fill: none;
+
+		&:nth-of-type(-n + 8) {
+			stroke: #dd0031;
+			stroke-width: 6px;
+			stroke-linecap: round;
+			marker-end: url(#commit);
+			marker-mid: url(#commit);
+		}
+		&:nth-of-type(8) {
+			marker-start: url(#commit);
+		}
+		
+		g > & {
+			stroke: #002fc3;
+			stroke-width: inherit;
+		}
+
+		&[effect='drawing'] {
+			--length: 28px;
+			marker-start: url(#commit);
+			marker-end: none;
+		}
+	}
+	g {
+		&:not(.shiki) {
+			transition-property: opacity, stroke-width;
+			transition-timing-function: var(--overshoot);
+			stroke-width: 6px;
+			&[aria-hidden='false'] {
+				stroke-width: 8px;
+			}
+		}
+		&.shiki {
+			font-size: 3.5px;
+			> path {
+				fill: inherit;
+				stroke: inherit;
+				marker-end: none;
+				marker-mid: none;
+			}
+		}
+	}
+</style>
+<style is:global>
+	#appConfig [effect='reveal'][aria-hidden='false'] {
+		margin-inline-end: -1ch;
+	}
+</style>
