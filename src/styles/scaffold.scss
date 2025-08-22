@@ -37,3 +37,8 @@ hgroup {
 		}
 	}
 }
+
+em {
+	font-style: unset;
+	color: var(--brand-color);
+}
