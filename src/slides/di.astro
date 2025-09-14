@@ -9,10 +9,10 @@ import SvgCode from '../components/SvgCode.astro';
 </p-slide>
 <p-slide>
 	<Code code={`class MyComponent {
-	{#reveal{router = inject(Router);}#}
-	{#reveal{host = inject(ElementRef);}#}
-	{#reveal{locale = inject(LOCALE_ID);}#}
-}`}/>
+{#insert{	router = inject(Router);
+}#}{#insert{	host = inject(ElementRef);
+}#}{#insert{	locale = inject(LOCALE_ID);
+}#}}`} class="self-center"/>
 	<!--- Many Angular developers have used the DI system like this: with the inject function that provides a service -->
 	<!--- Legacy injection used the constructor parameters, but I'm glad that now we have something that resembles dark magic a little less and JavaScript a little more -->
 	<!--- Since we're talking about a fairly recent app, and because it's 2025, we're going to use just use inject -->
@@ -23,24 +23,22 @@ import SvgCode from '../components/SvgCode.astro';
 	<div class="h2 bold center">Provide <em>where</em>?</div>
 	<div class="self-center s05" grid="2">
 		<Code lang="ts" code={`bootstrapApplication(App, {
-	providers: [...]
+	{#4;highlight{providers: [...]}#}
 })`} p-fragment />
 		<Code lang="ts" code={`@NgModule({
-	providers: [...]
+	{#4;highlight{providers: [...]}#}
 })
 class FruitModule {}`} p-fragment />
 		<Code lang="ts" code={`@Component({
-	providers: [...]
+	selector: 'my-fruit-list',
+	{#4;highlight{providers: [...]}#}
 })
 class FruitList {}`} p-fragment />
-		<Code lang="ts" code={`const routes: Routes = [
-	{
-		path: 'fruits',
-		loadComponent: () => import(...),
-		providers: [...]
-	},
-	...
-];`} p-fragment />
+		<Code lang="ts" code={`const routes: Routes = [{
+	path: 'fruits',
+	loadComponent: () => import(...),
+	{#4;highlight{providers: [...]}#}
+}, ...];`} p-fragment />
 	</div>
 </p-slide>
 <p-slide>
@@ -293,13 +291,9 @@ ShouldUseProvidedInService`}/>
 		fill: none;
 		
 		&:is(circle) {
+			--length: #{10px * 3.1416};
 			transition-property: stroke-dasharray, transform;
-			stroke-dasharray: 0 (10px * 3.14159265); // Given by .getTotalLength()
 			stroke-width: 2px;
-			
-			&[aria-hidden='false'] {
-				stroke-dasharray: (10px * 3.14159265) (10px * 3.14159265);
-			}
 
 			&:has(~ g[aria-hidden='false']) {
 				transform: translateY(-20px);

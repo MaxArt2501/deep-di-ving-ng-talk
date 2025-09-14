@@ -1,3 +1,5 @@
+@use './variables.scss' as vars;
+
 :root {
 	--overshoot: linear(0, 1.32 16%, 0.87 28%, 1.05 44%, 0.98 59%, 1.01 73%, 1 88%, 1);
 	--bounce: linear(
@@ -95,7 +97,7 @@
 }
 
 text {
-	font-family: 'Courier New', Courier, monospace;
+	font-family: vars.$monospace-font;
 	font-size: 5px;
 	font-weight: bold;
 	text-anchor: middle;
@@ -232,6 +234,33 @@ text {
     }
   }
 }
+@include effect(highlight, none) using ($hidden) {
+  @if $hidden == false {
+    &::before {
+      inset-inline-end: 0;
+    }
+  } @else {
+    position: relative;
+    &::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      inset-inline-end: 100%;
+      background: linear-gradient(to right, var(--highlight-color, yellow) 0 100%);
+      transition: inherit;
+      transition-property: inset-inline-end;
+			mix-blend-mode: soft-light;
+    }
+  }
+}
+[effect~='highlight'] {
+	&[effect~='red'] {
+		--highlight-color: #faa;
+	}
+	&[effect~='blue'] {
+		--highlight-color: cyan;
+	}
+}
 @include effect(falling, transform, 2) using ($hidden) {
   @if $hidden == true {
     transform: translateY(var(--from, -50vh));
@@ -245,11 +274,12 @@ text {
 @include effect(drawing, stroke-dasharray, 2) using ($hidden) {
   @if $hidden == true {
     stroke-dasharray: 0px var(--length, 0px);
+		stroke-width: 0;
   } @else if $hidden == false {
     stroke-dasharray: var(--length, 0px) var(--length, 0px);
   }
 }
-@include effect(highlight, background-size) using ($hidden) {
+@include effect(highlight1, background-size) using ($hidden) {
   @if $hidden == false {
     background-size: 100%;
   } @else {
@@ -295,7 +325,7 @@ text {
 g.shiki {
 	font-size: 5px;
 	line-height: 1.125;
-	font-family: 'Courier New', Courier, monospace;
+	font-family: vars.$monospace-font;
 
 	text {
 		text-anchor: start;

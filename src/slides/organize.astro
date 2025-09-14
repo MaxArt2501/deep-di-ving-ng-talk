@@ -1,0 +1,107 @@
+---
+import Code from '../components/Code.astro';
+---
+<p-slide>
+  <!--- This is fine, but we have to write each time something like this -->
+  <Code code={`{#0;highlight{{}#}
+{#0;highlight{  provide: TABLE_ACTION,}#}
+{#0;highlight{  useValue: }#}{#1;highlight red{{}#}
+{#1;highlight red{    name: 'edit',}#}
+{#1;highlight red{    label: 'Edit',}#}
+{#1;highlight red{    icon: 'pencil',}#}
+{#1;highlight red{    link: item => [{}, item.id]}#}
+{#1;highlight red{  }}#},
+{#2;highlight blue{  multi: true}#}
+{#0;highlight{}}#}`} class="self-center"/>
+  <p-fragment class="annotation" index="0" style="inset: 5% auto auto 30%">Verbose 🥱<!---
+    First of all, it's verbose, there's a lot of boring boilerplate --></p-fragment>
+  <p-fragment class="annotation" index="1" style="inset: 40% auto auto 60%">Untyped 🫣<!---
+    The worst offender is the lack of type information. I can write whatever here, Angular wouldn't blink.
+    In certain contexts it's vital, so it's the strength and weakness of Angular's DI system. --></p-fragment>
+  <p-fragment class="annotation" index="2" style="inset: 70% auto auto 47%">Always forgotten 😅<!---
+    Lastly, we're going to forget to write the multi: true part. Ask me how I know --></p-fragment>
+</p-slide>
+<p-slide>
+  <div flex="column" class="s05 gap-1 self-center">
+    <Code code={`const provideTableAction{#0;reveal{ =}#}
+{#0;insert{  (action: TableAction) => {#1;reveal{(}#}{
+}#}{#1;insert{    provide: TABLE_ACTION,
+    useValue: action,
+    multi: true
+}#}{#0;insert{  }{#1;reveal{)}#};}#}`}/>
+    <Code code={`{
+  providers: [
+    {#9;reveal{provideTableAction(}#}{
+{#9;collapse{      provide: TABLE_ACTION,
+      useValue: {
+}#}      {#9;shrink{  }#}name: 'edit',
+      {#9;shrink{  }#}label: 'Edit',
+      {#9;shrink{  }#}icon: 'pencil',
+      {#9;shrink{  }#}link: item => ['/items', item.id]
+{#9;collapse{      },
+      multi: true
+}#}    }{#9;reveal{)}#}
+  ]
+}`} p-fragment/>
+  </div>
+</p-slide>
+<p-slide>
+  <Code code={`{#7;insert{interface ValueOrFactoryProviderFn<T> {
+  (value: T): ValueProvider;
+  (value: () => T): FactoryProvider;
+}}#}function createTokenProvider{#2;reveal{<T>}#}({#0;reveal{token: InjectionToken{#2;reveal{<T[]>}#}}#}) {
+{#insert{  return {#7;reveal{(}#}(value{#2;reveal{: T}#}{#5;reveal{ | (() => T)}#}) => ({
+    provide: token,
+{#6;insert{    ...(typeof value === 'function'
+      ? { useFactory: value }
+}#}    {#6;reveal{  : { }#}useValue: value{#6;reveal{ })}#},
+    multi: true
+  }){#7;reveal{) as ValueOrFactoryProviderFn<T>}#};
+}#}}
+{#insert{
+const {#8;highlight{provideTableAction}#} = createTokenProvider(TABLE_ACTION);
+}#}{#insert{const {#8;highlight{provideTableConfig}#} = createTokenProvider(TABLE_CONFIG);
+const {#8;highlight{provideTableColumn}#} = createTokenProvider(TABLE_COLUMN);}#}
+`} class="s05 self-center"/>
+</p-slide>
+<p-slide>
+  <div grid="2" class="gap-1 s05 self-center">
+    <Code code="TABLE_CONFIG" style="grid-column-end: span 2" class="center s2"/>
+    <Code code={`{
+  name: '{#1;highlight blue{articles-k15}#}',
+  columns: [...],
+  actions: [...]
+}`}/>
+    <Code code={`{
+  name: '{#1;highlight blue{articles-k15}#}',
+  columns: [...],
+  actions: [...]
+}`}/>
+    <Code code={`{
+  name: '{#2;highlight red{articles-k23}#}',
+  columns: [...],
+  actions: [...]
+}`} p-fragment/>
+    <Code code={`{
+  name: '{#4;highlight{articles-k*}#}',
+  columns: [...],
+  actions: [...]
+}`} p-fragment effect="reveal"/>
+  </div>
+</p-slide>
+<p-slide>
+  <div class="h1 center bold">The two hardest problems in IT</div>
+  <ol class="self-center">
+    <li p-fragment>Cache invalidation</li>
+    <li p-fragment>Naming things</li>
+    <li p-fragment>Off-by-one errors<!--- And I must admit, Copilot got the joke quite well here --></li>
+  </ol>
+</p-slide>
+<style lang="scss">
+  .annotation {
+    position: absolute;
+    background: #aaa;
+    padding: .25em .5em;
+    border-radius: .5em;
+  }
+</style>
