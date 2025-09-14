@@ -42,3 +42,7 @@ em {
 	font-style: unset;
 	color: var(--brand-color);
 }
+
+pre, code {
+	font-family: vars.$monospace-font;
+}

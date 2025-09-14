@@ -53,11 +53,11 @@ import Code from '../components/Code.astro';
 		--></line>
 		<text x="58" y="75" p-fragment>Components</text>
 		<text x="58" y="83" p-fragment>Services</text>
-		<path d="M48,69l20,20m0-20l-20,20" fill="none" stroke="red" stroke-width="5" p-fragment><!---
-			The core app doesn't "know" how to use those components and services, because
-		--></path>
 	</svg>
-	<p-fragment id="focus"><!--- the core app is meant to be *agnostic* --></p-fragment>
+	<p-fragment class="big-x" style="width: 5em; inset: 61.5% auto auto 44%"><!---
+	The core app doesn't "know" how to use those components and services, because
+	--></p-fragment>
+	<p-fragment id="focus"><!--- it's meant to be *agnostic* --></p-fragment>
 </p-slide>
 <p-slide>
 	<svg viewBox="0 0 100 100">
