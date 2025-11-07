@@ -17,10 +17,24 @@
 	},
 	"dependencies": {
 		"astro": "^5.12.9",
-		"p-slides": "^1.4.2"
+		"p-slides": "^1.5.0"
 	},
 	"devDependencies": {
 		"sass": "^1.89.2",
+		"uqr": "^0.1.2",
 		"vite-plugin-static-copy": "^3.1.0"
-	}
+	},
+	"repository": {
+		"type": "git",
+		"url": "git+https://github.com/MaxArt2501/deep-di-ving-ng-talk.git"
+	},
+	"author": {
+		"name": "Massimo Artizzu",
+		"email": "maxart.x@gmail.com"
+	},
+	"license": "UNLICENSED",
+	"bugs": {
+		"url": "https://github.com/MaxArt2501/deep-di-ving-ng-talk/issues"
+	},
+	"homepage": "https://maxart2501.github.io/deep-di-ving-ng-talk/"
 }

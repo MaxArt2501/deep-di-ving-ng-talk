@@ -1,0 +1,13 @@
+---
+import pkg from '../../package.json';
+import QrCode from "../components/QrCode.astro";
+
+const presentation = Astro.url.pathname.replace(/^\/+|\/+$/g, '').split('/').at(-1);
+const href = new URL(presentation ?? '', pkg.homepage).toString();
+---
+<p-slide>
+	<QrCode content={href} p-effect="dropping from" style="--from-y: -80cqh" aria-label="QR Code to the slides"/>
+	<a href={href} class="center" p-effect="dropping from" style="--from-y: 25cqh">
+		{href.slice(8)}
+	</a>
+</p-slide>

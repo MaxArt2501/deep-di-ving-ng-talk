@@ -1,6 +1,5 @@
 declare namespace astroHTML.JSX {
   interface HTMLAttributes {
-		effect?: string;
 		flex?: string | boolean;
 		grid?: string | boolean;
 		w?: string;
@@ -9,8 +8,5 @@ declare namespace astroHTML.JSX {
 		right?: string;
 		bottom?: string;
 		left?: string;
-	}
-  interface SVGAttributes {
-		effect?: string;
 	}
 }

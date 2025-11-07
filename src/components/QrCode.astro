@@ -1,0 +1,88 @@
+---
+import type { HTMLAttributes } from 'astro/types';
+import { Buffer } from 'node:buffer';
+import { encode } from 'uqr';
+
+type QrCodeGenerateOptions = NonNullable<Parameters<typeof encode>[1]>;
+
+interface Props extends Omit<QrCodeGenerateOptions, 'border' | 'onEncoded'>, HTMLAttributes<'svg'> {
+	content: string;
+	padding?: number;
+	variant?: Variant;
+}
+
+const { content, padding = 4, variant = 'default', ecc, maskPattern, boostEcc, minVersion, maxVersion, invert, ...attributes } = Astro.props;
+
+const { data, size, version } = encode(content, {
+	ecc,
+	maskPattern,
+	boostEcc,
+	minVersion,
+	maxVersion,
+	invert,
+	border: 0
+});
+
+type ModuleTransformer = (modules: boolean[][]) => string | Promise<string>;
+
+const variants = {
+  default: modules => `<path d="${modules.map((line, row) => {
+    let currentModule = false;
+    let count = 0;
+    const segs = [];
+    for (const module of line) {
+      if (module === currentModule) count++;
+      else {
+        segs.push(count);
+        count = 1;
+        currentModule = module;
+      }
+    }
+    if (count) segs.push(count);
+    const [shift, ...segments] = segs;
+    return `M${shift},${row + .5}${segments.map((length, index) => (index & 1 ? `m${length},0` : `h${length}`)).join('')}`;
+  })
+  .join('')}" stroke="currentColor"/>`,
+  dots: modules => `<path d="${modules.map((line, row) => {
+    let currentModule = false;
+    let count = 0;
+    const segs = [];
+    for (const module of line) {
+      if (module === currentModule) count++;
+      else {
+        segs.push(count);
+        count = 1;
+        currentModule = module;
+      }
+    }
+    if (count) segs.push(count);
+    const [shift, ...segments] = segs;
+    return `M${shift + .5},${row + .5}${segments.map((length, index) => (index & 1 ? `m${length},0` : 'h0m1,0'.repeat(length))).join('')}`;
+  })
+  .join('')}" stroke-linecap="round" stroke="currentColor"/>`,
+  punches: async modules => {
+		const buffer = await crypto.subtle.digest('sha-1', new TextEncoder().encode(content));
+		const id = Buffer.from(buffer).toString('base64');
+		return `<defs><mask id="mask_${id}"><rect width="${size}" height="${size}" fill="#fff"/><path d="${modules.map((line, row) => {
+			let currentModule = false;
+			let count = 0;
+			const segs = [];
+			for (const module of line) {
+				if (module === currentModule) count++;
+				else {
+					segs.push(count);
+					count = 1;
+					currentModule = module;
+				}
+			}
+			if (count) segs.push(count);
+			return `M.5,${row + .5}${segs.map((length, index) => (index & 1 ? `m${length},0` : 'h0m1,0'.repeat(length))).join('')}`;
+		}).join('')}" stroke="#000" stroke-linecap="round"/></mask></defs><rect width="${size}" height="${size}" rx="1" fill="currentColor" mask="url(#mask_${id})"/>`;
+	}
+} as const satisfies Record<string, ModuleTransformer>;
+type Variant = keyof typeof variants;
+---
+<svg viewBox={`${-padding} ${-padding} ${size + padding * 2} ${size + padding * 2}`} data-version={version} {...attributes}>
+	<Fragment set:html={await variants[variant](data)}/>
+	<slot></slot>
+</svg>

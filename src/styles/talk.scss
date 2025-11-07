@@ -143,183 +143,32 @@ text {
 	}
 }
 
-[effect]:not(p-fragment, [p-fragment]):not(:is(p-fragment, [p-fragment]) *) {
-  transition-delay: var(--sliding-duration, 0);
+[p-effect~='highlight'] {
+	border-radius: .5em;
 }
 
-@mixin effect($name, $props, $duration-factor: 1) {
-  [effect~="#{$name}"] {
-    opacity: 1 !important;
-		transition-duration: calc(var(--fragment-duration) * #{$duration-factor});
-		transition-property: $props;
-    @content(null);
-    @each $hidden in true, false {
-      &:is(p-fragment, [p-fragment])[aria-hidden='#{$hidden}'],
-      &:not(p-fragment, [p-fragment]):#{if($hidden == true, 'is', 'not')}([aria-hidden='true'] *) {
-        @content($hidden);
-      }
-    }
-  }
-}
-
-@include effect(zoom, transform) using ($hidden) {
-  @if $hidden == true {
-    transform: scale(0);
-  } @else if $hidden == false {
-    transform: scale(1);
-  } @else {
-    display: block;
-  }
-}
-
-@include effect(reveal, #{max-width, padding-inline}) using ($hidden) {
-  @if $hidden == true {
-    max-width: 0;
-    padding-inline: 0;
-  } @else if $hidden == false {
-    max-width: 100vw;
-  } @else {
-    display: inline-block;
-    overflow: clip;
-  }
-}
-@include effect(shrink, #{max-width, padding-inline}) using ($hidden) {
-  @if $hidden == true {
-    max-width: 100vw;
-  } @else if $hidden == false {
-    max-width: 0;
-    padding-inline: 0;
-  } @else {
-    display: inline-block;
-    overflow: clip;
-  }
-}
-@include effect(insert, #{max-height, padding-block}) using ($hidden) {
-  @if $hidden == true {
-    max-height: 0;
-    padding-block: 0;
-  } @else if $hidden == false {
-    max-height: 100vh;
-  } @else {
-    display: block;
-    overflow: clip;
-  }
-}
-@include effect(collapse, #{max-height, padding-block}) using ($hidden) {
-  @if $hidden == true {
-    max-height: 100vh;
-  } @else if $hidden == false {
-    max-height: 0;
-    padding-block: 0;
-  } @else {
-    display: block;
-    overflow: clip;
-  }
-}
-@include effect(strike, none) using ($hidden) {
-  @if $hidden == false {
-    &::before {
-      inset-inline-end: 0;
-    }
-  } @else {
-    position: relative;
-    &::before {
-      content: '';
-      position: absolute;
-      inset: 0;
-      inset-inline-end: 100%;
-      background: linear-gradient(to bottom, transparent calc(.5lh - .1em), red 0 calc(.5lh + .1em), transparent 0) 0 / auto 1lh;
-      transition: inherit;
-      transition-property: inset-inline-end;
-    }
-  }
-}
-@include effect(highlight, none) using ($hidden) {
-  @if $hidden == false {
-    &::before {
-      inset-inline-end: 0;
-    }
-  } @else {
-    position: relative;
-    &::before {
-      content: '';
-      position: absolute;
-      inset: 0;
-      inset-inline-end: 100%;
-      background: linear-gradient(to right, var(--highlight-color, yellow) 0 100%);
-      transition: inherit;
-      transition-property: inset-inline-end;
-			mix-blend-mode: soft-light;
-    }
-  }
-}
-[effect~='highlight'] {
-	&[effect~='red'] {
-		--highlight-color: #faa;
+[p-effect~='redraw'] {
+	transition-property: d;
+	
+	&:not([p-effect='redraw']) {
+		transition-property: --fragment-progress, d;
 	}
-	&[effect~='blue'] {
-		--highlight-color: cyan;
+	&[aria-hidden='false'],
+	[aria-hidden='false'] &:not(p-fragment *, [p-fragment] *) {
+		d: var(--to-path);
 	}
 }
-@include effect(falling, transform, 2) using ($hidden) {
-  @if $hidden == true {
-    transform: translateY(var(--from, -50vh));
-  } @else if $hidden == false {
-    transform: translateY(var(--to, 0));
-  } @else {
-    transition-timing-function: var(--bounce);
-    display: inline-block;
-  }
-}
-@include effect(drawing, stroke-dasharray, 2) using ($hidden) {
-  @if $hidden == true {
-    stroke-dasharray: 0px var(--length, 0px);
-		stroke-width: 0;
-  } @else if $hidden == false {
-    stroke-dasharray: var(--length, 0px) var(--length, 0px);
-  }
-}
-@include effect(highlight1, background-size) using ($hidden) {
-  @if $hidden == false {
-    background-size: 100%;
-  } @else {
-    background: linear-gradient(to right, var(--highlight-color, #663) 0 100%) 0 / 0% auto no-repeat;
-    mix-blend-mode: difference;
-  }
-}
-@supports (width: calc-size(auto, size)) {
-  @include effect(reveal, #{width, padding-inline}) using ($hidden) {
-    @if $hidden == true {
-      max-width: unset;
-      width: 0;
-    } @else if $hidden == false {
-      width: calc-size(auto, size);
-    }
-  }
-  @include effect(shrink, #{width, padding-inline}) using ($hidden) {
-    @if $hidden == true {
-      width: calc-size(auto, size);
-    } @else if $hidden == false {
-      max-width: unset;
-      width: 0;
-    }
-  }
-  @include effect(insert, #{height, padding-block}) using ($hidden) {
-    @if $hidden == true {
-      max-height: unset;
-      height: 0;
-    } @else if $hidden == false {
-      height: calc-size(auto, size);
-    }
-  }
-  @include effect(collapse, #{height, padding-block}) using ($hidden) {
-    @if $hidden == true {
-      height: calc-size(auto, size);
-    } @else if $hidden == false {
-      max-height: unset;
-      height: 0;
-    }
-  }
+
+@for $amount from 1 through 4 {
+	[p-effect][p-delay='#{$amount}'] {
+		transition-delay: calc(var(--fragment-duration) * #{$amount});
+	}
+	[p-effect][p-delay]:not(p-fragment, [p-fragment], p-fragment *, [p-fragment] *) {
+		transition-delay: calc(var(--fragment-duration) * #{$amount} + var(--sliding-duration, 0s));
+	}
+	[p-effect][p-duration='#{$amount}'] {
+		transition-duration: calc(var(--fragment-duration) * #{$amount});
+	}
 }
 
 g.shiki {

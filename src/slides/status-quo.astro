@@ -22,28 +22,20 @@
 </p-slide>
 <p-slide effect="fade" class="no-padding justify-end">
 	<svg viewBox="0 0 100 100" class="git-tree">
-		<defs>
-			<marker viewBox="0 0 6 6" refX="3" refY="3" markerWidth="1" markerHeight="1" id="commit">
-				<circle cx="3" cy="3" r="2" fill="#fff8" stroke="#fff"></circle>
-			</marker>
-			<marker viewBox="0 0 6 6" refX="4" refY="3" markerWidth="3" markerHeight="3" orient="auto-start-reverse" id="arrow" fill="#8E0022">
-				<path d="M0,0v6L6,3z"></path>
-			</marker>
-		</defs>
 		<line x1="50" x2="50" y1="100" y2="18"></line>
 		<text x="50" y="10" p-fragment>develop<!--- In short, they had their main development branch --></text>
-		<path d="M50,50a15,15 0 0 0 15,-15v-18" class="branch" p-fragment="1"><!---
+		<path d="M50,50a15,15 0 0 0 15,-15v-18" p-group="branches" p-effect="drawing" p-fragment style="--length: 41.56px"><!---
 			Then, for each client that was asking for customizations, they thought it was a good idea to create a new branch
 			specific for the client and its own customization, so to keep the development branch clean.
 		--></path>
-		<path d="M50,70a30,30 0 0 0 30,-30v-23" class="branch" p-fragment="1"></path>
-		<path d="M50,80a30,30 0 0 1-30,-30v-16-17" class="branch" p-fragment="1"></path>
-		<path d="M50,40a15,15 0 0 1-15,-15v-8" class="branch" p-fragment="1"></path>
+		<path d="M50,70a30,30 0 0 0 30,-30v-23" p-group="branches" p-effect="drawing" p-fragment style="--length: 70.13px"></path>
+		<path d="M50,80a30,30 0 0 1-30,-30v-16-17" p-group="branches" p-effect="drawing" p-fragment style="--length: 80.13px"></path>
+		<path d="M50,40a15,15 0 0 1-15,-15v-8" p-group="branches" p-effect="drawing" p-fragment style="--length: 31.56px"></path>
 		<path d="M50,100v-5-20-20-20-16" class="commits" p-fragment="2.5"></path>
-		<text x="-15" y="15" p-fragment="2">client/wasser-gmbh<!--- one for each client with their own customizations --></text>
-		<text x="-15" y="30" p-fragment="2">client/rossi_srl</text>
-		<text x="-15" y="60" p-fragment="2">client/acme</text>
-		<text x="-15" y="75" p-fragment="2">client/smith_co</text>
+		<text x="-15" y="15" p-fragment p-group="clients">client/wasser-gmbh<!--- one for each client with their own customizations --></text>
+		<text x="-15" y="30" p-fragment p-group="clients">client/rossi_srl</text>
+		<text x="-15" y="60" p-fragment p-group="clients">client/acme</text>
+		<text x="-15" y="75" p-fragment p-group="clients">client/smith_co</text>
 		<path d="M50,70c0,-10 -20,-5 -30,-15" class="merge" p-fragment="3"><!--- ... and they had to merge new features, bugfixes --></path>
 		<path d="M50,50c0,-10 -20,0 -30,-10" class="merge" p-fragment="4"><!--- ... synchronize dependency versions --></path>
 		<path d="M50,50c0,-10 20,-5 30,-15" class="merge" p-fragment="4"></path>
@@ -165,8 +157,8 @@
 		}
 	}
 
-  .saguaro {
-    height: 13em;
+	.saguaro {
+		height: 13em;
 		:has( > &) {
 			color: hsl(45deg 80% 50%);
 		}
@@ -182,13 +174,6 @@
 
 	.git-tree { 
 		> path {
-			&.branch {
-				stroke-dasharray: 0px 80.2px;
-				transition-property: stroke-dasharray;
-				&[aria-hidden='false'] {
-					stroke-dasharray: 80.2px 80.2px;
-				}
-			}
 			&:not(.merge):has(~ .commits[aria-hidden='false']) {
 				marker-end: url(#commit);
 				marker-mid: url(#commit);

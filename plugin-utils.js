@@ -243,7 +243,8 @@ export const getAncestorChild = (descendant, ancestor, before) => {
  * @property {TextNodePointer} end
  * @property {{ index?: string }} properties
  */
-const FRAGMENT_BOUNDARY_RE = /(\{#(\d*(?:\.\d+)?(?:;[a-z][a-z-]*(?: +[a-z][a-z-]*)*)?|[a-zA-Z-]*)\{)|((?<!\\)\}#\})/gi;
+const FRAGMENT_BOUNDARY_RE = /(\{#(\d*(?:\.\d+)?(?::(?:[a-z][a-z-]*)?(?: +[a-z][a-z-]*)*)?(?:;[a-z][a-z-]*(?: +[a-z][a-z-]*)*)?|[a-z-]*(?: +[a-z][a-z-]*)*)\{)|((?<!\\)\}#\})/gi;
+const INDEX_RE = /((?:\d*\.)?\d+)?(?::([^;}]*))?(?:;?([^{]+))?/;
 /**
  * @param {TreeNode} root
  * @returns {Generator<FragmentBlock>}
@@ -269,13 +270,10 @@ export function* generateFragments(root) {
 			const end = getTextNodeAtIndex(match.index + 3, textNodes, true);
 			const properties = {};
 			if (startMatch[2]) {
-				const [index, effect] = startMatch[2].split(/\s*;\s*/);
-				if (!effect) {
-					properties[isNaN(index) ? 'effect' : 'index'] = index;
-				} else {
-					properties.index = index || undefined;
-					properties.effect = effect || undefined;
-				}
+				const [, index, group, effect] = startMatch[2].match(INDEX_RE);
+				if (index) properties.index = index;
+				if (group) properties['p-group'] = group;
+				if (effect) properties['p-effect'] = effect;
 			}
 			yield { start, end, properties };
 			textNodes = Array.from(getTextNodes(root));

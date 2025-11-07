@@ -1,5 +1,6 @@
 ---
-import 'p-slides/css/p-slides.css';
+import 'p-slides/css/effects.css';
+import pkg from '../../package.json';
 ---
 <!doctype html>
 <html lang="en">
@@ -8,7 +9,7 @@ import 'p-slides/css/p-slides.css';
 		<meta name="viewport" content="width=device-width" />
 		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
 		<meta name="generator" content={Astro.generator} />
-		<title>Astro Basics</title>
+		<title>{pkg.description}</title>
 	</head>
 	<body>
 		<p-deck role="main">
@@ -50,11 +51,31 @@ import 'p-slides/css/p-slides.css';
 			<button type="button" class="next" aria-labelledby="goForwardTooltip"></button>
 			<div popover id="goForwardTooltip">Go forward</div>
 		</nav>
+		<svg style="position: absolute; width: 0px; height: 0px">
+			<defs>
+				<symbol id="package" viewBox="0 0 8 8">
+					<path d="M4,4l4-2 0,4-4,2" fill="color-mix(in srgb, currentColor, black 30%)"/>
+					<path d="M0,2l4,2 0,4-4-2M5.5,3.25v4l1-.5v-4" fill="color-mix(in srgb, currentColor, black 20%)"/>
+					<path d="M4,0l4,2-4,2-1.5-.75 0,4-1-.5 0-4-1.5-.75" fill="currentColor"/>
+					<path d="M2.5,.75l1.5,.75 1.5-.75 1,.5-1.5.75 1.5.75-1,.5-1.5-.75-1.5.75-1-.5 1.5-.75-1.5-.75" fill="color-mix(in srgb, currentColor, white 50%)"/>
+				</symbol>
+				<marker viewBox="0 0 6 6" refX="3" refY="3" markerWidth="3" markerHeight="3" orient="auto-start-reverse" id="arrow-head">
+					<path d="M0,0v6l6-3" fill="context-stroke"></path>
+				</marker>
+				<marker viewBox="0 0 6 6" refX="3" refY="3" markerWidth="1" markerHeight="1" id="commit">
+					<circle cx="3" cy="3" r="2" fill="#fff8" stroke="#fff"></circle>
+				</marker>
+				<marker viewBox="0 0 6 6" refX="4" refY="3" markerWidth="3" markerHeight="3" orient="auto-start-reverse" id="arrow" fill="#8E0022">
+					<path d="M0,0v6L6,3z"></path>
+				</marker>
+			</defs>
+		</svg>
 	</body>
 </html>
 
 <style lang="scss" is:global>
 	@use '../styles/index.scss';
+	@import url('p-slides/css/p-slides.css') layer(p-slides);
 </style>
 <script src="../scripts/main.js"></script>
 <script src="../scripts/blob.js"></script>

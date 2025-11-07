@@ -74,12 +74,6 @@ ShouldUseProvidedInService`}/>
 <p-slide>
 	<!--- Let's start with the source of all those values, which is the Injector. But it's not the usual singleton service -->
 	<svg viewBox="-20 0 120 100" id="injectors">
-		<defs>
-			<marker viewBox="-4 -4 8 8" refX="0" refY="0" markerWidth="1.5" markerHeight="1.5" id="skull">
-				<circle r="4" fill="#444"/>
-				<text y="0.8">💀</text>
-			</marker>
-		</defs>
 		<text y="50"><tspan x="28" dy="-.4em" p-fragment="2"><!---
 			And things are even more complex since we have a distinction between Element injectors and Environment injectors, although functionally they're quite similar
 		-->Element</tspan><tspan x="28" dy=".8em">Injector</tspan></text>
@@ -102,15 +96,19 @@ ShouldUseProvidedInService`}/>
 		<path p-fragment d="M50,30s0,20-30,20" class="fallback"><!--- Then the parent... --></path>
 		<path p-fragment d="M20,50v20" class="fallback"><!--- And so on... --></path>
 		<path p-fragment d="M20,70v20" class="fallback"><!--- And on... --></path>
-		<path p-fragment="8" d="M20,90a20,20 0 0 1-20-20" class="fallback"><!--- Until we eventually reach the Null Injector, and at that point we know we messed up --></path>
-		<text y="60" p-fragment="8"><tspan x="0" dy="-.4em">Null</tspan><tspan x="0" dy=".8em">Injector</tspan></text>
+		<path p-fragment p-group="null-inj" d="M20,90a20,20 0 0 1-20-20" class="fallback"><!--- Until we eventually reach the Null Injector, and at that point we know we messed up --></path>
+		<g p-fragment p-group="null-inj" p-effect="fade" p-delay="2">
+			<circle cy="70" r="5" fill="#444"/>
+			<use href="../img/fire.svg" width="10" height="10" x="-5" y="65"/>
+			<text y="60"><tspan x="0" dy="-.4em">Null</tspan><tspan x="0" dy=".8em">Injector</tspan></text>
+		</g>
 	</svg>
 </p-slide>
 <p-slide effect="fade">
 	<!--- Let's simplify all this and get the hierarchy from our node to the root. In a typical Angular application... -->
 	<svg viewBox="-20 0 120 100" id="injector-line">
-		<path d="M35,10s0,20 15,20" class="fallback"/>
-		<path d="M50,30s0,20-30,20v20v20" class="fallback"/>
+		<path d="M35,10s0,20 15,20" class="fallback" p-effect="redraw" p-duration="2" style="--to-path: path('M20,10s0,10 0,20')"/>
+		<path d="M50,30s0,20-30,20v20v20" class="fallback" p-effect="redraw" p-duration="2" style="--to-path: path('M20,30s0,10 0,20v20v20')"/>
 		<SvgCode lang="html" code=" platform()" x="-15" y="87.75" p-fragment="0" theme="github-light" style="font-size: 4px"><g p-notes>
 			... we start with two environment injectors, one from the platform, one from the bootstrap, typically placed in app.config.ts
 		</g></SvgCode>
@@ -125,10 +123,10 @@ ShouldUseProvidedInService`}/>
 			<line class="arrow" x1="38" y1="50" x2="28" y2="50" stroke="#24292e"/>
 		</SvgCode>
 		<SvgCode lang="html" code="<my-fruits>" x="-15" y="27.75" p-fragment="2" theme="github-light" style="font-size: 4px"/>
-		<circle p-fragment="2" effect="drawing" cx="20" cy="30" r="5"><!---
+		<circle p-fragment="2" p-effect="drawing" p-duration="2" cx="20" cy="30" r="5"><!---
 			... and we inject in a node whose injector does *not* contain that token
 		--></circle>
-		<path class="arrow" p-fragment effect="drawing" d="M26,30s15,0 19,9" stroke="#dd0031"><!---
+		<path class="arrow" p-fragment p-effect="drawing" p-duration="2" d="M26,30s15,0 19,9" stroke="#dd0031"><!---
 			... we retrieve that value from the parent element's injector.
 		--></path>
 		<SvgCode lang="html" code=" <my-table>" x="-15" y="7.75" p-fragment="4" theme="github-light" style="font-size: 4px"><g p-notes>
@@ -140,7 +138,7 @@ ShouldUseProvidedInService`}/>
 }`} x="40" y="2.25" style="font-size: 4px" p-fragment="4">
 			<line class="arrow" x1="38" y1="10" x2="28" y2="10" stroke="#24292e"/>
 		</SvgCode>
-		<path class="arrow" p-fragment effect="drawing" d="M24,14s15,20 25,6.5" stroke="#dd0031"><!---
+		<path class="arrow" p-fragment p-effect="drawing" d="M24,14s15,20 25,6.5" stroke="#dd0031"><!---
 			... then it will get that value from *that* injector instead. What about the previous value?
 		--></path>
 	</svg>
@@ -178,13 +176,6 @@ ShouldUseProvidedInService`}/>
 				&:nth-of-type(2) { transform: translate(42px, calc(var(--diff) * 20px)); }
 				&:nth-of-type(3) { transform: translate(38px, calc(var(--diff) * 20px)); }
 				&:nth-of-type(n + 4) { transform: translate(-2px, calc(var(--diff) * 20px)); }
-			}
-
-			&:last-of-type {
-				text-anchor: middle;
-				font-size: 5px;
-				transition-duration: var(--fragment-duration);
-				transition-delay: calc(var(--fragment-duration) * 2);
 			}
 		}
 		> path {
@@ -247,7 +238,7 @@ ShouldUseProvidedInService`}/>
 			}
 			&:nth-last-child(1 of .fallback) {
 				stroke-dasharray: 31.42px 31.42px; // Given by .getTotalLength()
-				marker-end: url(#skull);
+				marker-end: none;
 			}
 		}
 	}
@@ -267,37 +258,37 @@ ShouldUseProvidedInService`}/>
 			stroke-linejoin: round;
 			marker-mid: url(#commit);
 			marker-start: url(#commit);
-			transition: d calc(var(--fragment-duration) * 2) var(--sliding-duration);
+			// transition: d calc(var(--fragment-duration) * 2) var(--sliding-duration);
 
-			[aria-hidden='false'] & {
-				&:nth-of-type(1) {
-					d: path('M20,10s0,10 0,20');
-				}
-				&:nth-of-type(2) {
-					d: path('M20,30s0,10 0,20v20v20');
-				}
-			}
+			// [aria-hidden='false'] & {
+			// 	&:nth-of-type(1) {
+			// 		d: path('M20,10s0,10 0,20');
+			// 	}
+			// 	&:nth-of-type(2) {
+			// 		d: path('M20,30s0,10 0,20v20v20');
+			// 	}
+			// }
 		}
 		text {
 			font-size: 4px;
 			text-anchor: start;
 		}
 	}
-	[effect="drawing"] {
-		opacity: 1;
-		transition-duration: calc(var(--fragment-duration) * 2);
+	[p-effect="drawing"] {
 		stroke: #dd0031;
-		stroke-linecap: round;
 		fill: none;
 		
 		&:is(circle) {
 			--length: #{10px * 3.1416};
 			transition-property: stroke-dasharray, transform;
 			stroke-width: 2px;
-
+			
 			&:has(~ g[aria-hidden='false']) {
 				transform: translateY(-20px);
 			}
+		}
+		&[aria-hidden='false'] {
+			stroke-linecap: round;
 		}
 		
 		&.arrow {

@@ -2,21 +2,26 @@
 import AstroCode from 'astro/components/Code.astro';
 import type { BundledLanguage } from 'shiki';
 import fragmentTransformer from '../../fragment-transformer';
+import slotTransformer from '../../slot-transformer';
 
 type AstroCodeProps = Parameters<typeof AstroCode>[0];
-
+	
 interface Props extends AstroCodeProps {}
 
-const { lang = 'ts' as BundledLanguage, theme = 'github-dark', transformers = [], ...otherProps } = Astro.props;
+const slotted = await Astro.slots.render('default');
+
+const { lang = 'ts' as BundledLanguage, theme = 'github-dark', transformers = [], meta, ...otherProps } = Astro.props;
 
 const props: Props = {
 	lang,
 	theme,
 	transformers: [
 		fragmentTransformer,
+		slotTransformer,
 		...transformers
 	],
+	meta: slotted || undefined,
 	...otherProps
 };
 ---
-<AstroCode {...props}/>
+<AstroCode {...props}><slot></slot></AstroCode>

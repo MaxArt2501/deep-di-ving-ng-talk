@@ -1,4 +1,25 @@
+@use 'sass:map';
 @use './variables.scss' as vars;
+
+$syntax-initial-values: (
+	length: 0px,
+	percentage: 0%,
+	time: 0s,
+	angle: 0deg,
+	color: #000,
+	number: 0,
+	integer: 0
+);
+
+@each $syntax in length percentage time angle color number integer {
+	@for $index from 1 through 2 {
+		@property --#{$syntax}-#{$index} {
+			syntax: '<#{$syntax}>';
+			initial-value: map.get($syntax-initial-values, $syntax);
+			inherits: true;
+		}
+	}
+}
 
 *,
 ::before,

@@ -6,16 +6,16 @@ import Code from '../components/Code.astro';
 	<svg viewBox="0 0 100 100" class="git-tree">
 		<line x1="50" x2="50" y1="100" y2="18"></line>
 		<text x="50" y="10">develop</text>
-		<g class="to-left" p-fragment="0">
-			<path transform="translate(20,17)" d="M0,0v33a30,30 0 0 0 30,30" class="branch"></path>
+		<g p-fragment p-group="detach" p-effect="boing from" style="--to-x: -2px">
+			<path transform="translate(20,17)" d="M0,0v33a30,30 0 0 0 30,30" class="branch" p-effect="redraw" p-duration="2"></path>
 			<text x="-15" y="15">client/wasser-gmbh</text>
-			<path transform="translate(35,17)" d="M0,0v8a15,15 0 0 0 15,15" class="branch"></path>
+			<path transform="translate(35,17)" d="M0,0v8a15,15 0 0 0 15,15" class="branch" p-effect="redraw" p-duration="2"></path>
 			<text x="-15" y="30">client/rossi_srl</text>
 		</g>
-		<g class="to-right" p-fragment="0">
-			<path transform="translate(65,17)" d="M0,0v18a15,15 0 0 1-15,15" class="branch"></path>
+		<g p-fragment p-group="detach" p-effect="from" style="--to-x: 2px">
+			<path transform="translate(65,17)" d="M0,0v18a15,15 0 0 1-15,15" class="branch" p-effect="redraw" p-duration="2"></path>
 			<text x="-15" y="60">client/acme</text>
-			<path transform="translate(80,17)" d="M0,0v23a30,30 0 0 1-30,30" class="branch"></path>
+			<path transform="translate(80,17)" d="M0,0v23a30,30 0 0 1-30,30" class="branch" p-effect="redraw" p-duration="2"></path>
 			<text x="-15" y="75">client/smith_co</text>
 		</g>
 		<path d="M50,100v-5-20-20-20-16" class="commits"></path>
@@ -23,25 +23,14 @@ import Code from '../components/Code.astro';
 </p-slide>
 <p-slide>
 	<svg viewBox="0 0 100 100">
-		<defs>
-			<symbol id="package" viewBox="0 0 8 8">
-				<path d="M4,4l4-2 0,4-4,2" fill="color-mix(in srgb, currentColor, black 30%)"/>
-				<path d="M0,2l4,2 0,4-4-2M5.5,3.25v4l1-.5v-4" fill="color-mix(in srgb, currentColor, black 20%)"/>
-				<path d="M4,0l4,2-4,2-1.5-.75 0,4-1-.5 0-4-1.5-.75" fill="currentColor"/>
-				<path d="M2.5,.75l1.5,.75 1.5-.75 1,.5-1.5.75 1.5.75-1,.5-1.5-.75-1.5.75-1-.5 1.5-.75-1.5-.75" fill="color-mix(in srgb, currentColor, white 50%)"/>
-			</symbol>
-			<marker viewBox="0 0 6 6" refX="3" refY="3" markerWidth="3" markerHeight="3" orient="auto-start-reverse" id="arrow-head">
-				<path d="M0,0v6l6-3" fill="context-stroke"></path>
-			</marker>
-		</defs>
-		<g class="package core" p-fragment>
+		<g class="package core" p-effect="dropping from" style="--from-y: -40px; --to-y: 30px">
 			<use href="#package" width="40" height="40" style="color: rgb(207, 144, 238)" />
 			<g transform="translate(2.5 16.25) scale(.75 1) skewY(21)">
 				<rect width="20" height="10" rx="1" fill="white"/>
 				<text x="10" y="5">core</text>
 			</g>
 		</g>
-		<g class="package client" p-fragment>
+		<g class="package client" p-fragment p-effect="dropping from" style="--from-x: 76px; --from-y: -32px; --to-x: 76px;  --to-y: 38px">
 			<use href="#package" width="24" height="24" style="color: tan" />
 			<g transform="translate(1.5 9.75) scale(.75 1) skewY(21)">
 				<rect width="12" height="6" rx=".5" fill="white"/>
@@ -95,17 +84,17 @@ class CustomTableService {
 	tables = inject(TableService);
 
 	constructor() {
-		{#1{effect(() => {
+{#insert{		effect(() => {
 			if (this.tables.current()
-					=== 'articles') {}#}
-				{#2{this.tables.columns.update(
+					=== 'articles') {
+{#insert{				this.tables.columns.update(
 					cols => {
 						// Column update logic
 					}
-				);}#}
-			{#1{}
-		});}#}
-	}
+				);
+}#}			}
+		});
+}#}	}
 }`}/>
 </p-slide>
 <p-slide flex="row" class="align-center gap-1">
@@ -113,25 +102,25 @@ class CustomTableService {
 class TableService {
 	current = signal<string>();
 	#columns = signal<TableColumn[]>();
-
-	{#{updateColumns(cols: TableColumn[]) {
+{#insert{
+	updateColumns(cols: TableColumn[]) {
 		// Column update logic
-	}}#}
-}`}/>
+	}
+}#}}`}/>
 	<Code p-fragment class="s05" code={`@Injectable({ providedIn: 'root' })
 class CustomTableService {
 	tables = inject(TableService);
 
 	constructor() {
-		{#{effect(() => {
+{#insert{		effect(() => {
 			if (this.tables.current()
 					=== 'articles') {
 				this.tables.updateColumns([
 					...
 				]);
 			}
-		});}#}
-	}
+		});
+}#}	}
 }`}/>
 </p-slide>
 <p-slide>
@@ -250,39 +239,8 @@ class CustomTableService {
 	</svg>
 </p-slide>
 <style lang="scss">
-	.to-left, .to-right {
-		transition: transform var(--fragment-duration);
-		opacity: 1 !important;
-
-		path {
-			transition-duration: calc(var(--fragment-duration) * 2);
-			transition-timing-function: var(--overshoot);
-			transition-property: d;
-		}
-		&[aria-hidden='false'] path {
-			d: path('M0,0v80a0,0 0 0 0 0,0');
-		}
-	}
-	.to-left[aria-hidden='false'] {
-		transform: translate(-2px, 0);
-	}
-	.to-right[aria-hidden='false'] {
-		transform: translate(2px, 0);
-	}
-	.package[p-fragment] {
-		transition: transform calc(var(--fragment-duration) * 2) var(--bounce);
-		&.core {
-			transform: translate(0px, -40px);
-			&[aria-hidden='false'] {
-				transform: translate(0px, 30px);
-			}
-		}
-		&.client {
-			transform: translate(76px, -32px);
-			&[aria-hidden='false'] {
-				transform: translate(76px, 38px);
-			}
-		}
+	[p-effect='redraw'] {
+		--to-path: path('M0,0v80a0,0 0 0 0 0,0');
 	}
 	#focus {
 		position: absolute;
