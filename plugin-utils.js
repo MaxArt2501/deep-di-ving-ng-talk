@@ -243,7 +243,7 @@ export const getAncestorChild = (descendant, ancestor, before) => {
  * @property {TextNodePointer} end
  * @property {{ index?: string }} properties
  */
-const FRAGMENT_BOUNDARY_RE = /(\{#(\d*(?:\.\d+)?(?::(?:[a-z][a-z-]*)?(?: +[a-z][a-z-]*)*)?(?:;[a-z][a-z-]*(?: +[a-z][a-z-]*)*)?|[a-z-]*(?: +[a-z][a-z-]*)*)\{)|((?<!\\)\}#\})/gi;
+const FRAGMENT_BOUNDARY_RE = /(\{#(\d*(?:\.\d+)?(?::(?:[a-z][a-z-]*)?(?: +[a-z][a-z-]*)*)?(?:;-?[a-z][a-z-]*(?: +[a-z][a-z-]*)*)?|-?[a-z-]*(?: +[a-z][a-z-]*)*)\{)|((?<!\\)\}#\})/gi;
 const INDEX_RE = /((?:\d*\.)?\d+)?(?::([^;}]*))?(?:;?([^{]+))?/;
 /**
  * @param {TreeNode} root
@@ -273,7 +273,11 @@ export function* generateFragments(root) {
 				const [, index, group, effect] = startMatch[2].match(INDEX_RE);
 				if (index) properties.index = index;
 				if (group) properties['p-group'] = group;
-				if (effect) properties['p-effect'] = effect;
+				if (effect) {
+					const isInitiallyVisible = effect[0] === '-';
+					properties['p-effect'] = isInitiallyVisible ? effect.slice(1) : effect;
+					if (isInitiallyVisible) properties['aria-hidden'] = 'false';
+				}
 			}
 			yield { start, end, properties };
 			textNodes = Array.from(getTextNodes(root));

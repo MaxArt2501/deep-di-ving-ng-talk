@@ -57,7 +57,7 @@ import { tokens as acmeTokens } from '@client/acme';
 }#}
 export const appConfig: ApplicationConfig = {
   providers: [
-{#0;collapse{
+{#0;-insert{
 
 
 
@@ -66,7 +66,7 @@ export const appConfig: ApplicationConfig = {
 
 
 
-}#}    {#1;strike{{#0;reveal{fruitTableConfig}#}{#0;shrink{ }#},}#}
+}#}    {#1;strike{{#0;reveal{fruitTableConfig}#}{#0;-reveal{ }#},}#}
 {#2;insert{    ...tables,
 }#}    ...acmeTokens
   ]
@@ -227,7 +227,7 @@ import { mergeConfigs } from '../utils/table';
 	standalone: true
 })
 export class FruitList {
-	configs: TableConfig[] = {#1;reveal{{#1;highlight{chainInject}#}}#}{#1;shrink{{#strike{inject}#}}#}(TABLE_CONFIG);
+	configs: TableConfig[] = {#1;reveal{{#1;highlight{chainInject}#}}#}{#1;-reveal{{#strike{inject}#}}#}(TABLE_CONFIG);
 
 	config = mergeConfigs(this.configs.filter(cfg => cfg.name === 'fruit'));
 }`} class="s05 self-center"/>

@@ -40,17 +40,17 @@ import Code from '../components/Code.astro';
     <Code code={`{
   providers: [
     {#:provide;reveal{provideTableAction(}#}{
-{#:provide;collapse{      provide: TABLE_ACTION,
+{#:provide;-insert{      provide: TABLE_ACTION,
       useValue: {
-}#}      {#:provide;shrink{  }#}name: 'edit',
-      {#:provide;shrink{  }#}label: 'Edit',
-      {#:provide;shrink{  }#}icon: 'pencil',
-      {#:provide;shrink{  }#}link: item => ['/items', item.id]
-{#:provide;collapse{      },
+}#}      {#:provide;-reveal{  }#}name: 'edit',
+      {#:provide;-reveal{  }#}label: 'Edit',
+      {#:provide;-reveal{  }#}icon: 'pencil',
+      {#:provide;-reveal{  }#}link: item => ['/items', item.id]
+{#:provide;-insert{      },
       multi: true
 }#}    }{#:provide;reveal{)}#}
   ]
-}`} p-fragment/>
+}`} p-fragment p-effect="insert"/>
 	</div>
 </p-slide>
 <p-slide>
@@ -109,7 +109,7 @@ const {#8;highlight{provideTableColumn}#} = createTokenProvider(TABLE_COLUMN);}#
   if (value) {
     const valueArray = Array.isArray(value) ? value : [value];
 {#:filter;insert{    const filtered = valueArray{#:filter;highlight green{.filter(value => matches(value.name)(name))}#};
-}#}    values.push(...{#:filter;reveal{filtered}#}{#:filter;shrink{values}#});
+}#}    values.push(...{#:filter;reveal{filtered}#}{#:filter;-reveal{values}#});
   }
 }#}}`} class="s05 self-center"/>
 	<p-notes p-fragment p-group="name">So let's add the name</p-notes>
@@ -130,7 +130,7 @@ import { chainInject{#:byName;reveal{ByName}#} } from '../chain-inject';
 export class FruitList {
 	configs: TableConfig[] = chainInject{#:byName;reveal{ByName}#}(TABLE_CONFIG{#:byName;reveal{, 'fruit'}#});
 
-	config = mergeConfigs(this.configs{#:noFilter;shrink{.filter(cfg => cfg.name === 'fruit')}#});
+	config = mergeConfigs(this.configs{#:noFilter;strike{.filter(cfg => cfg.name === 'fruit')}#});
 }`} class="s05 self-center"/>
 	<p-notes p-group="byName">&hellip; we use this new <code>chainInjectByName</code>&hellip;</p-notes>
 	<p-notes p-group="noFilter">&hellip; that automatically filters the values we're interested in for us.</p-notes>

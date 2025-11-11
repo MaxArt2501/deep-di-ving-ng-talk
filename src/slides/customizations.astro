@@ -130,44 +130,9 @@
 </p-slide>
 <style lang="scss">
 	@use 'sass:list';
-  .redacted-layout {
-		font-family: 'Redacted Script';
-		margin: auto;
-		display: grid;
-		grid-template: auto auto / auto auto;
-		--border-color: color-mix(in srgb, currentColor, white);
-
+	.redacted-layout {
 		table {
 			table-layout: fixed;
-			width: min-content;
-			align-self: center;
-			border-collapse: collapse;
-			font-size: 50%;
-			white-space: nowrap;
-			margin: .5em;
-		}
-		th, td {
-			text-align: start;
-			padding: 0;
-			overflow: hidden;
-			border: 0px solid var(--border-color);
-			
-			&:not(:first-child) {
-				border-inline-start-width: .125em;
-			}
-			
-			> * {
-				display: block;
-				padding: .25em .5em;
-				overflow: hidden;
-				width: 100%;
-			}
-		}
-		th {
-			border-bottom-width: .25em;
-		}
-		:not(:last-child) > td {
-			border-bottom-width: .125em;    
 		}
 
 		[p-effect='column-add'] {
@@ -196,48 +161,5 @@
 			width: 0;
 			background-color: red;
 		}
-		.header {
-			background: #dc087d30;
-			box-shadow: inset 0 -.05em 0 var(--border-color);
-			padding: 0 .25em;
-	
-			.toolbar {
-				text-align: end;
-			}
-
-			kbd {
-				font-size: 60%;
-			}
-		}
-		kbd {
-			overflow: hidden;
-			display: inline-block;
-			text-align: center;
-			line-height: 1.25;
-			background: white;
-			border-radius: .25em;
-			margin-inline: .1em;
-		}
-		.sidebar {
-			font-size: 50%;
-			grid-area: 1 / 1 / 3 / 2;
-			background-color: #6c00f530;
-			box-shadow: inset -.05em 0 0 var(--border-color);
-			display: grid;
-    	grid-template-rows: subgrid;
-		}
-		ul {
-			list-style-type: none;
-			padding-inline-start: .5em;
-			margin: .25em 0;
-		}
-		.logo {
-			display: flex;
-			align-items: center;
-			padding-inline-start: 2em;
-			font-size: 1.5em;
-			font-weight: bold;
-			background: radial-gradient(circle at 1em 50%, #e40035 0.75em, transparent 0);
-		}
-  }
+	}
 </style>

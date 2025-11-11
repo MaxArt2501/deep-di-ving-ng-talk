@@ -31,5 +31,8 @@ export default defineConfig({
 		shikiConfig: {
 			transformers: [fragmentTransformer]
 		}
+	},
+	devToolbar: {
+		enabled: false
 	}
 });
