@@ -1,0 +1,79 @@
+<p-slide>
+	<h2 class="center">In the end&hellip;</h2>
+	<!--- Have our goal been reached? Yes - so far! Because we're still working on it,
+		but we've greatly simplified the relevant parts of the codebase,
+		allowing us to modernize it and paving the road for new developments -->
+	<!--- But there are some hot takes we can already say -->
+</p-slide>
+<p-slide>
+	<div grid="2">
+		<svg viewBox="0 0 100 100">
+			<use href="#package" width="80" height="80" x="10" y="10" style="color: #dd0031"/>
+			<g transform="translate(12 45) scale(.9 1.2) skewY(21)">
+				<rect width="40" height="10" rx="1" fill="white"/>
+				<text x="20" y="5">@angular/core</text>
+			</g>
+		</svg>
+		<p class="center self-center h3">Angular has <strong>a lot of tools</strong> for your code</p>
+	</div>
+	<!--- Angular has a *massive* set of tools we can use to create our applications.
+		Some that we forget they even exist. Maybe we should all browse the official docs just for fun,
+		and find some hidden gems -->
+</p-slide>
+<p-slide>
+	<div grid="2">
+		<svg viewBox="-25 0 100 100">
+			<path d="M 50 30 S 35 30 35 10"/>
+			<path d="M 50 30 S 50 20 50 10"/>
+			<path d="M 50 30 S 65 30 65 10"/>
+			<path d="M -2.5 30 S -10 30 -10 10"/>
+			<path d="M -2.5 30 S 5 30 5 10"/>
+			<path d="M 20 50 S 50 50 50 30"/>
+			<path d="M 20 50 S -2.5 50 -2.5 30"/>
+			<path d="M 20 10 V 30 V 50 V 70 V 90"/>
+		</svg>
+		<p class="center self-center h3">Angular's DI is <strong>very powerful</strong></p>
+	</div>
+	<!--- All the things that Angular brought on the table had various level of success.
+		Some have been terrific (think TypeScript), others are considered brilliant but with an excessively steep learning curve (RxJS),
+		and other are pretty meh and are reworked from scratch. -->
+	<!--- One thing that has always been true to itself is the dependency
+		injection system, which is the very essence of Angular and also the core of our solution. -->
+	<!--- We think it definitely deserves more attention and consideration, and not just a magic box that
+		works in mysterious ways -->
+</p-slide>
+<p-slide>
+	<div grid="2">
+		<div class="stack">
+			<img src="../img/angular.svg" alt="Angular's logo" style="height: 7em; margin: -1em 0 2em; clip-path: polygon(75% 0, 100% 0, 100% 100%, 0 100%, 0 70%,30% 85%, 65% 75%, 85% 45%)">
+			<img src="../img/angular.svg" alt="Angular's logo" style="height: 10em; margin: -3em 2em 2em -1em; clip-path: circle(32% at 56% 50%);">
+			<img src="../img/magnifying.svg" alt="Magnifying glass" style="height: 12em; isolation: isolate">
+		</div>
+		<p class="center self-center h3">Don't be afraid to <strong>research new solutions</strong></p>
+	</div>
+	<!--- Doesn't mean you should throw yourself in creating something crazy for the sake of it -->
+	<!--- If there's already a paved road that leaves little margins for improvements, it's foolish not to take it -->
+	<!--- But if there isn't, reapplying the same patterns can be a burden, and another approach could easily solve your problems -->
+	<!--- And if it doesn't work, it will never be for naught: one day you win, one day you... learn -->
+</p-slide>
+<p-slide>
+	<div grid="2">
+		<span class="s7 center">👋</span>
+		<p class="center self-center h3">Have fun <strong>coding!</strong></p>
+	</div>
+	<!--- And finally, there's nothing wrong in having fun doing your job. It doesn't necessarily mean hilarity, but rather having a great time and getting satisfaction. And that's I wish for you all! -->
+</p-slide>
+<style lang="scss">
+	path {
+		fill: none;
+		stroke: #dd0031;
+		stroke-width: 6px;
+		stroke-linecap: round;
+		marker-end: url(#commit);
+		marker-mid: url(#commit);
+
+		&:nth-of-type(8) {
+			marker-start: url(#commit);
+		}
+	}
+</style>

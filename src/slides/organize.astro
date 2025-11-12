@@ -154,4 +154,299 @@ export class FruitList {
 }#}  })
 ]`} class="s08 self-center"/>
 </p-slide>
-
+<p-slide>
+	<div class="h3 bold center">Derive the <em>name</em><br> from the <em>context</em></div>
+	<p-fragment class="center">
+		I.e.: can we get the name from what we've already named?
+		<!--- And you may ask: in what cases it could come in handy? -->
+		<!--- It's in those cases where some piece of user interface - i.e. a table, a toolbar, a dashboard, ... - is bound to its context, which is basically the current view -->
+	</p-fragment>
+</p-slide>
+<p-slide class="stack">
+	<!--- So, for example, we may have a page that has a table as its main, defining feature. And that could be the case for many different pages of our application.	-->
+	<div class="redacted-layout s08">
+		<div class="sidebar">
+			<div class="logo">Lorem</div>
+			<ul>
+				<li>
+					<b>Section</b>
+					<ul>
+						<li>First</li>
+						<li>Second</li>
+						<li>Third</li>
+						<li>And more</li>
+					</ul>
+				</li>
+				<li>
+					<b>Other</b>
+					<ul>
+						<li>Second to last</li>
+						<li>Last</li>
+					</ul>
+				</li>
+				<li>
+					<b>Addition</b>
+					<ul>
+						<li>Plus one</li>
+						<li>And two</li>
+					</ul>
+				</li>
+			</ul>
+		</div>
+		<div class="header">
+			<p>Articles</p>
+			<div class="toolbar">
+				<kbd>🔍</kbd><kbd>➕</kbd><kbd>⚡</kbd>
+			</div>
+		</div>
+		<table>
+			<thead>
+				<tr>
+					<th><span>Id</span></th>
+					<th><span>Name</span></th>
+					<th><span>Nickname</span></th>
+					<th><span>email</span></th>
+					<th><span>Orders</span></th>
+					<th><span>Actions</span></th>
+				</tr>
+			</thead>
+			<tbody>
+				<tr>
+					<td><span>1</span></td>
+					<td><span>Leanne Graham</span></td>
+					<td><span>Bret</span></td>
+					<td><a href="mailto:Sincere@april.biz">Sincere@april.biz</a></td>
+					<td><span>92998</span></td>
+					<td><span><kbd>✏️</kbd><kbd>❌</kbd></span></td>
+				</tr>
+				<tr>
+					<td><span>2</span></td>
+					<td><span>Ervin Howell</span></td>
+					<td><span>Antonette</span></td>
+					<td><a href="mailto:Shanna@melissa.tv">Shanna@melissa.tv</a></td>
+					<td><span>90566</span></td>
+					<td><span><kbd>✏️</kbd><kbd>❌</kbd></span></td>
+				</tr>
+				<tr>
+					<td><span>3</span></td>
+					<td><span>Clementine Bauch</span></td>
+					<td><span>Samantha</span></td>
+					<td><a href="mailto:Nathan@yesenia.net">Nathan@yesenia.net</a></td>
+					<td><span>59590</span></td>
+					<td><span><kbd>✏️</kbd></span></td>
+				</tr>
+				<tr>
+					<td><span>4</span></td>
+					<td><span>Patricia Lebsack</span></td>
+					<td><span>Karianne</span></td>
+					<td><a href="mailto:Julianne.OConner@kory.org">Julianne.OConner@kory.org</a></td>
+					<td><span>53919</span></td>
+					<td><span><kbd>❌</kbd></span></td>
+				</tr>
+				<tr>
+					<td><span>5</span></td>
+					<td><span>Chelsey Dietrich</span></td>
+					<td><span>Kamren</span></td>
+					<td><a href="mailto:Lucio_Hettinger@annie.ca">Lucio_Hettinger@annie.ca</a></td>
+					<td><span>33263</span></td>
+					<td><span><kbd style="visibility: hidden">✏️</kbd></span></td>
+				</tr>
+				<tr>
+					<td><span>6</span></td>
+					<td><span>Mrs. Dennis Schulist</span></td>
+					<td><span>Leopoldo_Corkery</span></td>
+					<td><a href="mailto:Karley_Dach@jasper.info">Karley_Dach@jasper.info</a></td>
+					<td><span>23505</span></td>
+					<td><span><kbd>✏️</kbd><kbd>❌</kbd></span></td>
+				</tr>
+				<tr>
+					<td><span>7</span></td>
+					<td><span>Kurtis Weissnat</span></td>
+					<td><span>Elwyn.Skiles</span></td>
+					<td><a href="mailto:Telly.Hoeger@billy.biz">Telly.Hoeger@billy.biz</a></td>
+					<td><span>58804</span></td>
+					<td><span><kbd>✏️</kbd></span></td>
+				</tr>
+				<tr>
+					<td><span>8</span></td>
+					<td><span>Nicholas Runolfsdottir V</span></td>
+					<td><span>Maxime_Nienow</span></td>
+					<td><a href="mailto:Sherwood@rosamond.me">Sherwood@rosamond.me</a></td>
+					<td><span>45169</span></td>
+					<td><span><kbd>✏️</kbd><kbd>❌</kbd></span></td>
+				</tr>
+			</tbody>
+		</table>
+	</div>
+	<pre class="names" p-fragment><!--- So it's not a matter of giving just one name --><p-fragment p-effect="insert" p-group="taxon">'stores'
+'stores-item'
+'stores-item-edit'
+'stores-managers'
+'stores-managers-contacts'
+...<!---
+But rather a complete taxonomy of names in order to have them meaningful and predictable. And *that* is hard! -->
+<!--- And more than hard: it's also *reduntant*, because we've done something similar again and again while developing the application
+--></p-fragment>'articles'<p-fragment p-effect="insert" p-group="taxon">'articles-source'
+'articles-source-list'
+'articles-source-edit'
+'articles-item'
+'articles-item-edit'
+...
+'regions'
+'regions-areas'
+'regions-areas-item'
+...</p-fragment></pre>
+</p-slide>
+<style lang="scss">
+	pre.names {
+		background: #fffc;
+		border-radius: 1em;
+		padding: 1em;
+		font-size: 60%;
+		font-weight: bold;
+		box-shadow: 0 0 1em;
+	}
+</style>
+<p-slide class="justify-start gap-1">
+	<div class="h4 bold center">From the component's <em>name</em></div>
+	<p-fragment class="stack self-center">
+		<!--- You know that thing you put after class? -->
+		<Code code={`@Component({
+  selector: 'app-fruit-list',
+  templateUrl: './fruit-list.html',
+  styleUrls: ['./fruit-list.css']
+})
+export default class {#1;highlight green{FruitList}#} {
+  ...
+}`} p-fragment p-effect="from" aria-hidden="false" style="--from-x: calc(-50% - 50cqw)" p-group="swipe" class="s08"/>
+	<Code code={`const getComponentName = ({#:ar;reveal{route: ActivatedRoute}#}) => {
+{#:cn;insert{  return route.component.name;
+}#}};
+{#:test;insert{
+getComponentName(inject(ActivatedRoute))
+}#}{#:prob;insert{> "{#highlight{_}#}FruitList"
+}#}`} class="s08 self-center" p-fragment p-group="swipe" p-effect="from right"/>
+	</p-fragment>
+	<p-notes p-group="swipe">And that's something we can easily retrieve</p-notes>
+	<p-notes p-group="ar">And we get it from the <code>ActivatedRoute</code>, because</p-notes>
+	<p-notes p-group="cn">it stores the component's class, so we can get its name</p-notes>
+	<p-notes p-group="test">Problem is, when we use it, what we get</p-notes>
+	<p-notes p-group="prob">
+		is <em>not</em> the class' intended name, but something that's actually been mangled by the compiler.
+		And in production it's even worse.
+	</p-notes>
+	<p-fragment class="big-x" style="width: 10em; inset: 30%">
+		<!--- Can we configure the compiler to avoid this problem? Probably, but maybe it's too much effort -->
+	</p-fragment>
+</p-slide>
+<p-slide class="justify-start gap-1">
+	<div class="h4 bold center">From the component's <em>selector</em></div>
+	<!--- Oooh, that's a good one! -->
+	<p-fragment class="stack self-center">
+		<!--- You know that thing you put in the class' decorator? -->
+		<Code code={`@Component({
+  selector: '{#1;highlight green{app-fruit-list}#}',
+  templateUrl: './fruit-list.html',
+  styleUrls: ['./fruit-list.css']
+})
+export default class FruitList {
+  ...
+}`} p-fragment p-effect="from" aria-hidden="false" style="--from-x: calc(-50% - 50cqw)" p-group="swipe" class="s08"/>
+		<Code code={`const getComponentSelector = (route: ActivatedRoute)
+{#:cn;insert{  => {#5:as-any;reveal{(}#}route.component{#:as-any;reveal{ as any)}#}
+    .{#:cn;highlight green{decorators[0].args[0].selector}#};
+}#}
+{#:test;insert{getComponentSelector(inject(ActivatedRoute))
+> "app-fruit-list"
+}#}`} class="s08 self-center" p-fragment p-group="swipe" p-effect="from right"/>
+	</p-fragment>
+	<p-notes p-group="swipe">Again, we start from the activated route</p-notes>
+	<p-notes p-group="cn">And get the component's class, where we can retrieve the decorators applied to it</p-notes>
+	<p-notes p-group="test">This one <em>just works!</em></p-notes>
+	<p-notes p-group="as-any">Problem is, Angular decorators are <em>private</em>, therefore an implementation detail and we shouldn't rely on them</p-notes>
+	<p-fragment class="big-x" style="width: 10em; inset: 30%">
+		<!--- Moreover, we're also moving towards the usage of selector-less components -->
+	</p-fragment>
+</p-slide>
+<p-slide class="justify-start gap-1">
+	<div class="h4 bold center">From the route's <em>title</em></div>
+	<!--- Another good idea that leverages on Angular's new features -->
+	<p-fragment class="stack self-center">
+		<!--- Set the page's title directly in the route def, rather than using Title -->
+		<Code code={`{
+  path: 'fruits',
+{#1:title;insert{  title: {#2;reveal{() => }#}'{#:title;highlight green{List of all fruits}#}',
+}#}  component: FruitList
+}`} p-fragment p-effect="from" aria-hidden="false" style="--from-x: calc(-50% - 50cqw)" p-group="swipe" class="s08"/>
+		<Code code={`const getRouteTitle = (route: ActivatedRoute) => {
+{#:its;insert{  const titleStrategy = inject(TitleStrategy);
+}#}{#:cn;insert{  let current: ActivatedRoute | null = route;
+  while (current) {
+    const title = titleStrategy.getResolvedTitleForRoute(current.snapshot);
+    if (title) return title;
+    current = current.parent;
+  }
+}#}};
+{#:test;insert{
+getRouterTitle(inject(ActivatedRoute))
+> "List of all fruits"
+}#}`} class="s06 self-center" p-fragment p-group="swipe" p-effect="from right"/>
+	</p-fragment>
+	<p-notes p-group="swipe">Now you know the drill</p-notes>
+	<p-notes p-group="its">Assuming injection context, get the <code>TitleStrategy</code></p-notes>
+	<p-notes p-group="cn">Resolve the title for the specific partial route, if any. Otherwise climb the tree</p-notes>
+	<p-notes p-group="test">It works, but several issues. First, not all pages might have a title: use explicit names for those cases.</p-notes>
+	<p-notes p-group="test">Second: page titles are descriptive, not meant to be stable or unique</p-notes>
+	<p-notes p-group="test">Finally, the title could and will probably change depending on the requested resource (e.g. might include the resource's name)</p-notes>
+	<p-fragment class="big-x" style="width: 10em; inset: 30%">
+		<!--- So, in the end, this one should be tossed too -->
+	</p-fragment>
+</p-slide>
+<p-slide class="justify-start gap-1">
+	<div class="h4 bold center">From the route's <em>path</em></div>
+	<!--- Attn: not the *resolved* path, but rather the route's configuration. Parameter name, not value -->
+	<p-fragment class="stack self-center">
+		<Code code={`articles/{#1;highlight red{{#2;-reveal{2493-4321}#}}#}{#2;reveal{{#2;highlight green{:id}#}}#}/edit`} lang="plaintext" p-fragment p-effect="from" aria-hidden="false" style="--from-x: calc(-50% - 50cqw)" p-group="swipe" class="s08"/>
+		<Code code={`const getRoutePath = (route: ActivatedRoute) => {
+{#:path;insert{  const segments: string[] = [];
+  let current: ActivatedRoute | null = route;
+  while (current) {
+    const { path } = current.{#:cfg;highlight blue{routeConfig}#} ?? {};
+    if (path) segments.unshift(path);
+    current = current.parent;
+  }
+  return segments.join('/');
+}#}};
+{#:test;insert{
+getRouterPath(inject(ActivatedRoute))
+> "articles/:id:/edit"
+}#}`} class="s05 self-center" p-fragment p-group="swipe" p-effect="from right"/>
+	</p-fragment>
+	<p-notes p-group="swipe">The activated route is always our starting point</p-notes>
+	<p-notes p-group="path">We then climb down the route's tree to the root</p-notes>
+	<p-notes p-group="cfg">And we take the configuration, not the snapshot, for the mentioned purposes</p-notes>
+	<p-notes p-group="test">So we can get what we want</p-notes>
+	<p-notes p-group="test">And I know what some of you might say: paths are not id's, they're subject to change too. But honestly, that rarely happens. So yes, we've gone for that</p-notes>
+	<p-notes p-group="test">Another detail is that there could be <code>matcher</code> instead of <code>path</code> in the route definition, but not in our case. Otherwise you have to deal</p-notes>
+</p-slide>
+<p-slide>
+	<Code code={`export function chainInject{#:name;-reveal{ByName}#}<T>(
+  token: ProviderToken<T | T[]>,
+  name{#:name;reveal{?}#}: string
+): T[] {
+  ...
+{#:grp;insert{  if (name === undefined) {
+    name = {#:grp;highlight green{getRoutePath}#}(inject(ActivatedRoute));
+  }
+}#}  const value = injector.get(token, null, { self: true, optional: true });
+  if (value) {
+    const valueArray = Array.isArray(value) ? value : [value];
+    const filtered = valueArray.filter(value => {
+{#:filter;insert{      const valueName = value.name
+        ?? {#;highlight blue{getRoutePath(injector.get(ActivatedRoute, null, { self: true }))}#};
+}#}      return matches(value{#:filter;-reveal{.name}#}{#:filter;reveal{Name}#})(name)
+		});
+    values.push(...filtered);
+  }
+}`} class="s05 self-center"/>
+</p-slide>
