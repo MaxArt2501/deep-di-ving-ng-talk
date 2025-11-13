@@ -1,12 +1,14 @@
 <p-slide>
-	<div class="h4 center">
+	<div class="h4 center bold">
 		<em>What</em>
 		<br /> customizations?
 	</div>
 </p-slide>
 <p-slide>
+	<!--- For example take a page, with a table as its main UI feature. What would a client ask to change? -->
 	<div class="redacted-layout">
 		<div class="sidebar" p-fragment="6" p-effect="reveal">
+			<!--- Or something in the sidebar -->
 			<div class="logo">Lorem</div>
 			<ul>
 				<li>
@@ -26,6 +28,7 @@
 					</ul>
 				</li>
 				<li p-fragment="7" p-effect="boing from left" style="--from-x: -100%">
+					<!--- like a bunch of links to new pages, and so on -->
 					<b>Addition</b>
 					<ul>
 						<li>Plus one</li>
@@ -35,17 +38,20 @@
 			</ul>
 		</div>
 		<div class="header" p-fragment="4" p-effect="insert">
+			<!--- Or something in the toolbar, like -->
 			<p>Articles</p>
 			<div class="toolbar">
-				<kbd>🔍</kbd><kbd>➕</kbd><kbd p-fragment="5" p-effect="reveal">⚡</kbd>
+				<kbd>🔍</kbd><kbd>➕</kbd><kbd p-fragment="5" p-effect="reveal">⚡<!--- a new button, with its effect and such --></kbd>
 			</div>
 		</div>
+		<p-notes p-group="column-add">It could be adding a column</p-notes>
+		<p-notes p-group="column-remove">or removing one</p-notes>
 		<table>
 			<colgroup>
 				<col></col>
 				<col></col>
-				<col p-fragment="2" p-effect="column-remove"></col>
-				<col p-fragment p-effect="column-add"></col>
+				<col p-fragment="2" p-group="column-remove"></col>
+				<col p-fragment p-group="column-add"></col>
 				<col></col>
 				<col></col>
 			</colgroup>
@@ -66,7 +72,7 @@
 					<td><span>Bret</span></td>
 					<td><a href="mailto:Sincere@april.biz">Sincere@april.biz</a></td>
 					<td><span>92998</span></td>
-					<td><span><kbd>✏️</kbd><kbd p-fragment="3" p-effect="reveal" p-group="actions">❌</kbd></span></td>
+					<td><span><kbd>✏️</kbd><kbd p-fragment="3" p-effect="reveal" p-group="actions">❌<!--- Or maybe a new type of action on the rows --></kbd></span></td>
 				</tr>
 				<tr>
 					<td><span>2</span></td>
@@ -135,7 +141,7 @@
 			table-layout: fixed;
 		}
 
-		[p-effect='column-add'] {
+		[p-group='column-add'] {
 			width: 0;
 		}
 
@@ -146,18 +152,18 @@
 				width: $width * 1em;
 			}
 		}
-		[p-effect^="column"] {
+		[p-group^="column"] {
 			transition: width calc(var(--fragment-duration) * 4) var(--overshoot),
 				background-color calc(var(--fragment-duration) * 2) linear(0, 1 5%, 0);
 		}
-		[p-effect='column-add'] {
+		[p-group='column-add'] {
 			transition-timing-function: var(--overshoot), linear(0, 1 95%, 0);
 			&[aria-hidden='true'] {
 				width: 0;
 				background-color: green;
 			}
 		}
-		[p-effect='column-remove'][aria-hidden='false'] {
+		[p-group='column-remove'][aria-hidden='false'] {
 			width: 0;
 			background-color: red;
 		}

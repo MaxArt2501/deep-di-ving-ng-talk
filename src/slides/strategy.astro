@@ -3,16 +3,18 @@ import Code from '../components/Code.astro';
 ---
 
 <p-slide>
+	<!--- Now that you have a clearer idea of what we're dealing with, our main task was to find a way to make these changes atomic, agnostic and easily movable, so that... -->
 	<svg viewBox="0 0 100 100" class="git-tree">
 		<line x1="50" x2="50" y1="100" y2="18"></line>
 		<text x="50" y="10">develop</text>
-		<g p-fragment p-group="detach" p-effect="boing from" style="--to-x: -2px">
+		<g p-fragment p-group="detach" p-effect="boing move" style="--to-x: -2px">
+			<!--- we can finally detach them from the app repo and make them live in their own customization package -->
 			<path transform="translate(20,17)" d="M0,0v33a30,30 0 0 0 30,30" class="branch" p-effect="redraw" p-duration="2"></path>
 			<text x="-15" y="15">client/wasser-gmbh</text>
 			<path transform="translate(35,17)" d="M0,0v8a15,15 0 0 0 15,15" class="branch" p-effect="redraw" p-duration="2"></path>
 			<text x="-15" y="30">client/rossi_srl</text>
 		</g>
-		<g p-fragment p-group="detach" p-effect="from" style="--to-x: 2px">
+		<g p-fragment p-group="detach" p-effect="boing move" style="--to-x: 2px">
 			<path transform="translate(65,17)" d="M0,0v18a15,15 0 0 1-15,15" class="branch" p-effect="redraw" p-duration="2"></path>
 			<text x="-15" y="60">client/acme</text>
 			<path transform="translate(80,17)" d="M0,0v23a30,30 0 0 1-30,30" class="branch" p-effect="redraw" p-duration="2"></path>
@@ -22,64 +24,54 @@ import Code from '../components/Code.astro';
 	</svg>
 </p-slide>
 <p-slide>
+	<!--- But *how* are we going to achieve this? We start with our main application -->
 	<svg viewBox="0 0 100 100">
-		<g class="package core" p-effect="dropping from" style="--from-y: -40px; --to-y: 30px">
-			<use href="#package" width="40" height="40" style="color: rgb(207, 144, 238)" />
-			<g transform="translate(2.5 16.25) scale(.75 1) skewY(21)">
-				<rect width="20" height="10" rx="1" fill="white"/>
-				<text x="10" y="5">core</text>
-			</g>
-		</g>
-		<g class="package client" p-fragment p-effect="dropping from" style="--from-x: 76px; --from-y: -32px; --to-x: 76px;  --to-y: 38px">
-			<use href="#package" width="24" height="24" style="color: tan" />
-			<g transform="translate(1.5 9.75) scale(.75 1) skewY(21)">
-				<rect width="12" height="6" rx=".5" fill="white"/>
-				<text x="6" y="3" style="font-size: 3px">client</text>
-			</g>
-		</g>
+		<use href="#package-core" width="40" height="40" y="30" p-effect="dropping from" style="--from-y: -70px"/>
+		<use href="#package-client" width="24" height="24" x="76" y="38" p-fragment p-effect="dropping from" style="--from-y: -70px">
+			<!--- that will import a customization package in the build. -->
+		</use>
 		<line x1="72" y1="50" x2="47" y2="50" class="arrow" stroke-width="2" p-fragment><!---
 			In order to be a customization package, it should bring something custom to the core app. What are those things?
 		--></line>
-		<text x="58" y="75" p-fragment>Components</text>
+		<text x="58" y="75" p-fragment><!--- Normally, we'd talk about... -->Components</text>
 		<text x="58" y="83" p-fragment>Services</text>
 	</svg>
 	<p-fragment class="big-x" style="width: 5em; inset: 61.5% auto auto 44%"><!---
-	The core app doesn't "know" how to use those components and services, because
+	Problem is, the core app doesn't "know" how to use those components and services, because
 	--></p-fragment>
 	<p-fragment id="focus"><!--- it's meant to be *agnostic* --></p-fragment>
 </p-slide>
 <p-slide>
+	<!--- This means it's the core app that should offer a way to introduce those changes -->
 	<svg viewBox="0 0 100 100">
-		<g class="package core" transform="translate(0, 30)" id="core-package">
-			<use href="#package" width="40" height="40" style="color: rgb(207, 144, 238)" />
-			<g transform="translate(2.5 16.25) scale(.75 1) skewY(21)">
-				<rect width="20" height="10" rx="1" fill="white"/>
-				<text x="10" y="5">core</text>
-			</g>
-		</g>
-		<g class="package client" transform="translate(76, 38)" id="client-package">
-			<use href="#package" width="24" height="24" style="color: tan" />
-			<g transform="translate(1.5 9.75) scale(.75 1) skewY(21)">
-				<rect width="12" height="6" rx=".5" fill="white"/>
-				<text x="6" y="3" style="font-size: 3px">client</text>
-			</g>
-		</g>
+		<use href="#package-core" width="40" height="40" y="30"/>
+		<use href="#package-client" width="24" height="24" x="76" y="38"/>
 		<line x1="44" y1="45" x2="69" y2="45" class="arrow" stroke-width="2" p-fragment><!---
-			So, normally, it should be the app to expose something first... to bring something *in*
+			It will expose something first... to bring something *in*
 		--></line>
 		<text x="58" y="37" p-fragment>Services</text>
 		<line x1="72" y1="55" x2="47" y2="55" class="arrow" stroke-width="2" p-fragment><!--- ... and only then the customization package can signal the changes it wants --></line>
-		<text x="58" y="63" p-fragment>changes</text>
+		<text x="58" y="63" p-fragment>changes<!--- But *how* can we take those customizations? Let's see --></text>
 	</svg>
 </p-slide>
 <p-slide flex="row" class="align-center gap-1">
-	<Code class="s05" code={`@Injectable({ providedIn: 'root' })
+	<!--- Suppose the core application exposes a service that signals what's the current table, its columns etc. -->
+	<div flex="column">
+		<svg viewBox="0 0 40 40" style="width: 2em; margin: -1.75em auto -.25em; isolation: isolate">
+			<use href="#package-core" width="40" height="40" />
+		</svg>
+		<Code class="s05" code={`@Injectable({ providedIn: 'root' })
 class TableService {
 	current = signal<string>();
 	columns = signal<TableColumn[]>();
 	...
 }`}/>
-	<Code p-fragment class="s05" code={`@Injectable({ providedIn: 'root' })
+	</div>
+	<div flex="column" p-fragment>
+		<svg viewBox="0 0 40 40" style="width: 2em; margin: -1.75em auto -.25em; isolation: isolate">
+			<use href="#package-client" width="40" height="40" />
+		</svg>
+		<Code class="s05" code={`@Injectable({ providedIn: 'root' })
 class CustomTableService {
 	tables = inject(TableService);
 
@@ -96,6 +88,7 @@ class CustomTableService {
 		});
 }#}	}
 }`}/>
+	</div>
 </p-slide>
 <p-slide flex="row" class="align-center gap-1">
 	<Code class="s05" code={`@Injectable({ providedIn: 'root' })
