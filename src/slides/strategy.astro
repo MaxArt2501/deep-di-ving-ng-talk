@@ -62,70 +62,92 @@ import Code from '../components/Code.astro';
 		</svg>
 		<Code class="s05" code={`@Injectable({ providedIn: 'root' })
 class TableService {
-	current = signal<string>();
-	columns = signal<TableColumn[]>();
-	...
+  current = signal<string>();
+  columns = signal<TableColumn[]>();
+  ...
 }`}/>
 	</div>
 	<div flex="column" p-fragment>
+		<!--- Then a service in the client package should depend on that. This service must be provided and instantiated in some way -->
 		<svg viewBox="0 0 40 40" style="width: 2em; margin: -1.75em auto -.25em; isolation: isolate">
 			<use href="#package-client" width="40" height="40" />
 		</svg>
 		<Code class="s05" code={`@Injectable({ providedIn: 'root' })
 class CustomTableService {
-	tables = inject(TableService);
+  tables = inject(TableService);
 
-	constructor() {
-{#insert{		effect(() => {
-			if (this.tables.current()
-					=== 'articles') {
-{#insert{				this.tables.columns.update(
-					cols => {
-						// Column update logic
-					}
-				);
-}#}			}
-		});
-}#}	}
+  constructor() {
+{#:check;insert{    effect(() => {
+      if (this.tables.current()
+          === 'articles') {
+{#:update;insert{        this.tables.columns.update(
+          cols => {
+            // Column update logic
+          }
+        );
+}#}      }
+    });
+}#}  }
 }`}/>
 	</div>
+	<p-notes p-group="check">then react when it's due (e.g. when it's displayed a table they want to change)</p-notes>
+	<p-notes p-group="update">applying the client customizations, owning the logic of this change. That's not really optimal</p-notes>
 </p-slide>
 <p-slide flex="row" class="align-center gap-1">
-	<Code class="s05" code={`@Injectable({ providedIn: 'root' })
+	<!--- Let's change things a little, then. Similar service for the core, but this time it exposes an explicit method to alter the columns. -->
+	<div flex="column">
+		<svg viewBox="0 0 40 40" style="width: 2em; margin: -1.75em auto -.25em; isolation: isolate">
+			<use href="#package-core" width="40" height="40" />
+		</svg>
+		<Code class="s05" code={`@Injectable({ providedIn: 'root' })
 class TableService {
-	current = signal<string>();
-	#columns = signal<TableColumn[]>();
-{#insert{
-	updateColumns(cols: TableColumn[]) {
-		// Column update logic
-	}
+  current = signal<string>();
+  #columns = signal<TableColumn[]>();
+{#:logic;insert{
+  updateColumns(cols: TableColumn[]) {
+    // Column update logic
+  }
 }#}}`}/>
-	<Code p-fragment class="s05" code={`@Injectable({ providedIn: 'root' })
+		<p-notes p-group="logic"> This way, it's the core application that owns the update logic, so nobody can mess it up.</p-notes>
+	</div>
+	<div flex="column" p-fragment>
+		<!--- This time, the client service (or any other runtime in injection context, actually) -->
+		<svg viewBox="0 0 40 40" style="width: 2em; margin: -1.75em auto -.25em; isolation: isolate">
+			<use href="#package-client" width="40" height="40" />
+		</svg>
+		<Code class="s05" code={`@Injectable({ providedIn: 'root' })
 class CustomTableService {
-	tables = inject(TableService);
+  tables = inject(TableService);
 
-	constructor() {
-{#insert{		effect(() => {
-			if (this.tables.current()
-					=== 'articles') {
-				this.tables.updateColumns([
-					...
-				]);
-			}
-		});
-}#}	}
+  constructor() {
+{#:update;insert{    effect(() => {
+      if (this.tables.current()
+          === 'articles') {
+        this.tables.updateColumns([
+          ...
+        ]);
+      }
+    });
+}#}  }
 }`}/>
+	</div>
+	<p-notes p-group="update">will use that method, providing only the necessary data. Better, but let's see the big picture</p-notes>
 </p-slide>
 <p-slide>
+	<!--- So we start from this service in the core app -->
 	<svg viewBox="0 15 140 40">
-		<use href="#core-package" transform="scale(.25) translate(160 30)" />
+		<use href="#package-core" width="10" x="43" />
 		<text x="70" y="20">TableService</text>
-		<line x1="70" y1="24" x2="90" y2="40" class="arrow" stroke-width="1.5" p-fragment="0"></line>
-		<use href="#client-package" transform="scale(.416667) translate(95 58)" p-fragment="0"/>
+		<line x1="70" y1="24" x2="90" y2="40" class="arrow" stroke-width="1.5" p-fragment="0"><!---
+			Then it's the client package that provides the change
+		--></line>
+		<use href="#package-client" width="10" x="75.5" y="25" p-fragment="0"/>
 		<text x="110" y="45" p-fragment="0">CustomTableService</text>
-		<line x2="80" y2="24" x1="100" y1="40" class="arrow" stroke-width="1.5" p-fragment></line>
-		<line x1="60" y1="24" x2="40" y2="40" class="arrow" stroke-width="1.5" p-fragment="2"></line>
-		<use href="#core-package" transform="scale(.25) translate(30 130)" p-fragment="2" />
+		<line x2="80" y2="24" x1="100" y1="40" class="arrow" stroke-width="1.5" p-fragment><!---
+			applying to the original table configuration
+		--></line>
+		<line x1="60" y1="24" x2="40" y2="40" class="arrow" stroke-width="1.5" p-fragment="2"/>
+		<use href="#package-core" width="10" x="10.5" y="25" p-fragment="2" />
 		<text x="40" y="45" p-fragment="2">TableComponent<!---
 			Finally we report the update to the table component. It's quite some back-and-forth for a task behind a relatively simple concept
 		--></text>
@@ -143,21 +165,29 @@ class CustomTableService {
 	</div>
 </p-slide>
 <p-slide>
-	<div class="h3 center bold">What we need</div>
+	<div class="h3 center bold">What we <em>need</em></div>
 	<ul class="self-center">
 		<li p-fragment>One-time definition of <b>changes</b>&hellip;</li>
-		<li p-fragment>&hellip; possibily <b>dependent on services</b>&hellip;</li>
+		<li p-fragment>&hellip; possibily <b>in injection context</b>&hellip;</li>
 		<li p-fragment>&hellip; <b>retrieved</b> by simple means&hellip;</li>
 		<li p-fragment>&hellip; and <b>applied by the core</b> app&hellip;</li>
-		<li p-fragment>&hellip; and <b>more</b>.</li>
+		<li p-fragment>&hellip; and <b>more*</b>.</li>
 	</ul>
+	<!--- Basically we need to make the client package say:
+		these are my changes, categorized by type: do what you need.
+		The core app controls how and when applying the changes,
+		no further effort is needed from the client package -->
 </p-slide>
 <p-slide class="align-center justify-around">
-	<div class="h3 bold center">Make changes a <em>token</em></div>
-	<div class="token-face" p-fragment><span>?</span></div>
+	<!--- We need the changes to be small, transportable -->
+	<div class="h3 bold center" p-fragment p-effect="dropping from above">
+		Make changes a <em>token</em>
+		<!--- basically a token we can carry around -->
+	</div>
+	<div class="token-face" p-fragment p-effect="spin and zoom"><span>?</span></div>
 </p-slide>
 <p-slide>
-	<!--- So, what should we do? The core app shouldn't behave like a closed box... -->
+	<!--- What does that mean? The core app shouldn't behave like a closed box... -->
 	<p-fragment id="notes">
 		<!--- ... but like a *juke* box. Meaning that it can work on its own, but its behavior can be changed from outside if we give them... -->
 		<span>🎵</span>
@@ -173,20 +203,8 @@ class CustomTableService {
 				<stop offset="100%" stop-color="#f36281"/>
 			</linearGradient>
 		</defs>
-		<g class="package core" transform="translate(0, 30)">
-			<use href="#package" width="40" height="40" style="color: rgb(207, 144, 238)" />
-			<g transform="translate(2.5 16.25) scale(.75 1) skewY(21)">
-				<rect width="20" height="10" rx="1" fill="white"/>
-				<text x="10" y="5">core</text>
-			</g>
-		</g>
-		<g class="package client" transform="translate(76, 38)">
-			<use href="#package" width="24" height="24" style="color: tan" />
-			<g transform="translate(1.5 9.75) scale(.75 1) skewY(21)">
-				<rect width="12" height="6" rx=".5" fill="white"/>
-				<text x="6" y="3" style="font-size: 3px">client</text>
-			</g>
-		</g>
+		<use href="#package-core" width="40" height="40" y="30"/>
+		<use href="#package-client" width="24" height="24" x="76" y="38" />
 		<g id="token" p-fragment="1">
 			<!--- ... tokens! Of course, not *any* token, but the token that the app expects -->
 			<!--- Now, "token" is something you've heard around when using Angular -->

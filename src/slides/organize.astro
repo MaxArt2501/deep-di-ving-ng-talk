@@ -2,7 +2,7 @@
 import Code from '../components/Code.astro';
 ---
 <p-slide>
-	<!--- This is fine, but we have to write each time something like this -->
+	<!--- This is fine, but we have to write every time something like this -->
 	<Code code={`{#:verbose;highlight{{}#}
 {#:verbose;highlight{  provide: TABLE_ACTION,}#}
 {#:verbose;highlight{  useValue: }#}{#:untyped;highlight red{{}#}
@@ -30,13 +30,18 @@ import Code from '../components/Code.astro';
 	}
 </style>
 <p-slide>
+	<!--- Hear me out. What if we could have a function that helps us creating these values? For example, one that defines an action for the rows of a table -->
+	<p-notes p-group="param">It will take the "real" value we want to provide, already constraining it to its correct type</p-notes>
+	<p-notes p-group="boiler">Then adds all the boring parts for us</p-notes>
 	<div flex="column" class="s05 gap-1 self-center">
-		<Code code={`const provideTableAction{#0;reveal{ =}#}
-{#0;insert{  (action: TableAction) => {#1;reveal{(}#}{
-}#}{#1;insert{    provide: TABLE_ACTION,
+		<Code code={`const provideTableAction{#:param;reveal{ =}#}
+{#:param;insert{  (action: TableAction) => {#:boiler;reveal{(}#}{
+}#}{#:boiler;insert{    provide: TABLE_ACTION,
     useValue: action,
     multi: true
-}#}{#0;insert{  }{#1;reveal{)}#};}#}`}/>
+}#}{#:param;insert{  }{#:boiler;reveal{)}#};}#}`}/>
+		<p-notes p-group="usage">So instead of writing all of this</p-notes>
+		<p-notes p-group="provide">we're reduced to write *only* the interesting parts. And we can do even better</p-notes>
     <Code code={`{
   providers: [
     {#:provide;reveal{provideTableAction(}#}{
@@ -50,51 +55,70 @@ import Code from '../components/Code.astro';
       multi: true
 }#}    }{#:provide;reveal{)}#}
   ]
-}`} p-fragment p-effect="insert"/>
+}`} p-fragment p-effect="insert" p-group="usage"/>
 	</div>
 </p-slide>
 <p-slide>
-	<Code code={`{#7;insert{interface ValueOrFactoryProviderFn<T> {
+	<!--- Instead of doing this for every token we're going to create, we can develop a factory for this kind of provider functions. What's going to need? -->
+	<p-notes p-group="token">But the token, of course. As I mentioned it could be anything, but let's restrict to InjectionTokens only, for type's sake</p-notes>
+	<p-notes p-group="core">The core part is just that: returns a provider object like before</p-notes>
+	<p-notes p-group="types">Then we add the type generics, and we could already call it a day. But we want <em>flexibility</em></p-notes>
+	<p-notes p-group="fn">So we say our value could also be a <em>factory</em> of values</p-notes>
+	<p-notes p-group="factory">And return a <code>FactoryProvider</code> in this case</p-notes>
+	<p-notes p-group="interface">The final step is to give appropriate types to it all</p-notes>
+	<p-notes p-group="usage">and use this factory to generate our provider functions</p-notes>
+	<p-notes p-group="all">All of them. But&hellip; can we do better? There's still something that&hellip; clicks "verbosity"</p-notes>
+	<Code code={`{#5:interface;insert{interface ValueOrFactoryProviderFn<T> {
   (value: T): ValueProvider;
   (value: () => T): FactoryProvider;
-}}#}function createTokenProvider{#2;reveal{<T>}#}({#0;reveal{token: InjectionToken{#2;reveal{<T[]>}#}}#}) {
-{#insert{  return {#7;reveal{(}#}(value{#2;reveal{: T}#}{#5;reveal{ | (() => T)}#}) => ({
+}}#}function createTokenProvider{#2:types;reveal{<T>}#}({#0:token;reveal{token: InjectionToken{#:types;reveal{<T[]>}#}}#}) {
+{#:core;insert{  return {#:interface;reveal{(}#}(value{#:types;reveal{: T}#}{#3:fn;reveal{ | (() => T)}#}) => ({
     provide: token,
-{#6;insert{    ...(typeof value === 'function'
+{#4:factory;insert{    ...(typeof value === 'function'
       ? { useFactory: value }
-}#}    {#6;reveal{  : { }#}useValue: value{#6;reveal{ })}#},
+}#}    {#:factory;reveal{  : { }#}useValue: value{#:factory;reveal{ })}#},
     multi: true
-  }){#7;reveal{) as ValueOrFactoryProviderFn<T>}#};
+  }){#:interface;reveal{) as ValueOrFactoryProviderFn<T>}#};
 }#}}
-{#insert{
-const {#8;highlight{provideTableAction}#} = createTokenProvider(TABLE_ACTION);
-}#}{#insert{const {#8;highlight{provideTableConfig}#} = createTokenProvider(TABLE_CONFIG);
-const {#8;highlight{provideTableColumn}#} = createTokenProvider(TABLE_COLUMN);}#}
+{#:usage;insert{
+const {#:all;highlight{provideTableAction}#} = createTokenProvider(TABLE_ACTION);
+}#}{#:all;insert{const {#:all;highlight{provideTableConfig}#} = createTokenProvider(TABLE_CONFIG);
+const {#:all;highlight{provideTableColumn}#} = createTokenProvider(TABLE_COLUMN);}#}
 `} class="s05 self-center"/>
 </p-slide>
 <p-slide>
+	<!--- To have a peek at the issue, let's start with a token value for a particular table configuration -->
 	<div grid="2" class="gap-1 s05 self-center">
 		<Code code="TABLE_CONFIG" style="grid-column-end: span 2" class="center s2"/>
 		<Code code={`{
-  name: '{#1;highlight blue{articles-k15}#}',
+  name: '{#1:same;highlight blue{articles-item-tags}#}',
   columns: [...],
   actions: [...]
 }`}/>
 		<Code code={`{
-  name: '{#1;highlight blue{articles-k15}#}',
+  name: '{#:same;highlight blue{articles-item-tags}#}',
   columns: [...],
   actions: [...]
-}`}/>
+}`} p-fragment>
+			<p-notes>Making changes on this configuration is now easy</p-notes>
+		</Code>
+		<p-notes p-group="same">We just need to use the same name</p-notes>
 		<Code code={`{
-  name: '{#2;highlight red{articles-k23}#}',
-  columns: [...],
+  name: '{#:diff;highlight red{articles-item-category}#}',
   actions: [...]
-}`} p-fragment/>
+}`} p-fragment>
+			<p-notes>But suppose there's a similar table with a slightly different configuration</p-notes>
+		</Code>
+		<p-notes p-group="diff">and obviously a slightly different name. And suppose we want to add a change to both
+			(e.g. a set of common columns or actions), without repeating the values for both names</p-notes>
 		<Code code={`{
-  name: '{#4;highlight{articles-k*}#}',
+  name: '{#:wild;highlight{articles-item-*}#}',
   columns: [...],
   actions: [...]
-}`} p-fragment p-effect="reveal"/>
+}`} p-fragment p-effect="reveal">
+			<p-notes>How about something like this then?</p-notes>
+		</Code>
+		<p-notes p-group="wild">Using a wildcard to express this multiplicity? We'll need to change our chainInject fn</p-notes>
 	</div>
 </p-slide>
 <p-slide>
@@ -134,6 +158,7 @@ export class FruitList {
 }`} class="s05 self-center"/>
 	<p-notes p-group="byName">&hellip; we use this new <code>chainInjectByName</code>&hellip;</p-notes>
 	<p-notes p-group="noFilter">&hellip; that automatically filters the values we're interested in for us.</p-notes>
+	<p-notes p-group="noFilter">But can we do better?!</p-notes>
 </p-slide>
 <p-slide>
 	<div class="h1 center bold">The two hardest problems in IT</div>
@@ -158,12 +183,12 @@ export class FruitList {
 	<div class="h3 bold center">Derive the <em>name</em><br> from the <em>context</em></div>
 	<p-fragment class="center">
 		I.e.: can we get the name from what we've already named?
-		<!--- And you may ask: in what cases it could come in handy? -->
+		<!--- And you may ask: in what cases that could actually be done? -->
 		<!--- It's in those cases where some piece of user interface - i.e. a table, a toolbar, a dashboard, ... - is bound to its context, which is basically the current view -->
 	</p-fragment>
 </p-slide>
 <p-slide class="stack">
-	<!--- So, for example, we may have a page that has a table as its main, defining feature. And that could be the case for many different pages of our application.	-->
+	<!--- For example, we may have a page that has a table as its main, defining feature. And that could be the case for many different pages of our application.	-->
 	<div class="redacted-layout s08">
 		<div class="sidebar">
 			<div class="logo">Lorem</div>
@@ -278,14 +303,14 @@ export class FruitList {
 			</tbody>
 		</table>
 	</div>
-	<pre class="names" p-fragment><!--- So it's not a matter of giving just one name --><p-fragment p-effect="insert" p-group="taxon">'stores'
+	<pre class="names" p-fragment><!--- So it's not a matter of giving just *one name* --><p-fragment p-effect="insert" p-group="taxon">'stores'
 'stores-item'
 'stores-item-edit'
 'stores-managers'
 'stores-managers-contacts'
 ...<!---
 But rather a complete taxonomy of names in order to have them meaningful and predictable. And *that* is hard! -->
-<!--- And more than hard: it's also *reduntant*, because we've done something similar again and again while developing the application
+<!--- And more than hard: it's also *redundant*, because we've done something similar again and again while developing the application. But when, exactly?
 --></p-fragment>'articles'<p-fragment p-effect="insert" p-group="taxon">'articles-source'
 'articles-source-list'
 'articles-source-edit'
@@ -308,6 +333,7 @@ But rather a complete taxonomy of names in order to have them meaningful and pre
 	}
 </style>
 <p-slide class="justify-start gap-1">
+	<!--- For instance, we've named our components -->
 	<div class="h4 bold center">From the component's <em>name</em></div>
 	<p-fragment class="stack self-center">
 		<!--- You know that thing you put after class? -->
@@ -327,13 +353,13 @@ getComponentName(inject(ActivatedRoute))
 }#}{#:prob;insert{> "{#highlight{_}#}FruitList"
 }#}`} class="s08 self-center" p-fragment p-group="swipe" p-effect="from right"/>
 	</p-fragment>
-	<p-notes p-group="swipe">And that's something we can easily retrieve</p-notes>
-	<p-notes p-group="ar">And we get it from the <code>ActivatedRoute</code>, because</p-notes>
+	<p-notes p-group="swipe">In order to retrieve it</p-notes>
+	<p-notes p-group="ar">We start from the <code>ActivatedRoute</code>, because</p-notes>
 	<p-notes p-group="cn">it stores the component's class, so we can get its name</p-notes>
 	<p-notes p-group="test">Problem is, when we use it, what we get</p-notes>
 	<p-notes p-group="prob">
-		is <em>not</em> the class' intended name, but something that's actually been mangled by the compiler.
-		And in production it's even worse.
+		is <em>not</em> the class' intended name, but something that's actually been modified by the compiler.
+		And in production it's even worse, because it could be minified
 	</p-notes>
 	<p-fragment class="big-x" style="width: 10em; inset: 30%">
 		<!--- Can we configure the compiler to avoid this problem? Probably, but maybe it's too much effort -->
@@ -430,6 +456,11 @@ getRouterPath(inject(ActivatedRoute))
 	<p-notes p-group="test">Another detail is that there could be <code>matcher</code> instead of <code>path</code> in the route definition, but not in our case. Otherwise you have to deal</p-notes>
 </p-slide>
 <p-slide>
+	<!--- How our CIF going to change now? -->
+	<p-notes p-group="name">First, the name could be optional now, and we rename our CIF back to its original name</p-notes>
+	<p-notes p-group="grp">If a name is not given, we can deduce from the context. To restore its original behavior, pass an asterisk as the name</p-notes>
+	<p-notes p-group="filter">Then we start matching</p-notes>
+	<p-notes p-group="replace">again replacing missing names from the context. Now we can spare us the effort of naming (some)things&hellip;</p-notes>
 	<Code code={`export function chainInject{#:name;-reveal{ByName}#}<T>(
   token: ProviderToken<T | T[]>,
   name{#:name;reveal{?}#}: string
@@ -443,7 +474,7 @@ getRouterPath(inject(ActivatedRoute))
     const valueArray = Array.isArray(value) ? value : [value];
     const filtered = valueArray.filter(value => {
 {#:filter;insert{      const valueName = value.name
-        ?? {#;highlight blue{getRoutePath(injector.get(ActivatedRoute, null, { self: true }))}#};
+        ?? {#:replace;highlight blue{getRoutePath(injector.get(ActivatedRoute, null, { self: true }))}#};
 }#}      return matches(value{#:filter;-reveal{.name}#}{#:filter;reveal{Name}#})(name)
 		});
     values.push(...filtered);

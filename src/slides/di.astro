@@ -8,38 +8,39 @@ import SvgCode from '../components/SvgCode.astro';
 	<div class="h5 center">in short</div>
 </p-slide>
 <p-slide>
-	<Code code={`class MyComponent {
-{#insert{	router = inject(Router);
-}#}{#insert{	host = inject(ElementRef);
-}#}{#insert{	locale = inject(LOCALE_ID);
-}#}}`} class="self-center"/>
 	<!--- Many Angular developers have used the DI system like this: with the inject function that provides a service -->
-	<!--- Legacy injection used the constructor parameters, but I'm glad that now we have something that resembles dark magic a little less and JavaScript a little more -->
-	<!--- Since we're talking about a fairly recent app, and because it's 2025, we're going to use just use inject -->
-	<!--- But injection can work not just for services, but also specific values that can change from component to component -->
-	<!--- And even some weird all-caps constant out of nowhere? How does it work? -->
+	<Code code={`class MyComponent {
+{#:service;insert{  router = inject(Router);
+}#}{#:value;insert{  host = inject(ElementRef);
+}#}{#:token;insert{  locale = inject(LOCALE_ID);
+}#}}`} class="self-center"/>
+	<p-notes p-group="service">Legacy injection used the constructor parameters, but I'm glad that now we have something that resembles dark magic a little less and JavaScript a little more</p-notes>
+	<p-notes p-group="service">Since we're talking about a fairly recent app, and because it's 2025, we're going to use just use inject</p-notes>
+	<p-notes p-group="value">But injection can work not just for services, but also specific values that can change from component to component</p-notes>
+	<p-notes p-group="token">And even some weird all-caps constant out of nowhere? How does it work?</p-notes>
 </p-slide>
 <p-slide>
 	<div class="h2 bold center">Provide <em>where</em>?</div>
 	<div class="self-center s05" grid="2">
 		<Code lang="ts" code={`bootstrapApplication(App, {
-	{#4;highlight{providers: [...]}#}
-})`} p-fragment />
+	{#4:providers;highlight{providers: [...]}#}
+})`} p-fragment><p-notes>We've seen them while bootstrapping the application</p-notes></Code>
 		<Code lang="ts" code={`@NgModule({
-	{#4;highlight{providers: [...]}#}
+	{#:providers;highlight{providers: [...]}#}
 })
-class FruitModule {}`} p-fragment />
+class FruitModule {}`} p-fragment><p-notes>Or classically, in Angular modules</p-notes></Code>
 		<Code lang="ts" code={`@Component({
 	selector: 'my-fruit-list',
-	{#4;highlight{providers: [...]}#}
+	{#:providers;highlight{providers: [...]}#}
 })
-class FruitList {}`} p-fragment />
+class FruitList {}`} p-fragment><p-notes>Always possible in the Component decorator</p-notes></Code>
 		<Code lang="ts" code={`const routes: Routes = [{
 	path: 'fruits',
 	loadComponent: () => import(...),
-	{#4;highlight{providers: [...]}#}
-}, ...];`} p-fragment />
+	{#:providers;highlight{providers: [...]}#}
+}, ...];`} p-fragment><p-notes>And we can do that in route definitions too</p-notes></Code>
 	</div>
+	<p-notes p-group="providers">Basically, everywhere there's a <code>providers</code> property followed by an array of objects</p-notes>
 </p-slide>
 <p-slide>
 	<div class="h2 bold center">Provide <em>how</em>?</div>
@@ -47,51 +48,60 @@ class FruitList {}`} p-fragment />
 	<div class="self-center s05" grid="2">
 		<Code p-fragment lang="ts" code={`provideRouter(routes),
 provideHttpClient(),
-provideMyNonnaInACart()`}/>
+provideMyNonnaInACart()`}><p-notes>In more recent apps, we've seen these "provideWhatever" functions, especially when bootstrapping</p-notes></Code>
 		<Code p-fragment lang="ts" code={`HopefullyLocalService,
-ShouldUseProvidedInService`}/>
+ShouldUseProvidedInService`}><p-notes>But often we've seen just class names there. We should know it's just&hellip;</p-notes></Code>
 		<Code p-fragment lang="ts" code={`{
 	provide: SugarService,
 	useClass: SugarService
-}`}/>
+}`}>
+			<p-notes>&hellip; syntactic sugar for this special object of the type <code>ClassProvider</code></p-notes>
+			<p-notes>The property <code>provide</code> defines the type of the value, as an unique symbol. It can be whatever, really, although not everything makes sense</p-notes>
+		</Code>
 		<Code p-fragment lang="ts" code={`{
 	provide: LOCALE_ID,
 	useValue: 'it-IT'
-}`}/>
+}`}><p-notes>Then there's <code>ValueProvider</code>, where we give static values</p-notes></Code>
 		<Code p-fragment lang="ts" code={`{
 	provide: GRANDMA_TITLE,
 	useFactory: l => l?.startsWith('it')
 		? 'nonna' : 'granma',
-	{#6;strike{deps: [[new Optional(), LOCALE_ID]]}#}
-}`}/>
+	{#6:deps;strike{deps: [[new Optional(), LOCALE_ID]]}#}
+}`}><p-notes>But if a values depends on others in the DI, we can use the <code>FactoryProvider</code> with its dependencies</p-notes></Code>
 		<Code p-fragment lang="ts" code={`{
 	provide: NG_VALUE_ACCESSOR,
 	useExisting: InputComponent,
 	multi: true
-}`}/>
+}`}>
+			<p-notes>Finally, we can use a preexisting value for another</p-notes>
+			<p-notes>We aren't done, as there are other hidden ways to provide values in the DI system.
+				For example, any component and directive instance in an active view is there. That's how <code>viewChildren/ contentChildren</code> work</p-notes>
+		</Code>
 	</div>
+	<p-notes p-group="deps">BTW, I hope nobody still uses <code>deps</code>: you can now inject your dependency directly in the factory function!</p-notes>
 </p-slide>
 <p-slide>
-	<!--- Let's start with the source of all those values, which is the Injector. But it's not the usual singleton service -->
-	<svg viewBox="-20 0 120 100" id="injectors">
-		<text y="50"><tspan x="28" dy="-.4em" p-fragment="2"><!---
+	<!--- How are those values given to components, services and whatever can access the DI system? I.e. are in an "injection context"? -->
+	<svg viewBox="-20 0 120 100" id="injectors" p-fragment>
+		<!--- Let's start with the source of all those values, which is the Injector. But it's not the usual singleton service -->
+		<text y="50"><tspan x="28" dy="-.4em" p-fragment="3" p-group="types"><!---
 			And things are even more complex since we have a distinction between Element injectors and Environment injectors, although functionally they're quite similar
 		-->Element</tspan><tspan x="28" dy=".8em">Injector</tspan></text>
-		<text y="50" p-fragment="0" style="--diff: -2"><tspan x="28" dy="-.4em" p-fragment="2">Element</tspan><tspan x="28" dy=".8em">Injector</tspan></text>
-		<text y="50" p-fragment="0" style="--diff: -1"><tspan x="28" dy="-.4em" p-fragment="2">Element</tspan><tspan x="28" dy=".8em">Injector</tspan></text>
-		<text y="50" p-fragment="0" style="--diff: 1"><tspan x="28" dy="-.4em" p-fragment="2">Environment</tspan><tspan x="28" dy=".8em">Injector</tspan></text>
-		<text y="50" p-fragment="0" style="--diff: 2"><tspan x="28" dy="-.4em" p-fragment="2">Environment</tspan><tspan x="28" dy=".8em">Injector</tspan></text>
-		<path p-fragment="1" d="M20,30s0-10 0-20"><!--- And even more than that, it's not a linear hierarchy, but rather a hierarchical *tree* --></path>
-		<path p-fragment="1" d="M20,30s0-10 0-20"/>
-		<path p-fragment="1" d="M20,30s0-10 0-20"/>
-		<path p-fragment="1" d="M20,30s0-10 0-20"/>
-		<path p-fragment="1" d="M20,30s0-10 0-20"/>
-		<path p-fragment="1" d="M20,50s0-10 0-20"/>
-		<path p-fragment="1" d="M20,50s0-10 0-20"/>
-		<path p-fragment="0" d="M20,50v0v0v0v0"><!---
+		<text y="50" p-fragment p-group="injectors" style="--diff: -2"><tspan x="28" dy="-.4em" p-fragment p-group="types">Element</tspan><tspan x="28" dy=".8em">Injector</tspan></text>
+		<text y="50" p-fragment p-group="injectors" style="--diff: -1"><tspan x="28" dy="-.4em" p-fragment p-group="types">Element</tspan><tspan x="28" dy=".8em">Injector</tspan></text>
+		<text y="50" p-fragment p-group="injectors" style="--diff: 1"><tspan x="28" dy="-.4em" p-fragment p-group="types">Environment</tspan><tspan x="28" dy=".8em">Injector</tspan></text>
+		<text y="50" p-fragment p-group="injectors" style="--diff: 2"><tspan x="28" dy="-.4em" p-fragment p-group="types">Environment</tspan><tspan x="28" dy=".8em">Injector</tspan></text>
+		<path p-fragment p-group="tree" d="M20,30s0-10 0-20"><!--- And even more than that, it's not a linear hierarchy, but rather a hierarchical *tree* --></path>
+		<path p-fragment p-group="tree" d="M20,30s0-10 0-20"/>
+		<path p-fragment p-group="tree" d="M20,30s0-10 0-20"/>
+		<path p-fragment p-group="tree" d="M20,30s0-10 0-20"/>
+		<path p-fragment p-group="tree" d="M20,30s0-10 0-20"/>
+		<path p-fragment p-group="tree" d="M20,50s0-10 0-20"/>
+		<path p-fragment p-group="tree" d="M20,50s0-10 0-20"/>
+		<path p-fragment p-group="injectors" d="M20,50v0v0v0v0"><!---
 			It's actually a hierarchical set of services that provide their values at various levels of the application
 		--></path>
-		<path p-fragment d="M35,10v0" class="fallback"><!--- So, when we try to inject a token in a node, it starts searching in the node's injector --></path>
+		<path p-fragment d="M35,10v0" class="fallback"><!--- So, when we try to get a token value from a node, it starts searching in that node's injector --></path>
 		<path p-fragment d="M35,10s0,20 15,20" class="fallback"><!--- And if it's not found there, it climbs to the parent node's injector --></path>
 		<path p-fragment d="M50,30s0,20-30,20" class="fallback"><!--- Then the parent... --></path>
 		<path p-fragment d="M20,50v20" class="fallback"><!--- And so on... --></path>

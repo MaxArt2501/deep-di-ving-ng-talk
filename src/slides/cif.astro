@@ -5,31 +5,31 @@ import SvgCode from '../components/SvgCode.astro';
 
 <p-slide class="align-center gap-1" flex="row">
 	<!--- Let's suppose we have a TABLE_CONFIG token that allows us to define the configuration of a table. -->
-	<!--- Its columns, its actions on rows, etc. -->
-	<!--- Let's not forget multi: true because we can have more than one table config, right? -->
-	<!--- This token value might as well be defined in the root injector, right in the app.config file -->
-	<!--- In the same file, we can import the tokens from a client customization package, like this -->
-	<!--- And we'd be good, right? All we need to do is to define every token here.
-		But doing so, we're actually losing something. The first thing would be... -->
-	<Code code={`{#2;insert{// app.config.ts
-}#}{#3;insert{import { tokens as acmeTokens } from '@client/acme';
+	<p-notes p-group="data">Its columns, its actions on rows, etc.</p-notes>
+	<p-notes p-group="multi">Let's not forget multi: true because we can have more than one table config, right?</p-notes>
+	<p-notes p-group="wrap">This token value might as well be defined in the root injector, right in the app.config file</p-notes>
+	<p-notes p-group="acme">In the same file, we can import the tokens from a client customization package, like this</p-notes>
+	<p-notes p-group="acme">And we'd be good, right? All we need to do is to define every token here.
+		But doing so, we're actually losing something. The first thing would be...</p-notes>
+	<Code code={`{#:wrap;insert{// app.config.ts
+}#}{#:acme;insert{import { tokens as acmeTokens } from '@client/acme';
 
 }#}{#2:wrap;insert{export const appConfig: ApplicationConfig = {
   providers: [
 }#}{#:wrap;reveal{    }#}{
-{#:wrap;reveal{    }#}  provide: TABLE_CONFIG,
-{#insert{{#:wrap;reveal{    }#}  useValue: {
+{#:wrap;reveal{    }#}  provide: TABLE_CONFIG{#:data;reveal{,}#}
+{#:data;insert{{#:wrap;reveal{    }#}  useValue: {
 {#:wrap;reveal{    }#}    name: 'fruits',
 {#:wrap;reveal{    }#}    columns: [...],
 {#:wrap;reveal{    }#}    actions: [...],
 {#:wrap;reveal{    }#}    ...
 {#:wrap;reveal{    }#}  },
-}#}{#insert{{#:wrap;reveal{    }#}  multi: true
-}#}{#:wrap;reveal{    }#}},
-{#3;insert{    ...acmeTokens
+}#}{#:multi;insert{{#:wrap;reveal{    }#}  multi: true
+}#}{#:wrap;reveal{    }#}}{#:acme;reveal{,}#}
+{#3:acme;insert{    ...acmeTokens
 }#}{#:wrap;insert{  ]
 };}#}`} class="s05 self-start"/>
-	<Code p-fragment="4" p-effect="reveal" code={`// @client/acme
+	<Code p-fragment p-group="acme" p-effect="reveal" code={`// @client/acme
 export const tokens = [{
 	provide: TABLE_CONFIG,
 	useValue: {
@@ -45,19 +45,20 @@ export const tokens = [{
 	</p-fragment>
 </p-slide>
 <p-slide effect="fade" flex="row" class="gap-1">
-	<!--- In order to have the configuration colocated inside the feature, we can extract the token
-		value in a separate file and import it in the root config -->
-	<!--- But then we'd have to repeat that for every configuration, for tables, toolbars, navigation, actions, etc.
-		and the root config is still cluttered and unstructured -->
+	<!--- In order to have the configuration colocated inside the feature, we can... -->
+	<p-notes p-group="extract">extract the token value in a separate file and import it in the root config</p-notes>
+	<p-notes p-group="extract">But then we'd have to repeat that for every configuration, for tables, toolbars, navigation, actions, etc.
+		and the root config is still cluttered and unstructured</p-notes>
+	<p-notes p-group="instead">So we want to reduce those imports&hellip;</p-notes>
 	<div flex="column" class="gap-1">
 		<Code id="appConfig" code={`// app.config.ts
 import { tokens as acmeTokens } from '@client/acme';
-{#0;insert{{#1;strike{import fruitTableConfig from './fruits/fruit-table';}#}
-}#}{#2;insert{import tables from './tables';
+{#:extract;insert{{#:instead;strike{import fruitTableConfig from './fruits/fruit-table';}#}
+}#}{#:intermediate;insert{import tables from './tables';
 }#}
 export const appConfig: ApplicationConfig = {
   providers: [
-{#0;-insert{
+{#:extract;-insert{
 
 
 
@@ -66,29 +67,31 @@ export const appConfig: ApplicationConfig = {
 
 
 
-}#}    {#1;strike{{#0;reveal{fruitTableConfig}#}{#0;-reveal{ }#},}#}
-{#2;insert{    ...tables,
+}#}    {#:instead;strike{{#:extract;reveal{fruitTableConfig}#}{#:extract;-reveal{ }#},}#}
+{#:intermediate;insert{    ...tables,
 }#}    ...acmeTokens
   ]
 };`} class="s05"/>
-		<Code p-fragment="2" p-effect="insert" code={`// tables.ts
+		<Code p-fragment p-group="intermediate" p-effect="insert" code={`// tables.ts
 import fruitTableConfig from 'fruits/fruit-table';
 import shopTableConfig from 'shops/shop-table';
 ...
 export default [fruitTableConfig, ...];`} class="s05"/>
 	</div>
 	<div flex="column" class="gap-1">
-		<Code p-fragment="0" id="fruitTableConfig" code={`{#0;insert{// fruit-table.ts
-}#}{#0;reveal{export default }#}{
-	provide: TABLE_CONFIG,
-	useValue: {
-		name: 'fruits',
-		columns: [...],
-		actions: [...],
-		...
-	},
-	multi: true
-}{#0;reveal{;}#}`} class="s05"/>
+		<Code p-fragment p-group="extract" id="fruitTableConfig" code={`{#:extract;insert{// fruit-table.ts
+}#}{#:extract;reveal{export default }#}{
+  provide: TABLE_CONFIG,
+  useValue: {
+    name: 'fruits',
+    columns: [...],
+    actions: [...],
+    ...
+  },
+  multi: true
+}{#:extract;reveal{;}#}`} class="s05"/>
+			<p-notes p-group="intermediate">and create intermediate files that collect those configurations
+					either by feature, or token type, or whatever, and import them once in app.config</p-notes>
 		<p-fragment class="s06">Repeat for:
 			<ul class="no-margins">
 				<li>toolbars</li>
@@ -96,15 +99,13 @@ export default [fruitTableConfig, ...];`} class="s05"/>
 				<li>actions</li>
 				<li>&hellip;</li>
 			</ul>
-			<!--- So we want to reduce those imports, and create intermediate files that collect those configurations
-				either by feature, or token type, or whatever, and import them once in app.config -->
 			<!--- And... it's still not pretty. Now we have to maintain a bunch of intermediate files to mimic a fraction of
 				what true colocation is -->
 			<!--- In short, it's not the maintainability we were aiming for -->
 		</p-fragment>
 	</div>
 </p-slide>
-<p-slide>
+<p-slide_>
 	<!--- Maybe you'd say: "Wait a second! Isn't there a `providedIn` option when creating a token?" -->
 	<!--- Problem is, even if we use it, it has effect only when providing the `factory` method too, which
 		generates a *default* value, meaning that it's executed only if there aren't other provided values. -->
@@ -112,28 +113,33 @@ export default [fruitTableConfig, ...];`} class="s05"/>
 	<Code code="{ providedIn: 'root' }❓" theme="github-light" class="h4 self-center"/>
 	<Code code={`export const MY_FRUIT = new InjectionToken('fruit'{#1;reveal{, {}#}{#1;insert{	providedIn: 'root'{#2;reveal{,}#}}#}{#2;insert{	factory: () => 'bananas'}#}{#1;reveal{}}#});`} p-fragment class="s05 self-center" />
 	<p-fragment class="big-x" style="width: 12em; inset: auto calc(50% - 6em)"><!--- In short, this cannot be used either --></p-fragment>
-</p-slide>
+</p-slide_>
 <p-slide>
-	<Code code={`{#0;insert{import fruitTableConfig from './fruit-table';
-{#1;insert{import { mergeConfigs } from '../utils/table';
+	<!--- In order to have these token values actually colocated with the view that's going to use them -->
+	<p-notes p-group="provide">we're going to provide them inside our component (in this case, the config of the table)</p-notes>
+	<p-notes p-group="inject">and then inject them and merge all the values</p-notes>
+	<p-notes p-group="use">and pass the final result to the table component</p-notes>
+	<Code code={`{#:provide;insert{import fruitTableConfig from './fruit-table';
+{#:inject;insert{import { mergeConfigs } from '../utils/table';
 }#}
 }#}@Component({
 	selector: 'my-fruits',
-{#insert{	template: '<my-table [config]="config"/>'
-}#}{#0;insert{	providers: [fruitTableConfig],
+{#:use;insert{	template: '<my-table [config]="config"/>'
+}#}{#:provide;insert{	providers: [fruitTableConfig],
 }#}	standalone: true
 })
 export class FruitList {
-{#1;insert{	configs: TableConfig[] = inject(TABLE_CONFIG);
+{#:inject;insert{	configs: TableConfig[] = inject(TABLE_CONFIG);
 
 	config = mergeConfigs(this.configs);
 }#}}`} class="s05 self-center"/>
 	<p-fragment class="big-x" style="width: 3em; inset: 55.5% auto auto 51%">
-		<!--- But, as we've seen, it doesn't work like that. So, what are we going to do? -->
+		<!--- But, as we've seen, it doesn't work like that.
+			It will always return the values for the first injector that contains one, in this case the component's element injector. -->
+		<!--- I guess it's time to welcome you into the magical world of... -->
 	</p-fragment>
 </p-slide>
 <p-slide>
-	<!--- I guess it's time to welcome you into the magical world of... -->
 	<div class="h1 center bold">
 		<span p-effect="dropping from" style="--from-y: -50cqh"><em>C</em>ustom</span>
 		<p-fragment p-effect="dropping from" style="--from-y: -50cqh"><em>I</em>nject</p-fragment>
@@ -152,6 +158,7 @@ export class FruitList {
 <p-slide>
 	<!--- CIFs are used to inject a value retrieved with additional logic. They're convenience helpers that
 		saves us the hassle of doing certain things again and again. -->
+	<!--- This example here was a common way to retrieve a route parameter. -->
 	<div flex="column" class="gap-1 s05 self-center">
 		<Code code={`export const injectIdParam = () => toSignal(
 	inject(ActivatedRoute).params.pipe(
@@ -169,7 +176,8 @@ export class Viewer {
 			if (id) navigator.sendBeacon(\`/check/\${id}\`);
 		});
 	}
-}`} p-fragment p-effect="insert"/>
+}`} p-fragment p-effect="insert" p-group="usage"/>
+		<p-notes p-group="usage">We know that's outdated now that we have withComponentInputBinding, but still</p-notes>
 	</div>
 </p-slide>
 <p-slide>
@@ -182,43 +190,44 @@ export class Viewer {
 <p-slide>
 	<!--- Let's see how we can build this CIF. Of course it should take a token... And nothing else, actually.
 		No options, as its job is well defined as it is -->
-	<!--- Then we can add some type safety, so we have a generic type T to deal with -->
-	<!--- So that we'll have to return an array of T's, eventually -->
-	<!--- Let's try to climb the chain of injectors. First, we get the current injector, using the Injector class as token -->
-	<!--- Then we iterate until we have an injector. From one injector, we get the parent injector by requesting the
-		Injector class, but skipping the current injector - otherwise it'd return the injector itself - thus effectively
-		climbing the injector chain. -->
-	<!--- From the injector, we get the token value (or values, if multi) -->
-	<!--- but telling them to stay in the injector and not climbing to the parent injector if nothing has been found.
-		That's why we're also saying that's optional - we can deal with missing values. Also, that would seamlessly deal with
-		the null injector -->
-	<!--- Almost done! The last thing is to assert that we're in an injection context. That would be technically not necessary
-		as the first call to `inject` would do that for use, but for debugging purposes we're using aIIC correctly -->
-	<Code code={`{#2;insert{import { {#7;reveal{assertInInjectionContext, }#}inject, Injector } from '@angular/core';
-}#}{#0;insert{import type { ProviderToken } from '@angular/core';
+	<p-notes p-group="types">Then we can add some type safety, so we have a generic type T to deal with</p-notes>
+	<p-notes p-group="array">So that we'll have to return an array of T's, eventually</p-notes>
+	<p-notes p-group="climb">Let's try to climb the chain of injectors. First, we get the current injector, using the Injector class as token</p-notes>
+	<p-notes p-group="while">Then we iterate until we have an injector. From one injector, we get the parent injector by requesting the Injector class</p-notes>
+	<p-notes p-group="skip">but skipping the current injector - otherwise it'd return the injector itself - thus effectively
+		climbing the injector chain.</p-notes>
+	<p-notes p-group="value">From the injector, we get the token value (or values, if multi)</p-notes>
+	<p-notes p-group="self">but telling them to stay in the injector and not climbing to the parent injector if nothing has been found.
+		That's why we're also saying that's optional - we can deal with missing values. Also, that takes care of the null injector</p-notes>
+	<p-notes p-group="aiic">Almost done! Assert that we're in an inj ctx. Technically not necessary:
+		first call to `inject` does that for us, but for debugging purposes we're using aIIC correctly</p-notes>
+	<Code code={`{#:climb;insert{import { {#7:aiic;reveal{assertInInjectionContext, }#}inject, Injector } from '@angular/core';
+}#}{#0:types;insert{import type { ProviderToken } from '@angular/core';
 
-}#}export function chainInject{#0;reveal{<T>}#}(token{#0;reveal{: ProviderToken<T | T[]>}#}){#0;reveal{: T[]}#} {
-{#7;insert{	{#7;highlight{assertInInjectionContext(chainInject)}#};
+}#}export function chainInject{#:types;reveal{<T>}#}(token{#:types;reveal{: ProviderToken<T | T[]>}#}){#:types;reveal{: T[]}#} {
+{#:aiic;insert{  {#:aiic;highlight{assertInInjectionContext(chainInject)}#};
 
-}#}{#1;insert{	const values: T[] = [];
-}#}{#2;insert{	let injector: Injector | null = inject(Injector);
+}#}{#1:array;insert{  const values: T[] = [];
+}#}{#:climb;insert{  let injector: Injector | null = inject(Injector);
 
-}#}{#insert{	while (injector) {
-{#insert{		const value = injector.get(token, null, {#6;highlight{{ self: true, optional: true }}#});
-		if (value) values.push(...(Array.isArray(value) ? value : [value]));
+}#}{#:while;insert{  while (injector) {
+{#:value;insert{    const value = injector.get(token, null, {#6:self;highlight{{ self: true, optional: true }}#});
+    if (value) values.push(...(Array.isArray(value) ? value : [value]));
 
-}#}		injector = injector.get(Injector, null, {#4;highlight{{ skipSelf: true }}#});
-	}
+}#}    injector = injector.get(Injector, null, {#4:skip;highlight{{ skipSelf: true }}#});
+  }
 
-}#}{#1;insert{	return values;
+}#}{#:array;insert{  return values;
 }#}};`} class="s05 self-center"/>
 </p-slide>
 <p-slide>
-	<!--- That's it! Instead of `inject`, we're using `chainInject` and we're set! All the token values
-		ever defined in whichever injector of the injector hierarchy -->
+	<!--- That's it! -->
+	<p-notes p-group="instead">Instead of `inject`</p-notes>
+	<p-notes p-group="chain">we're using `chainInject` and we're set! We'll have all the token values
+		defined in every injector of the injector ancestry</p-notes>
 	<Code code={`import fruitTableConfig from './fruit-table';
 import { mergeConfigs } from '../utils/table';
-{#1;insert{import { {#1;highlight{chainInject}#} } from '../chain-inject';
+{#:chain;insert{import { {#:chain;highlight{chainInject}#} } from '../chain-inject';
 }#}
 @Component({
 	selector: 'my-fruits',
@@ -227,7 +236,7 @@ import { mergeConfigs } from '../utils/table';
 	standalone: true
 })
 export class FruitList {
-	configs: TableConfig[] = {#1;reveal{{#1;highlight{chainInject}#}}#}{#1;-reveal{{#strike{inject}#}}#}(TABLE_CONFIG);
+	configs: TableConfig[] = {#:chain;reveal{{#:chain;highlight{chainInject}#}}#}{#:chain;-reveal{{#0:instead;strike{inject}#}}#}(TABLE_CONFIG);
 
 	config = mergeConfigs(this.configs.filter(cfg => cfg.name === 'fruit'));
 }`} class="s05 self-center"/>
