@@ -23,7 +23,7 @@ import SvgCode from '../components/SvgCode.astro';
 {#:wrap;reveal{    }#}    columns: [...],
 {#:wrap;reveal{    }#}    actions: [...],
 {#:wrap;reveal{    }#}    ...
-{#:wrap;reveal{    }#}  },
+{#:wrap;reveal{    }#}  }{#:multi;reveal{,}#}
 }#}{#:multi;insert{{#:wrap;reveal{    }#}  multi: true
 }#}{#:wrap;reveal{    }#}}{#:acme;reveal{,}#}
 {#3:acme;insert{    ...acmeTokens
@@ -193,7 +193,7 @@ export class Viewer {
 	<p-notes p-group="types">Then we can add some type safety, so we have a generic type T to deal with</p-notes>
 	<p-notes p-group="array">So that we'll have to return an array of T's, eventually</p-notes>
 	<p-notes p-group="climb">Let's try to climb the chain of injectors. First, we get the current injector, using the Injector class as token</p-notes>
-	<p-notes p-group="while">Then we iterate until we have an injector. From one injector, we get the parent injector by requesting the Injector class</p-notes>
+	<p-notes p-group="while">Then we iterate while we have an injector. From one injector, we get the parent injector by requesting the Injector class</p-notes>
 	<p-notes p-group="skip">but skipping the current injector - otherwise it'd return the injector itself - thus effectively
 		climbing the injector chain.</p-notes>
 	<p-notes p-group="value">From the injector, we get the token value (or values, if multi)</p-notes>

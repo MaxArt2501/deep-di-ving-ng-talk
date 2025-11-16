@@ -58,10 +58,13 @@
 </p-slide>
 <p-slide>
 	<div grid="2">
-		<span class="s7 center">👋</span>
+		<span class="s7 center">🥳</span>
 		<p class="center self-center h3">Have fun <strong>coding!</strong></p>
 	</div>
 	<!--- And finally, there's nothing wrong in having fun doing your job. It doesn't necessarily mean hilarity, but rather having a great time and getting satisfaction. And that's I wish for you all! -->
+</p-slide>
+<p-slide>
+	<div class="h1 bold center">Thank you! <span class="ng-heart" aria-label="Big heart"></span></div>
 </p-slide>
 <style lang="scss">
 	path {
@@ -75,5 +78,13 @@
 		&:nth-of-type(8) {
 			marker-start: url(#commit);
 		}
+	}
+	.ng-heart {
+		display: inline-block;
+		vertical-align: middle;
+		width: 3em;
+		height: 2.5em;
+		background: var(--ng-bg);
+		clip-path: polygon(25% 0%, 50% 10%, 75% 0%, 100% 33%, 50% 100%, 0% 33%);
 	}
 </style>

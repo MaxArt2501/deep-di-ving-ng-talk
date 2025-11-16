@@ -9,6 +9,8 @@
       Verona, <time datetime="2025-11-21">2025-11-21</time>
     </p>
   </div>
+  <!--- I want to talk about an interesting refactoring job on a large codebase that I tackled for a customer company for which I've been a consultant in the past months -->
+  <!--- That company unfortunatly didn't allow its name to be disclosed, and it's honestly a shame because I had a great time working with its developer team -->
 </p-slide>
 <p-slide grid="2" class="about-me">
   <gfy-blob
@@ -36,7 +38,7 @@
     <gfy-spotlight color="#ffffff" intensity="0.63" distance="7" angle="0.79" penumbra="1" decay="0.5" x="-3" y="-3" z="6.2"></gfy-spotlight>
   </gfy-blob>
   <img src="../img/maxart.jpg" alt="Face of Massimo Artizzu" class="my-face" />
-  <div flex="column">
+  <div flex="column" class="justify-around">
     <hgroup>
       <h2>Massimo Artizzu</h2>
       <p>Web Architect @<strong style="color: var(--brand-color)">GELLIFY</strong></p>
@@ -49,11 +51,32 @@
       @MaxArt2501
     </div>
   </div>
+  <!--- Let's talk about the story, shall we? -->
 </p-slide>
 <style lang="scss">
   .cover {
     color: white;
+    // Thanks Temani Afif!
     --slide-bg: var(--ng-bg);
+    --size: 1em;
+    --c1: #a532ec;
+    --c2: #9717e7;
+    --c3: #6c00f5;
+    
+    --_g: 0 120deg,#0000 0;
+    --slide-bg:
+      conic-gradient(             at calc(250% / 3) calc(100% / 3), var(--c3) var(--_g)),
+      conic-gradient(from -120deg at calc( 50% / 3) calc(100% / 3), var(--c2) var(--_g)),
+      conic-gradient(from  120deg at calc(100% / 3) calc(250% / 3), var(--c1) var(--_g)),
+      conic-gradient(from  120deg at calc(200% / 3) calc(250% / 3), var(--c1) var(--_g)),
+      conic-gradient(from -180deg at calc(100% / 3) 50%, var(--c2)  60deg, var(--c1) var(--_g)),
+      conic-gradient(from   60deg at calc(200% / 3) 50%, var(--c1)  60deg, var(--c3) var(--_g)),
+      conic-gradient(from  -60deg at 50% calc(100% / 3), var(--c1) 120deg, var(--c2) 0 240deg, var(--c3) 0);
+    background-size: calc(var(--size) * 1.732) var(--size);
+
+    > * {
+      filter: drop-shadow(0 0 .1em black);
+    }
   }
   gfy-blob {
     height: 12em;

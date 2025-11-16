@@ -97,7 +97,6 @@ const {#:all;highlight{provideTableColumn}#} = createTokenProvider(TABLE_COLUMN)
 }`}/>
 		<Code code={`{
   name: '{#:same;highlight blue{articles-item-tags}#}',
-  columns: [...],
   actions: [...]
 }`} p-fragment>
 			<p-notes>Making changes on this configuration is now easy</p-notes>
@@ -105,6 +104,7 @@ const {#:all;highlight{provideTableColumn}#} = createTokenProvider(TABLE_COLUMN)
 		<p-notes p-group="same">We just need to use the same name</p-notes>
 		<Code code={`{
   name: '{#:diff;highlight red{articles-item-category}#}',
+  columns: [...],
   actions: [...]
 }`} p-fragment>
 			<p-notes>But suppose there's a similar table with a slightly different configuration</p-notes>
@@ -146,15 +146,15 @@ import { mergeConfigs } from '../utils/table';
 import { chainInject{#:byName;reveal{ByName}#} } from '../chain-inject';
 
 @Component({
-	selector: 'my-fruits',
-	template: '<my-table [config]="config"/>'
-	providers: [fruitTableConfig],
-	standalone: true
+  selector: 'my-fruits',
+  template: '<my-table [config]="config"/>'
+  providers: [fruitTableConfig],
+  standalone: true
 })
 export class FruitList {
-	configs: TableConfig[] = chainInject{#:byName;reveal{ByName}#}(TABLE_CONFIG{#:byName;reveal{, 'fruit'}#});
+  configs: TableConfig[] = chainInject{#:byName;reveal{ByName}#}(TABLE_CONFIG{#:byName;reveal{, 'fruit'}#});
 
-	config = mergeConfigs(this.configs{#:noFilter;strike{.filter(cfg => cfg.name === 'fruit')}#});
+  config = mergeConfigs(this.configs{#:noFilter;strike{.filter(cfg => cfg.name === 'fruit')}#});
 }`} class="s05 self-center"/>
 	<p-notes p-group="byName">&hellip; we use this new <code>chainInjectByName</code>&hellip;</p-notes>
 	<p-notes p-group="noFilter">&hellip; that automatically filters the values we're interested in for us.</p-notes>
@@ -165,19 +165,22 @@ export class FruitList {
 	<ol class="self-center">
 		<li p-fragment>Cache invalidation</li>
 		<li p-fragment>Naming things</li>
-		<li p-fragment>Off-by-one errors<!--- And I must admit, Copilot got the joke quite well here --></li>
+		<li p-fragment>Off-by-one errors<!--- And I must admit, Copilot got the joke quite well here. But let's focus on the naming part and... --></li>
 	</ol>
 </p-slide>
 <p-slide>
+	<!--- Let's see what it means in this case. We've built these provider functions -->
 	<Code code={`[
   provideTableConfig({
-{#insert{{#insert{    name: '🤔',
+{#:juice;insert{{#:name;insert{    name: '🤔',
 }#}    columns: [...],
     actions: [...],
     itemsPerPage: 20,
     select: 'checkbox'
 }#}  })
 ]`} class="s08 self-center"/>
+	<p-notes p-group="juice">We put inside all the juicy parts, the values that are actually meaningful to us</p-notes>
+	<p-notes p-group="name">And then we have to think about the name. But you what could be cool?</p-notes>
 </p-slide>
 <p-slide>
 	<div class="h3 bold center">Derive the <em>name</em><br> from the <em>context</em></div>
@@ -330,6 +333,7 @@ But rather a complete taxonomy of names in order to have them meaningful and pre
 		font-size: 60%;
 		font-weight: bold;
 		box-shadow: 0 0 1em;
+		backdrop-filter: blur(.1em);
 	}
 </style>
 <p-slide class="justify-start gap-1">
@@ -361,7 +365,7 @@ getComponentName(inject(ActivatedRoute))
 		is <em>not</em> the class' intended name, but something that's actually been modified by the compiler.
 		And in production it's even worse, because it could be minified
 	</p-notes>
-	<p-fragment class="big-x" style="width: 10em; inset: 30%">
+	<p-fragment class="big-x" style="width: 10em; inset: 26% 30%">
 		<!--- Can we configure the compiler to avoid this problem? Probably, but maybe it's too much effort -->
 	</p-fragment>
 </p-slide>
@@ -390,7 +394,7 @@ export default class FruitList {
 	<p-notes p-group="cn">And get the component's class, where we can retrieve the decorators applied to it</p-notes>
 	<p-notes p-group="test">This one <em>just works!</em></p-notes>
 	<p-notes p-group="as-any">Problem is, Angular decorators are <em>private</em>, therefore an implementation detail and we shouldn't rely on them</p-notes>
-	<p-fragment class="big-x" style="width: 10em; inset: 30%">
+	<p-fragment class="big-x" style="width: 10em; inset: 38% 30%">
 		<!--- Moreover, we're also moving towards the usage of selector-less components -->
 	</p-fragment>
 </p-slide>
@@ -476,7 +480,7 @@ getRouterPath(inject(ActivatedRoute))
 {#:filter;insert{      const valueName = value.name
         ?? {#:replace;highlight blue{getRoutePath(injector.get(ActivatedRoute, null, { self: true }))}#};
 }#}      return matches(value{#:filter;-reveal{.name}#}{#:filter;reveal{Name}#})(name)
-		});
+    });
     values.push(...filtered);
   }
 }`} class="s05 self-center"/>

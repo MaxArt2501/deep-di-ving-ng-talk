@@ -61,7 +61,9 @@ hgroup {
 
 em {
 	font-style: unset;
-	color: var(--brand-color);
+	color: transparent;
+	background: var(--ng-bg);
+	background-clip: text;
 }
 
 pre, code {
