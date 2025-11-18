@@ -315,16 +315,17 @@ getRouterPath(inject(ActivatedRoute))
 	</svg>
 	<div flex="column" class="s05 justify-between">
 		<Code p-fragment p-effect="from right" p-group="local" code={`providers: [
-	provideTableConfig({
-		columns: [...], ...
-	})
-]`}><p-notes>in the leaf node, we can colocate the configuration and completely omit the name, which will be inferred from the route;</p-notes></Code>
+  provideTableConfig({
+    {#:local;strike{name: '···',}#}
+    columns: [...], ...
+  })
+]`} style="--arrow-pos: 66%"><p-notes>in the leaf node, we can colocate the configuration and completely omit the name, which will be inferred from the route;</p-notes></Code>
 		<Code p-fragment p-effect="from right" p-group="wc" code={`providers: [
 	provideTableConfig({
 		name: '{#:wc;highlight blue{articles/**/*}#}'
 		actions: [...], ...
 	})
-]`} style="--arrow-pos: 36%"><p-notes>in parent nodes, we can use wildcards instead, possibly matching multiple targets;</p-notes></Code>
+]`} style="--arrow-pos: 71%"><p-notes>in parent nodes, we can use wildcards instead, possibly matching multiple targets;</p-notes></Code>
 		<Code p-fragment p-effect="from right" p-group="acme" code={`providers: [
 	...{#:acme;highlight green{acmeTokens}#}, ...
 ]`}><p-notes>
@@ -342,7 +343,7 @@ getRouterPath(inject(ActivatedRoute))
 provideTableConfig({
 	name: '{#:wctoken;highlight{**/view}#}'
 	actions: [...], ...
-}#}})`} style="--arrow-pos: 78%"><p-notes>Custom token values from client packages must, of course, have names</p-notes></Code>
+}#}})`} style="--arrow-pos: calc(.5em + 1.5lh)"><p-notes>Custom token values from client packages must, of course, have names</p-notes></Code>
 	</div>
 	<p-notes p-group="wctoken">&hellip; but they can very well use wildcards too!</p-notes>
 </p-slide>
@@ -369,6 +370,7 @@ provideTableConfig({
 <style is:global lang="scss">
 	#final-tree {
 		height: 100%;
+		margin-inline-end: calc((100cqb - 2em) * -3 / 200);
 		text {
 			transform: none;
 			font-size: 5px;
@@ -385,12 +387,12 @@ provideTableConfig({
 			&::before {
 				content: '';
 				position: absolute;
-				top: var(--arrow-pos, 40%);
+				bottom: var(--arrow-pos, 60%);
 				inset-inline-end: calc(100% + .1em);
 				width: 1.8em;
 				height: .8em;
 				background-color: inherit;
-				translate: 0 -50%;
+				translate: 0 50%;
 				clip-path: polygon(0 50%, 0.6em 0, 0.6em .2em, 100% .2em, 100% 0.6em, 0.6em 0.6em, 0.6em 100%);
 			}
 
