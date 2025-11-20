@@ -247,6 +247,10 @@ g.shiki {
 
 		kbd {
 			font-size: 60%;
+			width: 1.5em;
+			&[p-fragment] {
+				width: calc(1.5em * var(--fragment-progress, 0));
+			}
 		}
 	}
 	kbd {

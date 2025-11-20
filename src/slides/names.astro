@@ -162,7 +162,7 @@ export default class {#1;highlight green{FruitList}#} {
 }#}};
 {#:test;insert{
 getComponentName(inject(ActivatedRoute))
-}#}{#:prob;insert{> "{#highlight{_}#}FruitList"
+}#}{#:prob;insert{> "{#;highlight red{_}#}FruitList"
 }#}`} class="s08 self-center" p-fragment p-group="swipe" p-effect="from right"/>
 	</p-fragment>
 	<p-notes p-group="swipe">In order to retrieve it</p-notes>
@@ -191,7 +191,7 @@ export default class FruitList {
   ...
 }`} p-fragment p-effect="from" aria-hidden="false" style="--from-x: calc(-50% - 50cqw)" p-group="swipe" class="s08"/>
 		<Code code={`const getComponentSelector = (route: ActivatedRoute)
-{#:cn;insert{  => {#5:as-any;reveal{(}#}route.component{#:as-any;reveal{ as any)}#}
+{#:cn;insert{  => {#5:as-any;reveal{(}#}route.component{#:as-any;reveal{ {#:as-any;highlight red{as any}#})}#}
     .{#:cn;highlight green{decorators[0].args[0].selector}#};
 }#}
 {#:test;insert{getComponentSelector(inject(ActivatedRoute))

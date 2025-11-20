@@ -7,18 +7,18 @@ import Code from '../components/Code.astro';
 	<svg viewBox="0 0 100 100" class="git-tree">
 		<line x1="50" x2="50" y1="100" y2="18"></line>
 		<text x="50" y="10">develop</text>
-		<g p-fragment p-group="detach" p-effect="boing move" style="--to-x: -2px">
+		<g p-fragment p-group="detach" p-effect="move" style="--to-x: -2px">
 			<!--- we can finally detach them from the app repo and make them live in their own customization package -->
 			<path transform="translate(20,17)" d="M0,0v33a30,30 0 0 0 30,30" class="branch" p-effect="redraw" p-duration="2"></path>
-			<text x="-15" y="15">client/wasser-gmbh</text>
+			<text x="-15" y="15"><tspan p-effect="fade">@</tspan><tspan>client/wasser-gmbh</tspan></text>
 			<path transform="translate(35,17)" d="M0,0v8a15,15 0 0 0 15,15" class="branch" p-effect="redraw" p-duration="2"></path>
-			<text x="-15" y="30">client/rossi_srl</text>
+			<text x="-15" y="30"><tspan p-effect="fade">@</tspan><tspan>client/rossi_srl</tspan></text>
 		</g>
-		<g p-fragment p-group="detach" p-effect="boing move" style="--to-x: 2px">
+		<g p-fragment p-group="detach" p-effect="move" style="--to-x: 2px">
 			<path transform="translate(65,17)" d="M0,0v18a15,15 0 0 1-15,15" class="branch" p-effect="redraw" p-duration="2"></path>
-			<text x="-15" y="60">client/acme</text>
+			<text x="-15" y="60"><tspan p-effect="fade">@</tspan><tspan>client/acme</tspan></text>
 			<path transform="translate(80,17)" d="M0,0v23a30,30 0 0 1-30,30" class="branch" p-effect="redraw" p-duration="2"></path>
-			<text x="-15" y="75">client/smith_co</text>
+			<text x="-15" y="75"><tspan p-effect="fade">@</tspan><tspan>client/smith_co</tspan></text>
 		</g>
 		<path d="M50,100v-5-20-20-20-16" class="commits"></path>
 	</svg>
