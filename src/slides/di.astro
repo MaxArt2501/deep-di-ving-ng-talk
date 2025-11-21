@@ -23,21 +23,21 @@ import SvgCode from '../components/SvgCode.astro';
 	<div class="h2 bold center">Provide <em>where</em>?</div>
 	<div class="self-center s05" grid="2">
 		<Code lang="ts" code={`bootstrapApplication(App, {
-	{#4:providers;highlight{providers: [...]}#}
+  {#4:providers;highlight{providers: [...]}#}
 })`} p-fragment><p-notes>We've seen them while bootstrapping the application</p-notes></Code>
 		<Code lang="ts" code={`@NgModule({
-	{#:providers;highlight{providers: [...]}#}
+  {#:providers;highlight{providers: [...]}#}
 })
 class FruitModule {}`} p-fragment><p-notes>Or classically, in Angular modules</p-notes></Code>
 		<Code lang="ts" code={`@Component({
-	selector: 'my-fruit-list',
-	{#:providers;highlight{providers: [...]}#}
+  selector: 'my-fruit-list',
+  {#:providers;highlight{providers: [...]}#}
 })
 class FruitList {}`} p-fragment><p-notes>Always possible in the Component decorator</p-notes></Code>
 		<Code lang="ts" code={`const routes: Routes = [{
-	path: 'fruits',
-	loadComponent: () => import(...),
-	{#:providers;highlight{providers: [...]}#}
+  path: 'fruits',
+  loadComponent: () => import(...),
+  {#:providers;highlight{providers: [...]}#}
 }, ...];`} p-fragment><p-notes>And we can do that in route definitions too</p-notes></Code>
 	</div>
 	<p-notes p-group="providers">Basically, everywhere there's a <code>providers</code> property followed by an array of objects</p-notes>
@@ -52,26 +52,26 @@ provideMyNonnaInACart()`}><p-notes>In more recent apps, we've seen these "provid
 		<Code p-fragment lang="ts" code={`HopefullyLocalService,
 ShouldUseProvidedInService`}><p-notes>But often we've seen just class names there. We should know it's just&hellip;</p-notes></Code>
 		<Code p-fragment lang="ts" code={`{
-	provide: SugarService,
-	useClass: SugarService
+  provide: SugarService,
+  useClass: SugarService
 }`}>
 			<p-notes>&hellip; syntactic sugar for this special object of the type <code>ClassProvider</code></p-notes>
 			<p-notes>The property <code>provide</code> defines the type of the value, as an unique symbol. It can be whatever, really, although not everything makes sense</p-notes>
 		</Code>
 		<Code p-fragment lang="ts" code={`{
-	provide: LOCALE_ID,
-	useValue: 'it-IT'
+  provide: LOCALE_ID,
+  useValue: 'it-IT'
 }`}><p-notes>Then there's <code>ValueProvider</code>, where we give static values</p-notes></Code>
 		<Code p-fragment lang="ts" code={`{
-	provide: GRANDMA_TITLE,
-	useFactory: l => l?.startsWith('it')
-		? 'nonna' : 'granma',
-	{#6:deps;strike{deps: [[new Optional(), LOCALE_ID]]}#}
+  provide: GRANDMA_TITLE,
+  useFactory: l => l?.startsWith('it')
+    ? 'nonna' : 'granma',
+  {#6:deps;strike{deps: [[new Optional(), LOCALE_ID]]}#}
 }`}><p-notes>But if a values depends on others in the DI, we can use the <code>FactoryProvider</code> with its dependencies</p-notes></Code>
 		<Code p-fragment lang="ts" code={`{
-	provide: NG_VALUE_ACCESSOR,
-	useExisting: InputComponent,
-	multi: true
+  provide: NG_VALUE_ACCESSOR,
+  useExisting: InputComponent,
+  multi: true
 }`}>
 			<p-notes>Finally, we can use a preexisting value for another</p-notes>
 			<p-notes>We aren't done, as there are other hidden ways to provide values in the DI system.
@@ -127,8 +127,8 @@ ShouldUseProvidedInService`}><p-notes>But often we've seen just class names ther
 			Then we get the element injectors. So if we provide a token value at that level, for example the name of a fruit
 		</g></SvgCode>
 		<SvgCode code={`{
-	provide: FRUIT,
-	useValue: 'apples'
+  provide: FRUIT,
+  useValue: 'apples'
 }`} x="40" y="41" style="font-size: 4px" p-fragment="1">
 			<line class="arrow" x1="38" y1="50" x2="28" y2="50" stroke="#24292e"/>
 		</SvgCode>
@@ -143,8 +143,8 @@ ShouldUseProvidedInService`}><p-notes>But often we've seen just class names ther
 			But if we try the same from a node that *has* that token&hellip;
 		</g></SvgCode>
 		<SvgCode code={`{
-	provide: FRUIT,
-	useValue: 'oranges'
+  provide: FRUIT,
+  useValue: 'oranges'
 }`} x="40" y="2.25" style="font-size: 4px" p-fragment="4">
 			<line class="arrow" x1="38" y1="10" x2="28" y2="10" stroke="#24292e"/>
 		</SvgCode>

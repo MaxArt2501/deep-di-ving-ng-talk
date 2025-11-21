@@ -274,7 +274,7 @@ getRouterPath(inject(ActivatedRoute))
 	<p-notes p-group="filter">Then we start matching</p-notes>
 	<p-notes p-group="replace">again replacing missing names from the context. Now we can spare us the effort of naming (some)things&hellip;</p-notes>
 	<Code code={`export function chainInject{#:name;-reveal{ByName}#}<T>(
-  token: ProviderToken<T | T[]>,
+  token: InjectionToken<T | T[]>,
   name{#:name;reveal{?}#}: string
 ): T[] {
   ...
@@ -321,13 +321,13 @@ getRouterPath(inject(ActivatedRoute))
   })
 ]`} style="--arrow-pos: 66%"><p-notes>in the leaf node, we can colocate the configuration and completely omit the name, which will be inferred from the route;</p-notes></Code>
 		<Code p-fragment p-effect="from right" p-group="wc" code={`providers: [
-	provideTableConfig({
-		name: '{#:wc;highlight blue{articles/**/*}#}'
-		actions: [...], ...
-	})
+  provideTableConfig({
+    name: '{#:wc;highlight blue{articles/**/*}#}'
+    actions: [...], ...
+  })
 ]`} style="--arrow-pos: 71%"><p-notes>in parent nodes, we can use wildcards instead, possibly matching multiple targets;</p-notes></Code>
 		<Code p-fragment p-effect="from right" p-group="acme" code={`providers: [
-	...{#:acme;highlight green{acmeTokens}#}, ...
+  ...{#:acme;highlight green{acmeTokens}#}, ...
 ]`}><p-notes>
 	while the <em>only</em> thing we need to do to get client customizations is to import them in the environment injector.</p-notes>
 	<p-notes>Something a schematic could do while installing the package in the countinuous delivery pipeline.</p-notes></Code>
@@ -337,12 +337,12 @@ getRouterPath(inject(ActivatedRoute))
 			<use href="#package-client" width="40" height="40" />
 		</svg>
 		<Code code={`provideTableConfig({
-	name: '{#:token;highlight{articles/:id/view}#}'
-	columns: [...], ...
+  name: '{#:token;highlight{articles/:id/view}#}'
+  columns: [...], ...
 {#:wctoken;insert{}),
 provideTableConfig({
-	name: '{#:wctoken;highlight{**/view}#}'
-	actions: [...], ...
+  name: '{#:wctoken;highlight{**/view}#}'
+  actions: [...], ...
 }#}})`} style="--arrow-pos: calc(.5em + 1.5lh)"><p-notes>Custom token values from client packages must, of course, have names</p-notes></Code>
 	</div>
 	<p-notes p-group="wctoken">&hellip; but they can very well use wildcards too!</p-notes>

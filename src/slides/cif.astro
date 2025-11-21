@@ -34,12 +34,12 @@ import SvgCode from '../components/SvgCode.astro';
 			<use href="#package-client" width="40" height="40" />
 		</svg>
 		<Code code={`export const {#:acme;highlight{tokens}#} = [{
-	provide: TABLE_CONFIG,
-	useValue: {
-		name: 'fruits',
-		columns: [{...}]
-	},
-	multi: true
+  provide: TABLE_CONFIG,
+  useValue: {
+    name: 'fruits',
+    columns: [{...}]
+  },
+  multi: true
 }];`}/>
 	</div>
 	<p-fragment class="overlay-banner h1">
@@ -206,9 +206,9 @@ export class Viewer {
 	<p-notes p-group="aiic">Almost done! Assert that we're in an inj ctx. Technically not necessary:
 		first call to `inject` does that for us, but for debugging purposes we're using aIIC correctly</p-notes>
 	<Code code={`{#:climb;insert{import { {#7:aiic;reveal{assertInInjectionContext, }#}inject, Injector } from '@angular/core';
-}#}{#0:types;insert{import type { ProviderToken } from '@angular/core';
+}#}{#0:types;insert{import type { InjectionToken } from '@angular/core';
 
-}#}export function chainInject{#:types;reveal{<T>}#}(token{#:types;reveal{: ProviderToken<T | T[]>}#}){#:types;reveal{: T[]}#} {
+}#}export function chainInject{#:types;reveal{<T>}#}(token{#:types;reveal{: InjectionToken<T | T[]>}#}){#:types;reveal{: T[]}#} {
 {#:aiic;insert{  {#:aiic;highlight{assertInInjectionContext(chainInject)}#};
 
 }#}{#1:array;insert{  const values: T[] = [];
@@ -234,15 +234,15 @@ import { mergeConfigs } from '../utils/table';
 {#:chain;insert{import { {#:chain;highlight{chainInject}#} } from '../chain-inject';
 }#}
 @Component({
-	selector: 'my-fruits',
-	template: '<my-table [config]="config"/>'
-	providers: [fruitTableConfig],
-	standalone: true
+  selector: 'my-fruits',
+  template: '<my-table [config]="config"/>'
+  providers: [fruitTableConfig],
+  standalone: true
 })
 export class FruitList {
-	configs: TableConfig[] = {#:chain;reveal{{#:chain;highlight{chainInject}#}}#}{#:chain;-reveal{{#0:instead;strike{inject}#}}#}(TABLE_CONFIG);
+  configs: TableConfig[] = {#:chain;reveal{{#:chain;highlight{chainInject}#}}#}{#:chain;-reveal{{#0:instead;strike{inject}#}}#}(TABLE_CONFIG);
 
-	config = mergeConfigs(this.configs.filter(cfg => cfg.name === 'fruit'));
+  config = mergeConfigs(this.configs.filter(cfg => cfg.name === 'fruit'));
 }`} class="s05 self-center"/>
 </p-slide>
 <p-slide>
@@ -269,13 +269,13 @@ export class FruitList {
 			--></path>
 		</g>
 		<SvgCode code={`{
-	provide: TABLE_CONFIG,
-	useValue: {
-		name: 'fruit',
-		columns: [...],
-		actions: [...]
-	},
-	multi: true
+  provide: TABLE_CONFIG,
+  useValue: {
+    name: 'fruit',
+    columns: [...],
+    actions: [...]
+  },
+  multi: true
 }`} x="47" y="40" p-fragment="2">
 			<path d="M47,40l3-3 3,3" style="translate: 0 -0.5lh"/>
 		</SvgCode>
@@ -284,8 +284,8 @@ export class FruitList {
 			<g p-notes>And while one component is fine with the default configuration&hellip;</g>
 		</SvgCode>
 		<SvgCode code={`{
-	provide: TABLE_CONFIG,
-	useValue: { ... }
+  provide: TABLE_CONFIG,
+  useValue: { ... }
 }`} x="62" y="20" p-fragment>
 			<path d="M62,20l3-3 3,3" style="translate: 0 -0.5lh"/>
 			<g p-notes>&hellip; the other alone can provide the changes it needs. This is the kind of

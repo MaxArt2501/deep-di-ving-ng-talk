@@ -125,7 +125,7 @@ const {#:all;highlight{provideTableColumn}#} = createTokenProvider(TABLE_COLUMN)
 	<Code code={`{#2:filter;insert{import { isMatch } from 'micromatch';
 
 }#}export function chainInject{#:name;reveal{ByName}#}<T>(
-  token: ProviderToken<T | T[]>{#:name;reveal{,}#}
+  token: InjectionToken<T | T[]>{#:name;reveal{,}#}
 {#:name;insert{  name: string
 }#}): T[] {
 {#:retrieve;insert{  ...
