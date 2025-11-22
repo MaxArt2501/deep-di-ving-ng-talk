@@ -287,7 +287,7 @@ getRouterPath(inject(ActivatedRoute))
     const filtered = valueArray.filter(value => {
 {#:filter;insert{      const valueName = value.name
         ?? {#:replace;highlight blue{getRoutePath(injector.get(ActivatedRoute, null, { self: true }))}#};
-}#}      return matches(value{#:filter;-reveal{.name}#}{#:filter;reveal{Name}#})(name)
+}#}      return isMatch(name, value{#:filter;-reveal{.name}#}{#:filter;reveal{Name}#})
     });
     values.push(...filtered);
   }
